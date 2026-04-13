@@ -6,22 +6,11 @@ import { TopThreeCards } from "@/components/leaderboard/TopThreeCards";
 import { prisma } from "@/lib/prisma";
 import { getRoobetLeaderboard } from "@/lib/roobet";
 
-type RawLeaderboardEntry = {
-  id?: string | number;
-  userId?: string | number;
-  username?: string;
-  name?: string;
-  wagered?: number;
-  wager?: number;
-  amount?: number;
-};
-
 type LeaderboardEntry = {
-  id: string | number;
   rank: number;
   username: string;
   wageredTotal: number;
-  prize: number | null;
+  prize?: number;
 };
 
 export default async function LeaderboardPage() {
@@ -39,28 +28,19 @@ export default async function LeaderboardPage() {
   try {
     const raw = await getRoobetLeaderboard();
 
-    const source: RawLeaderboardEntry[] = Array.isArray(raw)
-      ? raw
-      : Array.isArray((raw as { entries?: RawLeaderboardEntry[] })?.entries)
-      ? (raw as { entries: RawLeaderboardEntry[] }).entries
-      : Array.isArray((raw as { data?: RawLeaderboardEntry[] })?.data)
-      ? (raw as { data: RawLeaderboardEntry[] }).data
+    entries = Array.isArray(raw)
+      ? raw.map((item) => ({
+          rank: typeof item.rank === "number" ? item.rank : 0,
+          username: item.username ?? "Unknown",
+          wageredTotal:
+            typeof item.wageredTotal === "number" ? item.wageredTotal : 0,
+          prize:
+            settings?.prizeTiers?.find((tier) => tier.place === item.rank)
+              ?.amount ??
+            item.prize ??
+            null,
+        }))
       : [];
-
-    entries = source.map((item, index) => ({
-      id: item.id ?? item.userId ?? `${item.username ?? item.name ?? "user"}-${index}`,
-      rank: index + 1,
-      username: item.username ?? item.name ?? "Unknown",
-      wageredTotal:
-        typeof item.wagered === "number"
-          ? item.wagered
-          : typeof item.wager === "number"
-          ? item.wager
-          : typeof item.amount === "number"
-          ? item.amount
-          : 0,
-      prize: settings?.prizeTiers?.find((tier) => tier.place === index + 1)?.amount ?? null,
-    }));
   } catch (error) {
     console.error("Roobet leaderboard failed on leaderboard page:", error);
     entries = [];
@@ -76,11 +56,17 @@ export default async function LeaderboardPage() {
 
   const countdownTarget =
     settings?.countdownTarget?.toISOString().slice(0, 16) ||
-    new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16);
+    new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+      .toISOString()
+      .slice(0, 16);
 
   return (
     <div className="space-y-8">
-      <PageHero eyebrow="Leaderboard" title={title} description={subtitle} />
+      <PageHero
+        eyebrow="Leaderboard"
+        title={title}
+        description={subtitle}
+      />
 
       <div className="mx-auto w-full max-w-[1200px]">
         <CountdownTimer target={countdownTarget} />
@@ -109,7 +95,7 @@ export default async function LeaderboardPage() {
             {remaining.length > 0 ? (
               remaining.map((entry) => (
                 <div
-                  key={entry.id}
+                  key={`${entry.rank}-${entry.username}`}
                   className="grid grid-cols-[80px_minmax(0,1fr)_180px] items-center px-4 py-4 text-sm"
                 >
                   <div className="font-semibold text-white">#{entry.rank}</div>
