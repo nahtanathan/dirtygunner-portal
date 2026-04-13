@@ -1,83 +1,92 @@
-import { TopThreeCards } from "@/components/leaderboard/TopThreeCards";
+"use client";
+
+import { useMemo } from "react";
+import { PageHero } from "@/components/ui/PageHero";
 import { CountdownTimer } from "@/components/leaderboard/CountdownTimer";
-import { SectionHeader } from "@/components/ui/SectionHeader";
-import { LeaderboardRow } from "@/components/leaderboard/LeaderboardRow";
+import { TopThreeCards } from "@/components/leaderboard/TopThreeCards";
+import { useAdminStore } from "@/store/admin-store";
 import { dataRepository } from "@/lib/data/repository";
-import { getRoobetLeaderboard } from "@/lib/roobet";
 
-export default async function LeaderboardPage() {
-  const leaderboardSettings = dataRepository.getLeaderboardSettings();
+type LeaderboardSettingsShape = {
+  title?: string;
+  subtitle?: string;
+  countdownTarget: string;
+  startDate?: string;
+  endDate?: string;
+};
 
-  let leaderboard = [];
-  try {
-    leaderboard = await getRoobetLeaderboard();
-  } catch (error) {
-    console.error("Roobet leaderboard failed on leaderboard page:", error);
-    leaderboard = dataRepository.getLeaderboardEntries();
-  }
+export default function LeaderboardPage() {
+  const leaderboardSettings = useAdminStore(
+    (state) => state.leaderboardSettings
+  ) as LeaderboardSettingsShape;
+
+  const entries = useMemo(() => dataRepository.getLeaderboardEntries(), []);
+
+  const topThree = entries.slice(0, 3);
+  const remaining = entries.slice(3);
 
   return (
-    <div className="space-y-6 md:space-y-8">
-      <div className="mx-auto w-full max-w-[1200px]">
-        <SectionHeader
-          eyebrow="Leaderboard"
-          title="Current Race Standings"
-          description="Player names are intentionally obscured. Weighted wagers are used for standings."
-        />
-      </div>
-
-      <div className="mx-auto w-full max-w-[1200px]">
-        <TopThreeCards entries={leaderboard} />
-      </div>
+    <div className="space-y-8">
+      <PageHero
+        eyebrow="Leaderboard"
+        title={leaderboardSettings.title?.trim() || "Weekly Roobet Race"}
+        description={
+          leaderboardSettings.subtitle?.trim() ||
+          "Top grinders earn premium payouts before the weekly reset. Every wager matters."
+        }
+      />
 
       <div className="mx-auto w-full max-w-[1200px]">
         <CountdownTimer target={leaderboardSettings.countdownTarget} />
       </div>
 
-      <div className="mx-auto w-full max-w-[1320px]">
-        <section
-          className="overflow-hidden rounded-[28px] border"
-          style={{
-            borderColor: "var(--border-subtle)",
-            background:
-              "linear-gradient(180deg, rgba(18,26,48,0.95) 0%, rgba(11,16,30,0.96) 100%)",
-            boxShadow:
-              "0 24px 60px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.04)",
-          }}
-        >
-          <div className="border-b px-5 py-5 md:px-6">
-            <div
-              className="text-xs font-semibold uppercase tracking-[0.34em]"
-              style={{ color: "#60A5FA" }}
-            >
-              
-            </div>
+      <TopThreeCards entries={topThree} />
 
-            <h3
-              className="mt-2 text-2xl font-bold uppercase tracking-[0.04em]"
-              style={{ color: "var(--text-primary)" }}
-            >
-             Full Leaderboard
-            </h3>
+      <section className="rounded-3xl border border-white/10 bg-black/30 p-5 backdrop-blur-xl">
+        <div className="mb-4 flex items-center justify-between">
+          <div>
+            <h2 className="text-xl font-bold text-white">Full Leaderboard</h2>
+            <p className="mt-1 text-sm text-zinc-400">
+              Current ranked positions for this cycle.
+            </p>
+          </div>
+        </div>
 
-            <div
-              className="mt-4 max-w-4xl text-sm leading-6"
-              style={{ color: "var(--text-secondary)" }}
-            >
-              Your wagers on Roobet count toward the leaderboard using weighted
-              contribution rules. Games at 97% RTP or less count 100%, games above
-              97% count 50%, and games at 98%+ count 10%. Only slots and provably
-              fair/house games count, with dice excluded.
-            </div>
+        <div className="overflow-hidden rounded-2xl border border-white/10">
+          <div className="grid grid-cols-[80px_minmax(0,1fr)_180px] bg-white/5 px-4 py-3 text-xs uppercase tracking-[0.18em] text-zinc-500">
+            <div>Rank</div>
+            <div>User</div>
+            <div className="text-right">Wager</div>
           </div>
 
-          <div className="space-y-3 p-4 md:p-5">
-            {leaderboard.map((entry) => (
-              <LeaderboardRow key={entry.rank} entry={entry} />
+          <div className="divide-y divide-white/10">
+            {remaining.map((entry: any, index: number) => (
+              <div
+                key={entry.id ?? `${entry.username}-${index}`}
+                className="grid grid-cols-[80px_minmax(0,1fr)_180px] items-center px-4 py-4 text-sm"
+              >
+                <div className="font-semibold text-white">#{index + 4}</div>
+
+                <div className="min-w-0">
+                  <div className="truncate font-semibold text-white">
+                    {entry.username ?? entry.name ?? "Unknown"}
+                  </div>
+                </div>
+
+                <div className="text-right font-semibold text-zinc-200">
+                  {typeof entry.wagered === "number"
+                    ? `$${entry.wagered.toLocaleString()}`
+                    : typeof entry.wager === "number"
+                    ? `$${entry.wager.toLocaleString()}`
+                    : typeof entry.amount === "number"
+                    ? `$${entry.amount.toLocaleString()}`
+                    : "$0"}
+                </div>
+              </div>
             ))}
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
     </div>
   );
 }

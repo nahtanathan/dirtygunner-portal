@@ -23,9 +23,11 @@ export function CountdownTimer({ target }: { target: string }) {
   const [timeLeft, setTimeLeft] = useState(() => getTimeLeft(target));
 
   useEffect(() => {
+    setTimeLeft(getTimeLeft(target));
+
     const timer = setInterval(() => {
       setTimeLeft(getTimeLeft(target));
-    }, 250);
+    }, 1000);
 
     return () => clearInterval(timer);
   }, [target]);
@@ -36,173 +38,115 @@ export function CountdownTimer({ target }: { target: string }) {
     return "normal";
   }, [timeLeft.totalMs]);
 
-  const items = useMemo(
-    () => [
-      { label: "Days", value: timeLeft.days },
-      { label: "Hours", value: timeLeft.hours },
-      { label: "Minutes", value: timeLeft.minutes },
-      { label: "Seconds", value: timeLeft.seconds },
-    ],
-    [timeLeft]
-  );
+  const items = useMemo(() => {
+    const base = [
+      { key: "days", short: "d", value: timeLeft.days },
+      { key: "hours", short: "h", value: timeLeft.hours },
+      { key: "minutes", short: "m", value: timeLeft.minutes },
+      { key: "seconds", short: "s", value: timeLeft.seconds },
+    ];
+
+    if (timeLeft.days <= 0) {
+      return base.filter((item) => item.key !== "days");
+    }
+
+    return base;
+  }, [timeLeft]);
+
+  const statusText = useMemo(() => {
+    if (timeLeft.totalMs <= 0) return "Ended";
+    if (dangerLevel === "critical") return "Ending Now";
+    if (dangerLevel === "warning") return "Ending Soon";
+    return "Live";
+  }, [dangerLevel, timeLeft.totalMs]);
 
   return (
-    <section
-      className="relative overflow-hidden rounded-[28px] border p-5 md:p-6"
-      style={{
-        borderColor: "rgba(255,255,255,0.08)",
-        background:
-          "linear-gradient(180deg, rgba(11,11,13,0.98) 0%, rgba(6,6,8,0.99) 100%)",
-        boxShadow:
-          "0 24px 60px rgba(0,0,0,0.42), inset 0 1px 0 rgba(255,255,255,0.04)",
-      }}
-    >
+    <div className="mx-auto w-full max-w-[520px]">
       <div
-        className="pointer-events-none absolute inset-0"
+        className="rounded-2xl border px-4 py-3 md:px-5 md:py-4 text-center"
         style={{
+          borderColor:
+            dangerLevel === "critical"
+              ? "rgba(239,68,68,0.24)"
+              : dangerLevel === "warning"
+              ? "rgba(251,191,36,0.18)"
+              : "rgba(255,255,255,0.08)",
           background:
-            "radial-gradient(circle at top left, rgba(255,255,255,0.045), transparent 22%), radial-gradient(circle at top right, rgba(239,68,68,0.08), transparent 24%), linear-gradient(180deg, rgba(255,255,255,0.015), transparent 22%, transparent 78%, rgba(255,255,255,0.01))",
+            "linear-gradient(180deg, rgba(11,11,13,0.92), rgba(6,6,8,0.96))",
+          boxShadow:
+            dangerLevel === "critical"
+              ? "0 10px 30px rgba(0,0,0,0.35), 0 0 18px rgba(239,68,68,0.12), inset 0 1px 0 rgba(255,255,255,0.04)"
+              : "0 10px 30px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.04)",
         }}
-      />
-
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-white/10" />
-
-      <div className="relative z-10">
-        <div className="mb-5 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-          <div>
-            <div className="flex items-center gap-2">
-              <span
-                className={cx(
-                  "h-2.5 w-2.5 rounded-full",
-                  dangerLevel === "critical"
-                    ? "animate-pulse bg-red-500 shadow-[0_0_14px_rgba(239,68,68,0.95)]"
-                    : dangerLevel === "warning"
-                    ? "bg-amber-400 shadow-[0_0_12px_rgba(251,191,36,0.75)]"
-                    : "bg-red-600 shadow-[0_0_10px_rgba(220,38,38,0.55)]"
-                )}
-              />
-              <div
-                className="text-xs font-semibold uppercase tracking-[0.34em]"
-                style={{ color: "#EF4444" }}
-              >
-                Armed Countdown
-              </div>
-            </div>
-
-            <h3
-              className="mt-2 text-2xl font-black uppercase tracking-[0.08em] md:text-3xl"
-              style={{ color: "var(--text-primary)" }}
-            >
-              Final Sequence
-            </h3>
+      >
+        {/* HEADER */}
+        <div className="flex flex-col items-center gap-1">
+          <div className="flex items-center gap-2">
+            <span
+              className={cx(
+                "h-2 w-2 rounded-full",
+                dangerLevel === "critical"
+                  ? "animate-pulse bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.9)]"
+                  : dangerLevel === "warning"
+                  ? "bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.75)]"
+                  : "bg-red-600 shadow-[0_0_6px_rgba(220,38,38,0.5)]"
+              )}
+            />
+            <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-zinc-400">
+              Leaderboard Reset
+            </span>
           </div>
 
-          <p
-            className="max-w-xl text-sm md:text-base"
-            style={{ color: "var(--text-secondary)" }}
+          <div
+            className={cx(
+              "text-[10px] font-semibold uppercase tracking-[0.22em]",
+              dangerLevel === "critical"
+                ? "text-red-400"
+                : dangerLevel === "warning"
+                ? "text-amber-300"
+                : "text-zinc-500"
+            )}
           >
-            
-          </p>
+            {statusText}
+          </div>
         </div>
 
-        <div
-          className={cx(
-            "rounded-[24px] border p-3 md:p-4",
-            dangerLevel === "critical" && "animate-[pulse_1s_ease-in-out_infinite]"
-          )}
-          style={{
-            borderColor:
-              dangerLevel === "critical"
-                ? "rgba(239,68,68,0.28)"
-                : "rgba(255,255,255,0.08)",
-            background:
-              "linear-gradient(180deg, rgba(4,4,5,0.98), rgba(8,8,10,0.98))",
-            boxShadow:
-              "inset 0 1px 0 rgba(255,255,255,0.03), inset 0 0 30px rgba(255,0,0,0.04), 0 14px 30px rgba(0,0,0,0.3)",
-          }}
-        >
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-            {items.map((item) => (
+        {/* TIMER */}
+        <div className="mt-3 flex flex-wrap items-end justify-center gap-3 sm:gap-4">
+          {items.map((item, index) => (
+            <div key={item.key} className="flex items-end justify-center gap-2">
               <div
-                key={item.label}
                 className={cx(
-                  "relative overflow-hidden rounded-[22px] border p-4 md:p-5",
-                  dangerLevel === "critical" &&
-                    item.label === "Seconds" &&
-                    "animate-[pulse_0.8s_ease-in-out_infinite]"
+                  "font-mono text-2xl font-black leading-none md:text-3xl",
+                  dangerLevel === "critical" && item.key === "seconds"
+                    ? "animate-pulse"
+                    : undefined
                 )}
                 style={{
-                  borderColor:
-                    dangerLevel === "critical"
-                      ? "rgba(239,68,68,0.18)"
-                      : "rgba(255,255,255,0.07)",
-                  background:
-                    "linear-gradient(180deg, rgba(0,0,0,0.96), rgba(10,10,12,0.98))",
-                  boxShadow:
-                    "inset 0 1px 0 rgba(255,255,255,0.02), inset 0 0 28px rgba(255,0,0,0.05), 0 12px 26px rgba(0,0,0,0.24)",
+                  color:
+                    dangerLevel === "warning" ? "#FBBF24" : "#EF4444",
+                  textShadow:
+                    dangerLevel === "critical" && item.key === "seconds"
+                      ? "0 0 14px rgba(239,68,68,0.9)"
+                      : "0 0 10px rgba(239,68,68,0.45)",
                 }}
               >
-                <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.03),transparent_30%,transparent_70%,rgba(255,255,255,0.015))]" />
-                <div className="pointer-events-none absolute inset-x-3 top-1/2 h-px -translate-y-1/2 bg-red-900/25" />
-
-                <div
-                  className={cx(
-                    "relative font-mono text-[36px] font-black leading-none tracking-[0.08em] md:text-[48px]",
-                    dangerLevel === "critical" && item.label === "Seconds"
-                      ? "animate-[pulse_0.75s_ease-in-out_infinite]"
-                      : undefined
-                  )}
-                  style={{
-                    color: "#EF4444",
-                    textShadow:
-                      dangerLevel === "critical"
-                        ? "0 0 18px rgba(239,68,68,1), 0 0 34px rgba(239,68,68,0.45)"
-                        : "0 0 12px rgba(239,68,68,0.85), 0 0 24px rgba(239,68,68,0.25)",
-                  }}
-                >
-                  {String(item.value).padStart(2, "0")}
-                </div>
-
-                <div
-                  className="relative mt-3 text-[10px] font-bold uppercase tracking-[0.34em]"
-                  style={{ color: "var(--text-muted)" }}
-                >
-                  {item.label}
-                </div>
+                {String(item.value).padStart(2, "0")}
               </div>
-            ))}
-          </div>
 
-          <div className="mt-4 flex items-center justify-between gap-4">
-            <div className="flex gap-1.5">
-              <span className="block h-1.5 w-10 rounded-full bg-red-500 shadow-[0_0_12px_rgba(239,68,68,0.8)]" />
-              <span
-                className={cx(
-                  "block h-1.5 w-10 rounded-full",
-                  dangerLevel !== "normal"
-                    ? "bg-red-500 shadow-[0_0_12px_rgba(239,68,68,0.8)]"
-                    : "bg-white/5"
-                )}
-              />
-              <span
-                className={cx(
-                  "block h-1.5 w-10 rounded-full",
-                  dangerLevel === "critical"
-                    ? "bg-red-500 shadow-[0_0_12px_rgba(239,68,68,0.8)]"
-                    : "bg-white/5"
-                )}
-              />
-            </div>
+              <div className="pb-1 text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500">
+                {item.short}
+              </div>
 
-            <div
-              className="text-[10px] font-semibold uppercase tracking-[0.28em]"
-              style={{ color: "#6B7280" }}
-            >
-              {timeLeft.totalMs <= 0 ? "Sequence Ended" : "System Live"}
+              {index < items.length - 1 && (
+                <div className="pb-1 font-mono text-lg font-bold text-zinc-600 md:text-xl">
+                  :
+                </div>
+              )}
             </div>
-          </div>
+          ))}
         </div>
       </div>
-    </section>
+    </div>
   );
 }

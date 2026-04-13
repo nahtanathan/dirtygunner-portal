@@ -1,144 +1,47 @@
-"use client";
-
-import { useMemo } from "react";
-import { PageHero } from "@/components/ui/PageHero";
-import { CountdownTimer } from "@/components/leaderboard/CountdownTimer";
-import { TopThreeCards } from "@/components/leaderboard/TopThreeCards";
-import { useAdminStore } from "@/store/admin-store";
+import Image from "next/image";
+import { CTAButton } from "@/components/ui/CTAButton";
+import { HomeClient } from "@/components/home/HomeClient";
 import { dataRepository } from "@/lib/data/repository";
+import { getRoobetLeaderboard } from "@/lib/roobet";
 
-type PrizeTier = {
-  place: number;
-  prize: number;
-};
+export default async function HomePage() {
+  const settings = dataRepository.getSiteSettings();
 
-type LeaderboardSettingsShape = {
-  title?: string;
-  subtitle?: string;
-  countdownTarget: string;
-  startDate?: string;
-  endDate?: string;
-  prizeTiers: PrizeTier[];
-};
-
-export default function LeaderboardPage() {
-  const leaderboardSettings = useAdminStore(
-    (state) => state.leaderboardSettings
-  ) as LeaderboardSettingsShape;
-
-  const entries = useMemo(() => dataRepository.getLeaderboardEntries(), []);
-
-  const topThree = entries.slice(0, 3);
-  const remaining = entries.slice(3);
+  let leaderboard = [];
+  try {
+    leaderboard = await getRoobetLeaderboard();
+  } catch (error) {
+    console.error("Roobet leaderboard failed on homepage:", error);
+    leaderboard = dataRepository.getLeaderboardEntries();
+  }
 
   return (
-    <div className="space-y-8">
-      <PageHero
-        eyebrow="Leaderboard"
-        title={
-          leaderboardSettings.title?.trim() || "Weekly Leaderboard"
-        }
-        description={
-          leaderboardSettings.subtitle?.trim() ||
-          "Track the current race, countdown, and prize positions."
-        }
-      />
+    <div className="space-y-6 md:space-y-8">
+      <div className="mx-auto flex w-full max-w-[1200px] flex-col items-center px-4 pt-2 text-center md:px-6 md:pt-6">
+        <div className="mb-6 flex w-full justify-center">
+          <Image
+            src="/images/dirty-gunner-gaming.png"
+            alt="Dirty Gunner Gaming"
+            width={1600}
+            height={800}
+            priority
+            className="h-auto w-full max-w-[900px] object-contain"
+          />
+        </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        {leaderboardSettings.prizeTiers.map((tier) => (
-          <div
-            key={tier.place}
-            className="rounded-3xl border border-white/10 bg-black/30 p-5 backdrop-blur-xl"
-          >
-            <div className="text-xs uppercase tracking-[0.2em] text-zinc-500">
-              Place #{tier.place}
-            </div>
-            <div className="mt-2 text-3xl font-bold text-white">
-              ${tier.prize.toLocaleString()}
-            </div>
-          </div>
-        ))}
-      </div>
+        <p className="max-w-2xl text-sm text-zinc-400 md:text-base">
+          Weekly leaderboard races, raffles, challenges, and bonus hunt tracking.
+        </p>
 
-      <div className="mx-auto w-full max-w-[1200px]">
-        <CountdownTimer target={leaderboardSettings.countdownTarget} />
-      </div>
-
-      <div className="rounded-3xl border border-white/10 bg-black/30 p-5 backdrop-blur-xl">
-        <div className="grid gap-4 md:grid-cols-2">
-          <div>
-            <div className="text-xs uppercase tracking-[0.2em] text-zinc-500">
-              Start
-            </div>
-            <div className="mt-1 text-white">
-              {leaderboardSettings.startDate
-                ? new Date(leaderboardSettings.startDate).toLocaleString()
-                : "Not set"}
-            </div>
-          </div>
-
-          <div>
-            <div className="text-xs uppercase tracking-[0.2em] text-zinc-500">
-              End
-            </div>
-            <div className="mt-1 text-white">
-              {leaderboardSettings.endDate
-                ? new Date(leaderboardSettings.endDate).toLocaleString()
-                : "Not set"}
-            </div>
-          </div>
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+          <CTAButton href="/leaderboard">View Leaderboard</CTAButton>
+          <CTAButton href={settings.kickUrl} variant="secondary">
+            Watch Stream
+          </CTAButton>
         </div>
       </div>
 
-      <TopThreeCards entries={topThree} />
-
-      <section className="rounded-3xl border border-white/10 bg-black/30 p-5 backdrop-blur-xl">
-        <div className="mb-4 flex items-center justify-between">
-          <div>
-            <h2 className="text-xl font-bold text-white">Full Leaderboard</h2>
-            <p className="mt-1 text-sm text-zinc-400">
-              Remaining ranked positions for the current cycle.
-            </p>
-          </div>
-        </div>
-
-        <div className="overflow-hidden rounded-2xl border border-white/10">
-          <div className="grid grid-cols-[80px_minmax(0,1fr)_180px] bg-white/5 px-4 py-3 text-xs uppercase tracking-[0.18em] text-zinc-500">
-            <div>Rank</div>
-            <div>User</div>
-            <div className="text-right">Wager</div>
-          </div>
-
-          <div className="divide-y divide-white/10">
-            {remaining.map((entry: any, index: number) => (
-              <div
-                key={entry.id ?? `${entry.username}-${index}`}
-                className="grid grid-cols-[80px_minmax(0,1fr)_180px] items-center px-4 py-4 text-sm"
-              >
-                <div className="font-semibold text-white">
-                  #{index + 4}
-                </div>
-
-                <div className="min-w-0">
-                  <div className="truncate font-semibold text-white">
-                    {entry.username ?? entry.name ?? "Unknown"}
-                  </div>
-                </div>
-
-                <div className="text-right font-semibold text-zinc-200">
-                  {typeof entry.wagered === "number"
-                    ? `$${entry.wagered.toLocaleString()}`
-                    : typeof entry.wager === "number"
-                    ? `$${entry.wager.toLocaleString()}`
-                    : typeof entry.amount === "number"
-                    ? `$${entry.amount.toLocaleString()}`
-                    : "$0"}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <HomeClient leaderboard={leaderboard} />
     </div>
   );
 }
