@@ -1,3 +1,5 @@
+// FILE: src/lib/types.ts
+
 export type SiteSettings = {
   kickUrl: string;
   discordUrl?: string;

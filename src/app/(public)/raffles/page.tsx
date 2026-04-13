@@ -99,7 +99,7 @@ export default async function RafflesPage() {
           <div className="flex items-center justify-end gap-2">
             <button
               type="button"
-              className="inline-flex h-12 w-12 items-center justify-center rounded-xl border text-white/55 transition hover:border-sky-400/20 hover:text-white"
+              className="inline-flex h-12 w-12 items-center justify-center rounded-xl border text-white/55"
               style={{
                 borderColor: "rgba(255,255,255,0.08)",
                 background: "rgba(255,255,255,0.02)",
@@ -121,7 +121,7 @@ export default async function RafflesPage() {
 
             <button
               type="button"
-              className="inline-flex h-12 w-12 items-center justify-center rounded-xl border text-white/55 transition hover:border-sky-400/20 hover:text-white"
+              className="inline-flex h-12 w-12 items-center justify-center rounded-xl border text-white/55"
               style={{
                 borderColor: "rgba(255,255,255,0.08)",
                 background: "rgba(255,255,255,0.02)",
@@ -148,7 +148,7 @@ export default async function RafflesPage() {
           ) : (
             <EmptyState
               title="No active raffles"
-              description="Nothing is live right now. New raffles will show up here automatically once they are created in the backend."
+              description="Nothing is live right now. New raffles will show up here automatically once they are created in admin."
             />
           )}
         </section>
@@ -162,11 +162,7 @@ export default async function RafflesPage() {
 
             <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
               {endedRaffles.map((raffle, index) => (
-                <RaffleShowcaseCard
-                  key={raffle.id}
-                  raffle={raffle}
-                  index={index}
-                />
+                <RaffleShowcaseCard key={raffle.id} raffle={raffle} index={index} />
               ))}
             </div>
           </section>
@@ -177,15 +173,12 @@ export default async function RafflesPage() {
 }
 
 function normalizeRaffle(item: PrismaRaffle): DisplayRaffle {
-  const normalizedStatus =
-    item.status === "active" ? "active" : "ended";
-
   return {
     id: item.id,
     title: item.title,
     description: item.description ?? "",
     image: item.image,
-    status: normalizedStatus,
+    status: item.status === "active" ? "active" : "ended",
     entryMethod: item.entryMethod,
     totalEntries: item.totalEntries,
     startDate: item.startDate.toISOString(),
@@ -199,7 +192,6 @@ function normalizeRaffle(item: PrismaRaffle): DisplayRaffle {
 function inferWinnerCount(prizeDetails: string) {
   const match = prizeDetails.match(/(\d+)\s*winners?/i);
   if (!match) return 1;
-
   const value = Number(match[1]);
   return Number.isFinite(value) && value > 0 ? value : 1;
 }
@@ -325,7 +317,7 @@ function RaffleShowcaseCard({
 
         <button
           type="button"
-          className="mt-4 inline-flex h-12 w-full items-center justify-center rounded-xl text-sm font-extrabold uppercase tracking-[0.08em] text-white transition-transform duration-200 group-hover:scale-[1.01]"
+          className="mt-4 inline-flex h-12 w-full items-center justify-center rounded-xl text-sm font-extrabold uppercase tracking-[0.08em] text-white"
           style={{
             background: accent.button,
             boxShadow: "inset 0 1px 0 rgba(255,255,255,0.18)",
@@ -387,7 +379,7 @@ function EmptyState({
           href="https://kick.com/dirtygunner"
           target="_blank"
           rel="noreferrer"
-          className="inline-flex h-11 items-center justify-center rounded-xl border px-4 text-sm font-semibold text-white transition hover:border-sky-400/25 hover:bg-white/[0.03]"
+          className="inline-flex h-11 items-center justify-center rounded-xl border px-4 text-sm font-semibold text-white"
           style={{ borderColor: "rgba(255,255,255,0.08)" }}
         >
           Watch Stream

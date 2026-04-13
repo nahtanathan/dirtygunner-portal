@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   const raffles = await prisma.raffle.findMany({
-    orderBy: { createdAt: "desc" },
+    orderBy: [{ status: "asc" }, { endDate: "asc" }, { createdAt: "desc" }],
   });
 
   return NextResponse.json(raffles);
@@ -16,8 +16,31 @@ export async function POST(req: Request) {
 
   const raffle = await prisma.raffle.upsert({
     where: { id: body.id },
-    update: body,
-    create: body,
+    update: {
+      title: body.title,
+      description: body.description ?? null,
+      image: body.image ?? null,
+      status: body.status,
+      entryMethod: body.entryMethod,
+      totalEntries: body.totalEntries,
+      startDate: new Date(body.startDate),
+      endDate: new Date(body.endDate),
+      winner: body.winner ?? null,
+      prizeDetails: body.prizeDetails,
+    },
+    create: {
+      id: body.id,
+      title: body.title,
+      description: body.description ?? null,
+      image: body.image ?? null,
+      status: body.status,
+      entryMethod: body.entryMethod,
+      totalEntries: body.totalEntries,
+      startDate: new Date(body.startDate),
+      endDate: new Date(body.endDate),
+      winner: body.winner ?? null,
+      prizeDetails: body.prizeDetails,
+    },
   });
 
   return NextResponse.json(raffle);
