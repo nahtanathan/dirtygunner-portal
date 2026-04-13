@@ -182,6 +182,22 @@ exports.Prisma.LeaderboardPrizeTierScalarFieldEnum = {
   prize: 'prize'
 };
 
+exports.Prisma.RaffleScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  image: 'image',
+  status: 'status',
+  entryMethod: 'entryMethod',
+  totalEntries: 'totalEntries',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  winner: 'winner',
+  prizeDetails: 'prizeDetails',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -214,7 +230,8 @@ exports.Prisma.ModelName = {
   KickReward: 'KickReward',
   SiteSettings: 'SiteSettings',
   LeaderboardSettings: 'LeaderboardSettings',
-  LeaderboardPrizeTier: 'LeaderboardPrizeTier'
+  LeaderboardPrizeTier: 'LeaderboardPrizeTier',
+  Raffle: 'Raffle'
 };
 
 /**

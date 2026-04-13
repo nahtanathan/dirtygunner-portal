@@ -29,6 +29,13 @@ export type Raffle = {
   title: string;
   description?: string;
   status: "active" | "ended";
+  entryMethod: string;
+  totalEntries: number;
+  startDate: string;
+  endDate: string;
+  prizeDetails: string;
+  winner?: string | null;
+  image?: string | null;
 };
 
 export type Challenge = {

@@ -38,6 +38,11 @@ export type LeaderboardSettings = $Result.DefaultSelection<Prisma.$LeaderboardSe
  * 
  */
 export type LeaderboardPrizeTier = $Result.DefaultSelection<Prisma.$LeaderboardPrizeTierPayload>
+/**
+ * Model Raffle
+ * 
+ */
+export type Raffle = $Result.DefaultSelection<Prisma.$RafflePayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -209,6 +214,16 @@ export class PrismaClient<
     * ```
     */
   get leaderboardPrizeTier(): Prisma.LeaderboardPrizeTierDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.raffle`: Exposes CRUD operations for the **Raffle** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Raffles
+    * const raffles = await prisma.raffle.findMany()
+    * ```
+    */
+  get raffle(): Prisma.RaffleDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -647,7 +662,8 @@ export namespace Prisma {
     KickReward: 'KickReward',
     SiteSettings: 'SiteSettings',
     LeaderboardSettings: 'LeaderboardSettings',
-    LeaderboardPrizeTier: 'LeaderboardPrizeTier'
+    LeaderboardPrizeTier: 'LeaderboardPrizeTier',
+    Raffle: 'Raffle'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -663,7 +679,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "kickReward" | "siteSettings" | "leaderboardSettings" | "leaderboardPrizeTier"
+      modelProps: "user" | "kickReward" | "siteSettings" | "leaderboardSettings" | "leaderboardPrizeTier" | "raffle"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1037,6 +1053,80 @@ export namespace Prisma {
           }
         }
       }
+      Raffle: {
+        payload: Prisma.$RafflePayload<ExtArgs>
+        fields: Prisma.RaffleFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.RaffleFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RafflePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.RaffleFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RafflePayload>
+          }
+          findFirst: {
+            args: Prisma.RaffleFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RafflePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.RaffleFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RafflePayload>
+          }
+          findMany: {
+            args: Prisma.RaffleFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RafflePayload>[]
+          }
+          create: {
+            args: Prisma.RaffleCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RafflePayload>
+          }
+          createMany: {
+            args: Prisma.RaffleCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.RaffleCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RafflePayload>[]
+          }
+          delete: {
+            args: Prisma.RaffleDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RafflePayload>
+          }
+          update: {
+            args: Prisma.RaffleUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RafflePayload>
+          }
+          deleteMany: {
+            args: Prisma.RaffleDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.RaffleUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.RaffleUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RafflePayload>[]
+          }
+          upsert: {
+            args: Prisma.RaffleUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RafflePayload>
+          }
+          aggregate: {
+            args: Prisma.RaffleAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateRaffle>
+          }
+          groupBy: {
+            args: Prisma.RaffleGroupByArgs<ExtArgs>
+            result: $Utils.Optional<RaffleGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.RaffleCountArgs<ExtArgs>
+            result: $Utils.Optional<RaffleCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1150,6 +1240,7 @@ export namespace Prisma {
     siteSettings?: SiteSettingsOmit
     leaderboardSettings?: LeaderboardSettingsOmit
     leaderboardPrizeTier?: LeaderboardPrizeTierOmit
+    raffle?: RaffleOmit
   }
 
   /* Types for Logging */
@@ -6787,6 +6878,1144 @@ export namespace Prisma {
 
 
   /**
+   * Model Raffle
+   */
+
+  export type AggregateRaffle = {
+    _count: RaffleCountAggregateOutputType | null
+    _avg: RaffleAvgAggregateOutputType | null
+    _sum: RaffleSumAggregateOutputType | null
+    _min: RaffleMinAggregateOutputType | null
+    _max: RaffleMaxAggregateOutputType | null
+  }
+
+  export type RaffleAvgAggregateOutputType = {
+    totalEntries: number | null
+  }
+
+  export type RaffleSumAggregateOutputType = {
+    totalEntries: number | null
+  }
+
+  export type RaffleMinAggregateOutputType = {
+    id: string | null
+    title: string | null
+    description: string | null
+    image: string | null
+    status: string | null
+    entryMethod: string | null
+    totalEntries: number | null
+    startDate: Date | null
+    endDate: Date | null
+    winner: string | null
+    prizeDetails: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type RaffleMaxAggregateOutputType = {
+    id: string | null
+    title: string | null
+    description: string | null
+    image: string | null
+    status: string | null
+    entryMethod: string | null
+    totalEntries: number | null
+    startDate: Date | null
+    endDate: Date | null
+    winner: string | null
+    prizeDetails: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type RaffleCountAggregateOutputType = {
+    id: number
+    title: number
+    description: number
+    image: number
+    status: number
+    entryMethod: number
+    totalEntries: number
+    startDate: number
+    endDate: number
+    winner: number
+    prizeDetails: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type RaffleAvgAggregateInputType = {
+    totalEntries?: true
+  }
+
+  export type RaffleSumAggregateInputType = {
+    totalEntries?: true
+  }
+
+  export type RaffleMinAggregateInputType = {
+    id?: true
+    title?: true
+    description?: true
+    image?: true
+    status?: true
+    entryMethod?: true
+    totalEntries?: true
+    startDate?: true
+    endDate?: true
+    winner?: true
+    prizeDetails?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type RaffleMaxAggregateInputType = {
+    id?: true
+    title?: true
+    description?: true
+    image?: true
+    status?: true
+    entryMethod?: true
+    totalEntries?: true
+    startDate?: true
+    endDate?: true
+    winner?: true
+    prizeDetails?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type RaffleCountAggregateInputType = {
+    id?: true
+    title?: true
+    description?: true
+    image?: true
+    status?: true
+    entryMethod?: true
+    totalEntries?: true
+    startDate?: true
+    endDate?: true
+    winner?: true
+    prizeDetails?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type RaffleAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Raffle to aggregate.
+     */
+    where?: RaffleWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Raffles to fetch.
+     */
+    orderBy?: RaffleOrderByWithRelationInput | RaffleOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: RaffleWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Raffles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Raffles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Raffles
+    **/
+    _count?: true | RaffleCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: RaffleAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: RaffleSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: RaffleMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: RaffleMaxAggregateInputType
+  }
+
+  export type GetRaffleAggregateType<T extends RaffleAggregateArgs> = {
+        [P in keyof T & keyof AggregateRaffle]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateRaffle[P]>
+      : GetScalarType<T[P], AggregateRaffle[P]>
+  }
+
+
+
+
+  export type RaffleGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RaffleWhereInput
+    orderBy?: RaffleOrderByWithAggregationInput | RaffleOrderByWithAggregationInput[]
+    by: RaffleScalarFieldEnum[] | RaffleScalarFieldEnum
+    having?: RaffleScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: RaffleCountAggregateInputType | true
+    _avg?: RaffleAvgAggregateInputType
+    _sum?: RaffleSumAggregateInputType
+    _min?: RaffleMinAggregateInputType
+    _max?: RaffleMaxAggregateInputType
+  }
+
+  export type RaffleGroupByOutputType = {
+    id: string
+    title: string
+    description: string | null
+    image: string | null
+    status: string
+    entryMethod: string
+    totalEntries: number
+    startDate: Date
+    endDate: Date
+    winner: string | null
+    prizeDetails: string
+    createdAt: Date
+    updatedAt: Date
+    _count: RaffleCountAggregateOutputType | null
+    _avg: RaffleAvgAggregateOutputType | null
+    _sum: RaffleSumAggregateOutputType | null
+    _min: RaffleMinAggregateOutputType | null
+    _max: RaffleMaxAggregateOutputType | null
+  }
+
+  type GetRaffleGroupByPayload<T extends RaffleGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<RaffleGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof RaffleGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], RaffleGroupByOutputType[P]>
+            : GetScalarType<T[P], RaffleGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type RaffleSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    description?: boolean
+    image?: boolean
+    status?: boolean
+    entryMethod?: boolean
+    totalEntries?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    winner?: boolean
+    prizeDetails?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["raffle"]>
+
+  export type RaffleSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    description?: boolean
+    image?: boolean
+    status?: boolean
+    entryMethod?: boolean
+    totalEntries?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    winner?: boolean
+    prizeDetails?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["raffle"]>
+
+  export type RaffleSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    description?: boolean
+    image?: boolean
+    status?: boolean
+    entryMethod?: boolean
+    totalEntries?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    winner?: boolean
+    prizeDetails?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["raffle"]>
+
+  export type RaffleSelectScalar = {
+    id?: boolean
+    title?: boolean
+    description?: boolean
+    image?: boolean
+    status?: boolean
+    entryMethod?: boolean
+    totalEntries?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    winner?: boolean
+    prizeDetails?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type RaffleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "image" | "status" | "entryMethod" | "totalEntries" | "startDate" | "endDate" | "winner" | "prizeDetails" | "createdAt" | "updatedAt", ExtArgs["result"]["raffle"]>
+
+  export type $RafflePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Raffle"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      title: string
+      description: string | null
+      image: string | null
+      status: string
+      entryMethod: string
+      totalEntries: number
+      startDate: Date
+      endDate: Date
+      winner: string | null
+      prizeDetails: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["raffle"]>
+    composites: {}
+  }
+
+  type RaffleGetPayload<S extends boolean | null | undefined | RaffleDefaultArgs> = $Result.GetResult<Prisma.$RafflePayload, S>
+
+  type RaffleCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<RaffleFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: RaffleCountAggregateInputType | true
+    }
+
+  export interface RaffleDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Raffle'], meta: { name: 'Raffle' } }
+    /**
+     * Find zero or one Raffle that matches the filter.
+     * @param {RaffleFindUniqueArgs} args - Arguments to find a Raffle
+     * @example
+     * // Get one Raffle
+     * const raffle = await prisma.raffle.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends RaffleFindUniqueArgs>(args: SelectSubset<T, RaffleFindUniqueArgs<ExtArgs>>): Prisma__RaffleClient<$Result.GetResult<Prisma.$RafflePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Raffle that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {RaffleFindUniqueOrThrowArgs} args - Arguments to find a Raffle
+     * @example
+     * // Get one Raffle
+     * const raffle = await prisma.raffle.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends RaffleFindUniqueOrThrowArgs>(args: SelectSubset<T, RaffleFindUniqueOrThrowArgs<ExtArgs>>): Prisma__RaffleClient<$Result.GetResult<Prisma.$RafflePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Raffle that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RaffleFindFirstArgs} args - Arguments to find a Raffle
+     * @example
+     * // Get one Raffle
+     * const raffle = await prisma.raffle.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends RaffleFindFirstArgs>(args?: SelectSubset<T, RaffleFindFirstArgs<ExtArgs>>): Prisma__RaffleClient<$Result.GetResult<Prisma.$RafflePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Raffle that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RaffleFindFirstOrThrowArgs} args - Arguments to find a Raffle
+     * @example
+     * // Get one Raffle
+     * const raffle = await prisma.raffle.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends RaffleFindFirstOrThrowArgs>(args?: SelectSubset<T, RaffleFindFirstOrThrowArgs<ExtArgs>>): Prisma__RaffleClient<$Result.GetResult<Prisma.$RafflePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Raffles that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RaffleFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Raffles
+     * const raffles = await prisma.raffle.findMany()
+     * 
+     * // Get first 10 Raffles
+     * const raffles = await prisma.raffle.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const raffleWithIdOnly = await prisma.raffle.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends RaffleFindManyArgs>(args?: SelectSubset<T, RaffleFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RafflePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Raffle.
+     * @param {RaffleCreateArgs} args - Arguments to create a Raffle.
+     * @example
+     * // Create one Raffle
+     * const Raffle = await prisma.raffle.create({
+     *   data: {
+     *     // ... data to create a Raffle
+     *   }
+     * })
+     * 
+     */
+    create<T extends RaffleCreateArgs>(args: SelectSubset<T, RaffleCreateArgs<ExtArgs>>): Prisma__RaffleClient<$Result.GetResult<Prisma.$RafflePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Raffles.
+     * @param {RaffleCreateManyArgs} args - Arguments to create many Raffles.
+     * @example
+     * // Create many Raffles
+     * const raffle = await prisma.raffle.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends RaffleCreateManyArgs>(args?: SelectSubset<T, RaffleCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Raffles and returns the data saved in the database.
+     * @param {RaffleCreateManyAndReturnArgs} args - Arguments to create many Raffles.
+     * @example
+     * // Create many Raffles
+     * const raffle = await prisma.raffle.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Raffles and only return the `id`
+     * const raffleWithIdOnly = await prisma.raffle.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends RaffleCreateManyAndReturnArgs>(args?: SelectSubset<T, RaffleCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RafflePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Raffle.
+     * @param {RaffleDeleteArgs} args - Arguments to delete one Raffle.
+     * @example
+     * // Delete one Raffle
+     * const Raffle = await prisma.raffle.delete({
+     *   where: {
+     *     // ... filter to delete one Raffle
+     *   }
+     * })
+     * 
+     */
+    delete<T extends RaffleDeleteArgs>(args: SelectSubset<T, RaffleDeleteArgs<ExtArgs>>): Prisma__RaffleClient<$Result.GetResult<Prisma.$RafflePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Raffle.
+     * @param {RaffleUpdateArgs} args - Arguments to update one Raffle.
+     * @example
+     * // Update one Raffle
+     * const raffle = await prisma.raffle.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends RaffleUpdateArgs>(args: SelectSubset<T, RaffleUpdateArgs<ExtArgs>>): Prisma__RaffleClient<$Result.GetResult<Prisma.$RafflePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Raffles.
+     * @param {RaffleDeleteManyArgs} args - Arguments to filter Raffles to delete.
+     * @example
+     * // Delete a few Raffles
+     * const { count } = await prisma.raffle.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends RaffleDeleteManyArgs>(args?: SelectSubset<T, RaffleDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Raffles.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RaffleUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Raffles
+     * const raffle = await prisma.raffle.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends RaffleUpdateManyArgs>(args: SelectSubset<T, RaffleUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Raffles and returns the data updated in the database.
+     * @param {RaffleUpdateManyAndReturnArgs} args - Arguments to update many Raffles.
+     * @example
+     * // Update many Raffles
+     * const raffle = await prisma.raffle.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Raffles and only return the `id`
+     * const raffleWithIdOnly = await prisma.raffle.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends RaffleUpdateManyAndReturnArgs>(args: SelectSubset<T, RaffleUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RafflePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Raffle.
+     * @param {RaffleUpsertArgs} args - Arguments to update or create a Raffle.
+     * @example
+     * // Update or create a Raffle
+     * const raffle = await prisma.raffle.upsert({
+     *   create: {
+     *     // ... data to create a Raffle
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Raffle we want to update
+     *   }
+     * })
+     */
+    upsert<T extends RaffleUpsertArgs>(args: SelectSubset<T, RaffleUpsertArgs<ExtArgs>>): Prisma__RaffleClient<$Result.GetResult<Prisma.$RafflePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Raffles.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RaffleCountArgs} args - Arguments to filter Raffles to count.
+     * @example
+     * // Count the number of Raffles
+     * const count = await prisma.raffle.count({
+     *   where: {
+     *     // ... the filter for the Raffles we want to count
+     *   }
+     * })
+    **/
+    count<T extends RaffleCountArgs>(
+      args?: Subset<T, RaffleCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], RaffleCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Raffle.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RaffleAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends RaffleAggregateArgs>(args: Subset<T, RaffleAggregateArgs>): Prisma.PrismaPromise<GetRaffleAggregateType<T>>
+
+    /**
+     * Group by Raffle.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RaffleGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends RaffleGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: RaffleGroupByArgs['orderBy'] }
+        : { orderBy?: RaffleGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, RaffleGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRaffleGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Raffle model
+   */
+  readonly fields: RaffleFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Raffle.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__RaffleClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Raffle model
+   */
+  interface RaffleFieldRefs {
+    readonly id: FieldRef<"Raffle", 'String'>
+    readonly title: FieldRef<"Raffle", 'String'>
+    readonly description: FieldRef<"Raffle", 'String'>
+    readonly image: FieldRef<"Raffle", 'String'>
+    readonly status: FieldRef<"Raffle", 'String'>
+    readonly entryMethod: FieldRef<"Raffle", 'String'>
+    readonly totalEntries: FieldRef<"Raffle", 'Int'>
+    readonly startDate: FieldRef<"Raffle", 'DateTime'>
+    readonly endDate: FieldRef<"Raffle", 'DateTime'>
+    readonly winner: FieldRef<"Raffle", 'String'>
+    readonly prizeDetails: FieldRef<"Raffle", 'String'>
+    readonly createdAt: FieldRef<"Raffle", 'DateTime'>
+    readonly updatedAt: FieldRef<"Raffle", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Raffle findUnique
+   */
+  export type RaffleFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Raffle
+     */
+    select?: RaffleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Raffle
+     */
+    omit?: RaffleOmit<ExtArgs> | null
+    /**
+     * Filter, which Raffle to fetch.
+     */
+    where: RaffleWhereUniqueInput
+  }
+
+  /**
+   * Raffle findUniqueOrThrow
+   */
+  export type RaffleFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Raffle
+     */
+    select?: RaffleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Raffle
+     */
+    omit?: RaffleOmit<ExtArgs> | null
+    /**
+     * Filter, which Raffle to fetch.
+     */
+    where: RaffleWhereUniqueInput
+  }
+
+  /**
+   * Raffle findFirst
+   */
+  export type RaffleFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Raffle
+     */
+    select?: RaffleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Raffle
+     */
+    omit?: RaffleOmit<ExtArgs> | null
+    /**
+     * Filter, which Raffle to fetch.
+     */
+    where?: RaffleWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Raffles to fetch.
+     */
+    orderBy?: RaffleOrderByWithRelationInput | RaffleOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Raffles.
+     */
+    cursor?: RaffleWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Raffles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Raffles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Raffles.
+     */
+    distinct?: RaffleScalarFieldEnum | RaffleScalarFieldEnum[]
+  }
+
+  /**
+   * Raffle findFirstOrThrow
+   */
+  export type RaffleFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Raffle
+     */
+    select?: RaffleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Raffle
+     */
+    omit?: RaffleOmit<ExtArgs> | null
+    /**
+     * Filter, which Raffle to fetch.
+     */
+    where?: RaffleWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Raffles to fetch.
+     */
+    orderBy?: RaffleOrderByWithRelationInput | RaffleOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Raffles.
+     */
+    cursor?: RaffleWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Raffles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Raffles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Raffles.
+     */
+    distinct?: RaffleScalarFieldEnum | RaffleScalarFieldEnum[]
+  }
+
+  /**
+   * Raffle findMany
+   */
+  export type RaffleFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Raffle
+     */
+    select?: RaffleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Raffle
+     */
+    omit?: RaffleOmit<ExtArgs> | null
+    /**
+     * Filter, which Raffles to fetch.
+     */
+    where?: RaffleWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Raffles to fetch.
+     */
+    orderBy?: RaffleOrderByWithRelationInput | RaffleOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Raffles.
+     */
+    cursor?: RaffleWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Raffles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Raffles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Raffles.
+     */
+    distinct?: RaffleScalarFieldEnum | RaffleScalarFieldEnum[]
+  }
+
+  /**
+   * Raffle create
+   */
+  export type RaffleCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Raffle
+     */
+    select?: RaffleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Raffle
+     */
+    omit?: RaffleOmit<ExtArgs> | null
+    /**
+     * The data needed to create a Raffle.
+     */
+    data: XOR<RaffleCreateInput, RaffleUncheckedCreateInput>
+  }
+
+  /**
+   * Raffle createMany
+   */
+  export type RaffleCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Raffles.
+     */
+    data: RaffleCreateManyInput | RaffleCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Raffle createManyAndReturn
+   */
+  export type RaffleCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Raffle
+     */
+    select?: RaffleSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Raffle
+     */
+    omit?: RaffleOmit<ExtArgs> | null
+    /**
+     * The data used to create many Raffles.
+     */
+    data: RaffleCreateManyInput | RaffleCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Raffle update
+   */
+  export type RaffleUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Raffle
+     */
+    select?: RaffleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Raffle
+     */
+    omit?: RaffleOmit<ExtArgs> | null
+    /**
+     * The data needed to update a Raffle.
+     */
+    data: XOR<RaffleUpdateInput, RaffleUncheckedUpdateInput>
+    /**
+     * Choose, which Raffle to update.
+     */
+    where: RaffleWhereUniqueInput
+  }
+
+  /**
+   * Raffle updateMany
+   */
+  export type RaffleUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Raffles.
+     */
+    data: XOR<RaffleUpdateManyMutationInput, RaffleUncheckedUpdateManyInput>
+    /**
+     * Filter which Raffles to update
+     */
+    where?: RaffleWhereInput
+    /**
+     * Limit how many Raffles to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Raffle updateManyAndReturn
+   */
+  export type RaffleUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Raffle
+     */
+    select?: RaffleSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Raffle
+     */
+    omit?: RaffleOmit<ExtArgs> | null
+    /**
+     * The data used to update Raffles.
+     */
+    data: XOR<RaffleUpdateManyMutationInput, RaffleUncheckedUpdateManyInput>
+    /**
+     * Filter which Raffles to update
+     */
+    where?: RaffleWhereInput
+    /**
+     * Limit how many Raffles to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Raffle upsert
+   */
+  export type RaffleUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Raffle
+     */
+    select?: RaffleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Raffle
+     */
+    omit?: RaffleOmit<ExtArgs> | null
+    /**
+     * The filter to search for the Raffle to update in case it exists.
+     */
+    where: RaffleWhereUniqueInput
+    /**
+     * In case the Raffle found by the `where` argument doesn't exist, create a new Raffle with this data.
+     */
+    create: XOR<RaffleCreateInput, RaffleUncheckedCreateInput>
+    /**
+     * In case the Raffle was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<RaffleUpdateInput, RaffleUncheckedUpdateInput>
+  }
+
+  /**
+   * Raffle delete
+   */
+  export type RaffleDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Raffle
+     */
+    select?: RaffleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Raffle
+     */
+    omit?: RaffleOmit<ExtArgs> | null
+    /**
+     * Filter which Raffle to delete.
+     */
+    where: RaffleWhereUniqueInput
+  }
+
+  /**
+   * Raffle deleteMany
+   */
+  export type RaffleDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Raffles to delete
+     */
+    where?: RaffleWhereInput
+    /**
+     * Limit how many Raffles to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Raffle without action
+   */
+  export type RaffleDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Raffle
+     */
+    select?: RaffleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Raffle
+     */
+    omit?: RaffleOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -6875,6 +8104,25 @@ export namespace Prisma {
   };
 
   export type LeaderboardPrizeTierScalarFieldEnum = (typeof LeaderboardPrizeTierScalarFieldEnum)[keyof typeof LeaderboardPrizeTierScalarFieldEnum]
+
+
+  export const RaffleScalarFieldEnum: {
+    id: 'id',
+    title: 'title',
+    description: 'description',
+    image: 'image',
+    status: 'status',
+    entryMethod: 'entryMethod',
+    totalEntries: 'totalEntries',
+    startDate: 'startDate',
+    endDate: 'endDate',
+    winner: 'winner',
+    prizeDetails: 'prizeDetails',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type RaffleScalarFieldEnum = (typeof RaffleScalarFieldEnum)[keyof typeof RaffleScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -7386,6 +8634,100 @@ export namespace Prisma {
     prize?: IntWithAggregatesFilter<"LeaderboardPrizeTier"> | number
   }
 
+  export type RaffleWhereInput = {
+    AND?: RaffleWhereInput | RaffleWhereInput[]
+    OR?: RaffleWhereInput[]
+    NOT?: RaffleWhereInput | RaffleWhereInput[]
+    id?: StringFilter<"Raffle"> | string
+    title?: StringFilter<"Raffle"> | string
+    description?: StringNullableFilter<"Raffle"> | string | null
+    image?: StringNullableFilter<"Raffle"> | string | null
+    status?: StringFilter<"Raffle"> | string
+    entryMethod?: StringFilter<"Raffle"> | string
+    totalEntries?: IntFilter<"Raffle"> | number
+    startDate?: DateTimeFilter<"Raffle"> | Date | string
+    endDate?: DateTimeFilter<"Raffle"> | Date | string
+    winner?: StringNullableFilter<"Raffle"> | string | null
+    prizeDetails?: StringFilter<"Raffle"> | string
+    createdAt?: DateTimeFilter<"Raffle"> | Date | string
+    updatedAt?: DateTimeFilter<"Raffle"> | Date | string
+  }
+
+  export type RaffleOrderByWithRelationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    description?: SortOrderInput | SortOrder
+    image?: SortOrderInput | SortOrder
+    status?: SortOrder
+    entryMethod?: SortOrder
+    totalEntries?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    winner?: SortOrderInput | SortOrder
+    prizeDetails?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RaffleWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: RaffleWhereInput | RaffleWhereInput[]
+    OR?: RaffleWhereInput[]
+    NOT?: RaffleWhereInput | RaffleWhereInput[]
+    title?: StringFilter<"Raffle"> | string
+    description?: StringNullableFilter<"Raffle"> | string | null
+    image?: StringNullableFilter<"Raffle"> | string | null
+    status?: StringFilter<"Raffle"> | string
+    entryMethod?: StringFilter<"Raffle"> | string
+    totalEntries?: IntFilter<"Raffle"> | number
+    startDate?: DateTimeFilter<"Raffle"> | Date | string
+    endDate?: DateTimeFilter<"Raffle"> | Date | string
+    winner?: StringNullableFilter<"Raffle"> | string | null
+    prizeDetails?: StringFilter<"Raffle"> | string
+    createdAt?: DateTimeFilter<"Raffle"> | Date | string
+    updatedAt?: DateTimeFilter<"Raffle"> | Date | string
+  }, "id">
+
+  export type RaffleOrderByWithAggregationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    description?: SortOrderInput | SortOrder
+    image?: SortOrderInput | SortOrder
+    status?: SortOrder
+    entryMethod?: SortOrder
+    totalEntries?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    winner?: SortOrderInput | SortOrder
+    prizeDetails?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: RaffleCountOrderByAggregateInput
+    _avg?: RaffleAvgOrderByAggregateInput
+    _max?: RaffleMaxOrderByAggregateInput
+    _min?: RaffleMinOrderByAggregateInput
+    _sum?: RaffleSumOrderByAggregateInput
+  }
+
+  export type RaffleScalarWhereWithAggregatesInput = {
+    AND?: RaffleScalarWhereWithAggregatesInput | RaffleScalarWhereWithAggregatesInput[]
+    OR?: RaffleScalarWhereWithAggregatesInput[]
+    NOT?: RaffleScalarWhereWithAggregatesInput | RaffleScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Raffle"> | string
+    title?: StringWithAggregatesFilter<"Raffle"> | string
+    description?: StringNullableWithAggregatesFilter<"Raffle"> | string | null
+    image?: StringNullableWithAggregatesFilter<"Raffle"> | string | null
+    status?: StringWithAggregatesFilter<"Raffle"> | string
+    entryMethod?: StringWithAggregatesFilter<"Raffle"> | string
+    totalEntries?: IntWithAggregatesFilter<"Raffle"> | number
+    startDate?: DateTimeWithAggregatesFilter<"Raffle"> | Date | string
+    endDate?: DateTimeWithAggregatesFilter<"Raffle"> | Date | string
+    winner?: StringNullableWithAggregatesFilter<"Raffle"> | string | null
+    prizeDetails?: StringWithAggregatesFilter<"Raffle"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Raffle"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Raffle"> | Date | string
+  }
+
   export type UserCreateInput = {
     id?: string
     kick_user_id?: string | null
@@ -7821,6 +9163,118 @@ export namespace Prisma {
     leaderboardId?: StringFieldUpdateOperationsInput | string
     place?: IntFieldUpdateOperationsInput | number
     prize?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type RaffleCreateInput = {
+    id?: string
+    title: string
+    description?: string | null
+    image?: string | null
+    status?: string
+    entryMethod: string
+    totalEntries?: number
+    startDate: Date | string
+    endDate: Date | string
+    winner?: string | null
+    prizeDetails: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RaffleUncheckedCreateInput = {
+    id?: string
+    title: string
+    description?: string | null
+    image?: string | null
+    status?: string
+    entryMethod: string
+    totalEntries?: number
+    startDate: Date | string
+    endDate: Date | string
+    winner?: string | null
+    prizeDetails: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RaffleUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    entryMethod?: StringFieldUpdateOperationsInput | string
+    totalEntries?: IntFieldUpdateOperationsInput | number
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    winner?: NullableStringFieldUpdateOperationsInput | string | null
+    prizeDetails?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RaffleUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    entryMethod?: StringFieldUpdateOperationsInput | string
+    totalEntries?: IntFieldUpdateOperationsInput | number
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    winner?: NullableStringFieldUpdateOperationsInput | string | null
+    prizeDetails?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RaffleCreateManyInput = {
+    id?: string
+    title: string
+    description?: string | null
+    image?: string | null
+    status?: string
+    entryMethod: string
+    totalEntries?: number
+    startDate: Date | string
+    endDate: Date | string
+    winner?: string | null
+    prizeDetails: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RaffleUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    entryMethod?: StringFieldUpdateOperationsInput | string
+    totalEntries?: IntFieldUpdateOperationsInput | number
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    winner?: NullableStringFieldUpdateOperationsInput | string | null
+    prizeDetails?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RaffleUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    entryMethod?: StringFieldUpdateOperationsInput | string
+    totalEntries?: IntFieldUpdateOperationsInput | number
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    winner?: NullableStringFieldUpdateOperationsInput | string | null
+    prizeDetails?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -8261,6 +9715,62 @@ export namespace Prisma {
   export type LeaderboardPrizeTierSumOrderByAggregateInput = {
     place?: SortOrder
     prize?: SortOrder
+  }
+
+  export type RaffleCountOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    image?: SortOrder
+    status?: SortOrder
+    entryMethod?: SortOrder
+    totalEntries?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    winner?: SortOrder
+    prizeDetails?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RaffleAvgOrderByAggregateInput = {
+    totalEntries?: SortOrder
+  }
+
+  export type RaffleMaxOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    image?: SortOrder
+    status?: SortOrder
+    entryMethod?: SortOrder
+    totalEntries?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    winner?: SortOrder
+    prizeDetails?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RaffleMinOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    image?: SortOrder
+    status?: SortOrder
+    entryMethod?: SortOrder
+    totalEntries?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    winner?: SortOrder
+    prizeDetails?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RaffleSumOrderByAggregateInput = {
+    totalEntries?: SortOrder
   }
 
   export type StringFieldUpdateOperationsInput = {

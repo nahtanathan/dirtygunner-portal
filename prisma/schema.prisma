@@ -1,3 +1,5 @@
+// FILE: prisma/schema.prisma
+
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
@@ -8,19 +10,19 @@ datasource db {
 }
 
 model User {
-  id                    String    @id @default(cuid())
-  kick_user_id          String?   @unique
+  id                    String   @id @default(cuid())
+  kick_user_id          String?  @unique
   kick_username         String?
-  email                 String?   @unique
+  email                 String?  @unique
   avatar                String?
   access_token          String?
   refresh_token         String?
   kick_token_expires_at DateTime?
-  points                Int       @default(0)
-  isAdmin               Boolean   @default(false)
-  isKickBroadcaster     Boolean   @default(false)
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
+  points                Int      @default(0)
+  isAdmin               Boolean  @default(false)
+  isKickBroadcaster     Boolean  @default(false)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
   bio                   String?
   display_name          String?
   profile_accent        String?
@@ -47,32 +49,48 @@ model SiteSettings {
   kickUrl    String
   discordUrl String?
   youtubeUrl String?
-
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }
 
 model LeaderboardSettings {
-  id              String                @id @default("leaderboard-settings")
+  id              String                 @id @default("leaderboard-settings")
   title           String
   subtitle        String
   countdownTarget DateTime
   startDate       DateTime?
   endDate         DateTime?
-
   prizeTiers      LeaderboardPrizeTier[]
-
-  createdAt       DateTime              @default(now())
-  updatedAt       DateTime              @updatedAt
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
 }
 
 model LeaderboardPrizeTier {
-  id             String               @id @default(cuid())
-  leaderboardId  String
-  place          Int
-  prize          Int
-
-  leaderboard    LeaderboardSettings  @relation(fields: [leaderboardId], references: [id], onDelete: Cascade)
+  id            String              @id @default(cuid())
+  leaderboardId String
+  place         Int
+  prize         Int
+  leaderboard   LeaderboardSettings @relation(fields: [leaderboardId], references: [id], onDelete: Cascade)
 
   @@unique([leaderboardId, place])
+}
+
+model Raffle {
+  id           String   @id @default(cuid())
+  title        String
+  description  String?
+  image        String?
+  status       String   @default("active")
+  entryMethod  String
+  totalEntries Int      @default(0)
+  startDate    DateTime
+  endDate      DateTime
+  winner       String?
+  prizeDetails String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([status])
+  @@index([endDate])
+  @@index([createdAt])
 }
