@@ -130,13 +130,13 @@ exports.Prisma.UserScalarFieldEnum = {
   refresh_token: 'refresh_token',
   kick_token_expires_at: 'kick_token_expires_at',
   points: 'points',
-  display_name: 'display_name',
-  bio: 'bio',
-  profile_accent: 'profile_accent',
   isAdmin: 'isAdmin',
   isKickBroadcaster: 'isKickBroadcaster',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  bio: 'bio',
+  display_name: 'display_name',
+  profile_accent: 'profile_accent'
 };
 
 exports.Prisma.KickRewardScalarFieldEnum = {
@@ -153,6 +153,33 @@ exports.Prisma.KickRewardScalarFieldEnum = {
   raw_json: 'raw_json',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SiteSettingsScalarFieldEnum = {
+  id: 'id',
+  kickUrl: 'kickUrl',
+  discordUrl: 'discordUrl',
+  youtubeUrl: 'youtubeUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.LeaderboardSettingsScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  subtitle: 'subtitle',
+  countdownTarget: 'countdownTarget',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.LeaderboardPrizeTierScalarFieldEnum = {
+  id: 'id',
+  leaderboardId: 'leaderboardId',
+  place: 'place',
+  prize: 'prize'
 };
 
 exports.Prisma.SortOrder = {
@@ -184,7 +211,10 @@ exports.Prisma.JsonNullValueFilter = {
 
 exports.Prisma.ModelName = {
   User: 'User',
-  KickReward: 'KickReward'
+  KickReward: 'KickReward',
+  SiteSettings: 'SiteSettings',
+  LeaderboardSettings: 'LeaderboardSettings',
+  LeaderboardPrizeTier: 'LeaderboardPrizeTier'
 };
 
 /**

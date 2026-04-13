@@ -1,43 +1,42 @@
-"use client";
-
-import { useMemo } from "react";
 import { PageHero } from "@/components/ui/PageHero";
 import { CountdownTimer } from "@/components/leaderboard/CountdownTimer";
 import { TopThreeCards } from "@/components/leaderboard/TopThreeCards";
-import { useAdminStore } from "@/store/admin-store";
+import { prisma } from "@/lib/prisma";
 import { dataRepository } from "@/lib/data/repository";
 
-type LeaderboardSettingsShape = {
-  title?: string;
-  subtitle?: string;
-  countdownTarget: string;
-  startDate?: string;
-  endDate?: string;
-};
+export default async function LeaderboardPage() {
+  const settings = await prisma.leaderboardSettings.findUnique({
+    where: { id: "leaderboard-settings" },
+    include: {
+      prizeTiers: {
+        orderBy: { place: "asc" },
+      },
+    },
+  });
 
-export default function LeaderboardPage() {
-  const leaderboardSettings = useAdminStore(
-    (state) => state.leaderboardSettings
-  ) as LeaderboardSettingsShape;
-
-  const entries = useMemo(() => dataRepository.getLeaderboardEntries(), []);
-
+  const entries = dataRepository.getLeaderboardEntries();
   const topThree = entries.slice(0, 3);
   const remaining = entries.slice(3);
+
+  const title = settings?.title || "Weekly Roobet Race";
+  const subtitle =
+    settings?.subtitle ||
+    "Top grinders earn premium payouts before the weekly reset. Every wager matters.";
+
+  const countdownTarget =
+    settings?.countdownTarget.toISOString().slice(0, 16) ||
+    new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16);
 
   return (
     <div className="space-y-8">
       <PageHero
         eyebrow="Leaderboard"
-        title={leaderboardSettings.title?.trim() || "Weekly Roobet Race"}
-        description={
-          leaderboardSettings.subtitle?.trim() ||
-          "Top grinders earn premium payouts before the weekly reset. Every wager matters."
-        }
+        title={title}
+        description={subtitle}
       />
 
       <div className="mx-auto w-full max-w-[1200px]">
-        <CountdownTimer target={leaderboardSettings.countdownTarget} />
+        <CountdownTimer target={countdownTarget} />
       </div>
 
       <TopThreeCards entries={topThree} />

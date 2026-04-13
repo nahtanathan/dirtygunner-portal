@@ -13,23 +13,17 @@ model User {
   kick_username         String?
   email                 String?   @unique
   avatar                String?
-
   access_token          String?
   refresh_token         String?
   kick_token_expires_at DateTime?
-
   points                Int       @default(0)
-
-  // ✅ NEW PROFILE FIELDS
-  display_name          String?
-  bio                   String?
-  profile_accent        String?
-
   isAdmin               Boolean   @default(false)
   isKickBroadcaster     Boolean   @default(false)
-
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
+  bio                   String?
+  display_name          String?
+  profile_accent        String?
 }
 
 model KickReward {
@@ -44,7 +38,41 @@ model KickReward {
   is_user_input_required                Boolean  @default(false)
   should_redemptions_skip_request_queue Boolean  @default(false)
   raw_json                              Json?
-
   createdAt                             DateTime @default(now())
   updatedAt                             DateTime @updatedAt
+}
+
+model SiteSettings {
+  id         String   @id @default("site-settings")
+  kickUrl    String
+  discordUrl String?
+  youtubeUrl String?
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model LeaderboardSettings {
+  id              String                @id @default("leaderboard-settings")
+  title           String
+  subtitle        String
+  countdownTarget DateTime
+  startDate       DateTime?
+  endDate         DateTime?
+
+  prizeTiers      LeaderboardPrizeTier[]
+
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
+}
+
+model LeaderboardPrizeTier {
+  id             String               @id @default(cuid())
+  leaderboardId  String
+  place          Int
+  prize          Int
+
+  leaderboard    LeaderboardSettings  @relation(fields: [leaderboardId], references: [id], onDelete: Cascade)
+
+  @@unique([leaderboardId, place])
 }

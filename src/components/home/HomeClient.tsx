@@ -2,15 +2,13 @@
 
 import { TopThreeCards } from "@/components/leaderboard/TopThreeCards";
 import { CountdownTimer } from "@/components/leaderboard/CountdownTimer";
-import { useAdminStore } from "@/store/admin-store";
 
 type HomeClientProps = {
   leaderboard: any[];
+  countdownTarget: string;
 };
 
-export function HomeClient({ leaderboard }: HomeClientProps) {
-  const leaderboardSettings = useAdminStore((state) => state.leaderboardSettings);
-
+export function HomeClient({ leaderboard, countdownTarget }: HomeClientProps) {
   return (
     <>
       <div className="mx-auto w-full max-w-[1200px]">
@@ -18,7 +16,7 @@ export function HomeClient({ leaderboard }: HomeClientProps) {
       </div>
 
       <div className="mx-auto w-full max-w-[1200px]">
-        <CountdownTimer target={leaderboardSettings.countdownTarget} />
+        <CountdownTimer target={countdownTarget} />
       </div>
     </>
   );

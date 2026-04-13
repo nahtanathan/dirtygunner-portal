@@ -1,25 +1,71 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useAdminStore } from "@/store/admin-store";
+import { useEffect, useMemo, useState } from "react";
 
 type SiteSettingsShape = {
-  kickUrl?: string;
-  discordUrl?: string;
-  youtubeUrl?: string;
-  [key: string]: unknown;
+  kickUrl: string;
+  discordUrl: string;
+  youtubeUrl: string;
+};
+
+const EMPTY_SETTINGS: SiteSettingsShape = {
+  kickUrl: "",
+  discordUrl: "",
+  youtubeUrl: "",
 };
 
 export function SiteSettingsForm() {
-  const siteSettings = useAdminStore((state) => state.siteSettings) as SiteSettingsShape;
-  const saveSiteSettings = useAdminStore((state) => state.saveSiteSettings);
-
-  const [form, setForm] = useState<SiteSettingsShape>(siteSettings);
+  const [form, setForm] = useState<SiteSettingsShape>(EMPTY_SETTINGS);
+  const [initialForm, setInitialForm] = useState<SiteSettingsShape>(EMPTY_SETTINGS);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    setForm(siteSettings);
-  }, [siteSettings]);
+    let mounted = true;
+
+    async function loadSettings() {
+      try {
+        setLoading(true);
+        setMessage("");
+
+        const res = await fetch("/api/site-settings", {
+          method: "GET",
+          cache: "no-store",
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data?.error ?? "Failed to load site settings");
+        }
+
+        const nextForm: SiteSettingsShape = {
+          kickUrl: data.settings?.kickUrl ?? "",
+          discordUrl: data.settings?.discordUrl ?? "",
+          youtubeUrl: data.settings?.youtubeUrl ?? "",
+        };
+
+        if (!mounted) return;
+
+        setForm(nextForm);
+        setInitialForm(nextForm);
+      } catch (error) {
+        if (!mounted) return;
+        setMessage(
+          error instanceof Error ? error.message : "Failed to load site settings"
+        );
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    }
+
+    void loadSettings();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   function updateField(key: keyof SiteSettingsShape, value: string) {
     setForm((prev) => ({
@@ -29,14 +75,63 @@ export function SiteSettingsForm() {
     setMessage("");
   }
 
-  function handleSave() {
-    saveSiteSettings(form as never);
-    setMessage("Site settings saved.");
+  async function handleSave() {
+    try {
+      setSaving(true);
+      setMessage("");
+
+      const res = await fetch("/api/site-settings", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(form),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data?.error ?? "Failed to save site settings");
+      }
+
+      const nextForm: SiteSettingsShape = {
+        kickUrl: data.settings?.kickUrl ?? "",
+        discordUrl: data.settings?.discordUrl ?? "",
+        youtubeUrl: data.settings?.youtubeUrl ?? "",
+      };
+
+      setForm(nextForm);
+      setInitialForm(nextForm);
+      setMessage("Site settings saved.");
+    } catch (error) {
+      setMessage(
+        error instanceof Error ? error.message : "Failed to save site settings"
+      );
+    } finally {
+      setSaving(false);
+    }
   }
 
   function handleReset() {
-    setForm(siteSettings);
+    setForm(initialForm);
     setMessage("Changes reset.");
+  }
+
+  const preview = useMemo(
+    () => ({
+      kickUrl: form.kickUrl.trim(),
+      discordUrl: form.discordUrl.trim(),
+      youtubeUrl: form.youtubeUrl.trim(),
+    }),
+    [form]
+  );
+
+  if (loading) {
+    return (
+      <div className="rounded-3xl border border-white/10 bg-black/30 p-6 backdrop-blur-xl">
+        <div className="h-40 animate-pulse rounded-2xl bg-white/5" />
+      </div>
+    );
   }
 
   return (
@@ -45,7 +140,7 @@ export function SiteSettingsForm() {
         <div className="mb-6">
           <h2 className="text-xl font-bold text-white">Social & Stream Links</h2>
           <p className="mt-1 text-sm text-zinc-400">
-            Control the sidebar stream and social links.
+            These control the sidebar stream button and social links.
           </p>
         </div>
 
@@ -55,7 +150,7 @@ export function SiteSettingsForm() {
               Kick URL
             </label>
             <input
-              value={typeof form.kickUrl === "string" ? form.kickUrl : ""}
+              value={form.kickUrl}
               onChange={(e) => updateField("kickUrl", e.target.value)}
               className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition placeholder:text-zinc-500 focus:border-white/20"
               placeholder="https://kick.com/dirtygunner"
@@ -67,7 +162,7 @@ export function SiteSettingsForm() {
               Discord URL
             </label>
             <input
-              value={typeof form.discordUrl === "string" ? form.discordUrl : ""}
+              value={form.discordUrl}
               onChange={(e) => updateField("discordUrl", e.target.value)}
               className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition placeholder:text-zinc-500 focus:border-white/20"
               placeholder="https://discord.gg/your-invite"
@@ -79,7 +174,7 @@ export function SiteSettingsForm() {
               YouTube URL
             </label>
             <input
-              value={typeof form.youtubeUrl === "string" ? form.youtubeUrl : ""}
+              value={form.youtubeUrl}
               onChange={(e) => updateField("youtubeUrl", e.target.value)}
               className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition placeholder:text-zinc-500 focus:border-white/20"
               placeholder="https://youtube.com/@dirtygunner"
@@ -92,7 +187,7 @@ export function SiteSettingsForm() {
         <div className="mb-4">
           <h3 className="text-lg font-semibold text-white">Preview</h3>
           <p className="mt-1 text-sm text-zinc-400">
-            These are the live values used by the site.
+            These are the live values the site will use.
           </p>
         </div>
 
@@ -102,9 +197,7 @@ export function SiteSettingsForm() {
               Kick
             </div>
             <div className="mt-1 break-all text-white">
-              {typeof form.kickUrl === "string" && form.kickUrl.trim()
-                ? form.kickUrl
-                : "Not set"}
+              {preview.kickUrl || "Not set"}
             </div>
           </div>
 
@@ -113,9 +206,7 @@ export function SiteSettingsForm() {
               Discord
             </div>
             <div className="mt-1 break-all text-white">
-              {typeof form.discordUrl === "string" && form.discordUrl.trim()
-                ? form.discordUrl
-                : "Not set"}
+              {preview.discordUrl || "Not set"}
             </div>
           </div>
 
@@ -124,9 +215,7 @@ export function SiteSettingsForm() {
               YouTube
             </div>
             <div className="mt-1 break-all text-white">
-              {typeof form.youtubeUrl === "string" && form.youtubeUrl.trim()
-                ? form.youtubeUrl
-                : "Not set"}
+              {preview.youtubeUrl || "Not set"}
             </div>
           </div>
         </div>
@@ -134,16 +223,18 @@ export function SiteSettingsForm() {
         <div className="mt-6 flex flex-wrap items-center gap-3">
           <button
             type="button"
-            onClick={handleSave}
-            className="inline-flex h-12 items-center justify-center rounded-full bg-white px-5 text-sm font-semibold text-black transition hover:opacity-90"
+            onClick={() => void handleSave()}
+            disabled={saving}
+            className="inline-flex h-12 items-center justify-center rounded-full bg-white px-5 text-sm font-semibold text-black transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            Save links
+            {saving ? "Saving..." : "Save settings"}
           </button>
 
           <button
             type="button"
             onClick={handleReset}
-            className="inline-flex h-12 items-center justify-center rounded-full border border-white/10 bg-white/5 px-5 text-sm font-semibold text-white transition hover:border-white/20 hover:bg-white/10"
+            disabled={saving}
+            className="inline-flex h-12 items-center justify-center rounded-full border border-white/10 bg-white/5 px-5 text-sm font-semibold text-white transition hover:border-white/20 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-60"
           >
             Reset
           </button>

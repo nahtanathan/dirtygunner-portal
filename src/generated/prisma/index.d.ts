@@ -23,6 +23,21 @@ export type User = $Result.DefaultSelection<Prisma.$UserPayload>
  * 
  */
 export type KickReward = $Result.DefaultSelection<Prisma.$KickRewardPayload>
+/**
+ * Model SiteSettings
+ * 
+ */
+export type SiteSettings = $Result.DefaultSelection<Prisma.$SiteSettingsPayload>
+/**
+ * Model LeaderboardSettings
+ * 
+ */
+export type LeaderboardSettings = $Result.DefaultSelection<Prisma.$LeaderboardSettingsPayload>
+/**
+ * Model LeaderboardPrizeTier
+ * 
+ */
+export type LeaderboardPrizeTier = $Result.DefaultSelection<Prisma.$LeaderboardPrizeTierPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -164,6 +179,36 @@ export class PrismaClient<
     * ```
     */
   get kickReward(): Prisma.KickRewardDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.siteSettings`: Exposes CRUD operations for the **SiteSettings** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SiteSettings
+    * const siteSettings = await prisma.siteSettings.findMany()
+    * ```
+    */
+  get siteSettings(): Prisma.SiteSettingsDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.leaderboardSettings`: Exposes CRUD operations for the **LeaderboardSettings** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more LeaderboardSettings
+    * const leaderboardSettings = await prisma.leaderboardSettings.findMany()
+    * ```
+    */
+  get leaderboardSettings(): Prisma.LeaderboardSettingsDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.leaderboardPrizeTier`: Exposes CRUD operations for the **LeaderboardPrizeTier** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more LeaderboardPrizeTiers
+    * const leaderboardPrizeTiers = await prisma.leaderboardPrizeTier.findMany()
+    * ```
+    */
+  get leaderboardPrizeTier(): Prisma.LeaderboardPrizeTierDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -599,7 +644,10 @@ export namespace Prisma {
 
   export const ModelName: {
     User: 'User',
-    KickReward: 'KickReward'
+    KickReward: 'KickReward',
+    SiteSettings: 'SiteSettings',
+    LeaderboardSettings: 'LeaderboardSettings',
+    LeaderboardPrizeTier: 'LeaderboardPrizeTier'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -615,7 +663,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "kickReward"
+      modelProps: "user" | "kickReward" | "siteSettings" | "leaderboardSettings" | "leaderboardPrizeTier"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -767,6 +815,228 @@ export namespace Prisma {
           }
         }
       }
+      SiteSettings: {
+        payload: Prisma.$SiteSettingsPayload<ExtArgs>
+        fields: Prisma.SiteSettingsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SiteSettingsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteSettingsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SiteSettingsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteSettingsPayload>
+          }
+          findFirst: {
+            args: Prisma.SiteSettingsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteSettingsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SiteSettingsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteSettingsPayload>
+          }
+          findMany: {
+            args: Prisma.SiteSettingsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteSettingsPayload>[]
+          }
+          create: {
+            args: Prisma.SiteSettingsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteSettingsPayload>
+          }
+          createMany: {
+            args: Prisma.SiteSettingsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SiteSettingsCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteSettingsPayload>[]
+          }
+          delete: {
+            args: Prisma.SiteSettingsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteSettingsPayload>
+          }
+          update: {
+            args: Prisma.SiteSettingsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteSettingsPayload>
+          }
+          deleteMany: {
+            args: Prisma.SiteSettingsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SiteSettingsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SiteSettingsUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteSettingsPayload>[]
+          }
+          upsert: {
+            args: Prisma.SiteSettingsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteSettingsPayload>
+          }
+          aggregate: {
+            args: Prisma.SiteSettingsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSiteSettings>
+          }
+          groupBy: {
+            args: Prisma.SiteSettingsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SiteSettingsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SiteSettingsCountArgs<ExtArgs>
+            result: $Utils.Optional<SiteSettingsCountAggregateOutputType> | number
+          }
+        }
+      }
+      LeaderboardSettings: {
+        payload: Prisma.$LeaderboardSettingsPayload<ExtArgs>
+        fields: Prisma.LeaderboardSettingsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.LeaderboardSettingsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LeaderboardSettingsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.LeaderboardSettingsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LeaderboardSettingsPayload>
+          }
+          findFirst: {
+            args: Prisma.LeaderboardSettingsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LeaderboardSettingsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.LeaderboardSettingsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LeaderboardSettingsPayload>
+          }
+          findMany: {
+            args: Prisma.LeaderboardSettingsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LeaderboardSettingsPayload>[]
+          }
+          create: {
+            args: Prisma.LeaderboardSettingsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LeaderboardSettingsPayload>
+          }
+          createMany: {
+            args: Prisma.LeaderboardSettingsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.LeaderboardSettingsCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LeaderboardSettingsPayload>[]
+          }
+          delete: {
+            args: Prisma.LeaderboardSettingsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LeaderboardSettingsPayload>
+          }
+          update: {
+            args: Prisma.LeaderboardSettingsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LeaderboardSettingsPayload>
+          }
+          deleteMany: {
+            args: Prisma.LeaderboardSettingsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.LeaderboardSettingsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.LeaderboardSettingsUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LeaderboardSettingsPayload>[]
+          }
+          upsert: {
+            args: Prisma.LeaderboardSettingsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LeaderboardSettingsPayload>
+          }
+          aggregate: {
+            args: Prisma.LeaderboardSettingsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateLeaderboardSettings>
+          }
+          groupBy: {
+            args: Prisma.LeaderboardSettingsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<LeaderboardSettingsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.LeaderboardSettingsCountArgs<ExtArgs>
+            result: $Utils.Optional<LeaderboardSettingsCountAggregateOutputType> | number
+          }
+        }
+      }
+      LeaderboardPrizeTier: {
+        payload: Prisma.$LeaderboardPrizeTierPayload<ExtArgs>
+        fields: Prisma.LeaderboardPrizeTierFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.LeaderboardPrizeTierFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LeaderboardPrizeTierPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.LeaderboardPrizeTierFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LeaderboardPrizeTierPayload>
+          }
+          findFirst: {
+            args: Prisma.LeaderboardPrizeTierFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LeaderboardPrizeTierPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.LeaderboardPrizeTierFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LeaderboardPrizeTierPayload>
+          }
+          findMany: {
+            args: Prisma.LeaderboardPrizeTierFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LeaderboardPrizeTierPayload>[]
+          }
+          create: {
+            args: Prisma.LeaderboardPrizeTierCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LeaderboardPrizeTierPayload>
+          }
+          createMany: {
+            args: Prisma.LeaderboardPrizeTierCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.LeaderboardPrizeTierCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LeaderboardPrizeTierPayload>[]
+          }
+          delete: {
+            args: Prisma.LeaderboardPrizeTierDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LeaderboardPrizeTierPayload>
+          }
+          update: {
+            args: Prisma.LeaderboardPrizeTierUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LeaderboardPrizeTierPayload>
+          }
+          deleteMany: {
+            args: Prisma.LeaderboardPrizeTierDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.LeaderboardPrizeTierUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.LeaderboardPrizeTierUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LeaderboardPrizeTierPayload>[]
+          }
+          upsert: {
+            args: Prisma.LeaderboardPrizeTierUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LeaderboardPrizeTierPayload>
+          }
+          aggregate: {
+            args: Prisma.LeaderboardPrizeTierAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateLeaderboardPrizeTier>
+          }
+          groupBy: {
+            args: Prisma.LeaderboardPrizeTierGroupByArgs<ExtArgs>
+            result: $Utils.Optional<LeaderboardPrizeTierGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.LeaderboardPrizeTierCountArgs<ExtArgs>
+            result: $Utils.Optional<LeaderboardPrizeTierCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -877,6 +1147,9 @@ export namespace Prisma {
   export type GlobalOmitConfig = {
     user?: UserOmit
     kickReward?: KickRewardOmit
+    siteSettings?: SiteSettingsOmit
+    leaderboardSettings?: LeaderboardSettingsOmit
+    leaderboardPrizeTier?: LeaderboardPrizeTierOmit
   }
 
   /* Types for Logging */
@@ -952,6 +1225,36 @@ export namespace Prisma {
    */
 
 
+  /**
+   * Count Type LeaderboardSettingsCountOutputType
+   */
+
+  export type LeaderboardSettingsCountOutputType = {
+    prizeTiers: number
+  }
+
+  export type LeaderboardSettingsCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    prizeTiers?: boolean | LeaderboardSettingsCountOutputTypeCountPrizeTiersArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * LeaderboardSettingsCountOutputType without action
+   */
+  export type LeaderboardSettingsCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LeaderboardSettingsCountOutputType
+     */
+    select?: LeaderboardSettingsCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * LeaderboardSettingsCountOutputType without action
+   */
+  export type LeaderboardSettingsCountOutputTypeCountPrizeTiersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: LeaderboardPrizeTierWhereInput
+  }
+
 
   /**
    * Models
@@ -987,13 +1290,13 @@ export namespace Prisma {
     refresh_token: string | null
     kick_token_expires_at: Date | null
     points: number | null
-    display_name: string | null
-    bio: string | null
-    profile_accent: string | null
     isAdmin: boolean | null
     isKickBroadcaster: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
+    bio: string | null
+    display_name: string | null
+    profile_accent: string | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -1006,13 +1309,13 @@ export namespace Prisma {
     refresh_token: string | null
     kick_token_expires_at: Date | null
     points: number | null
-    display_name: string | null
-    bio: string | null
-    profile_accent: string | null
     isAdmin: boolean | null
     isKickBroadcaster: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
+    bio: string | null
+    display_name: string | null
+    profile_accent: string | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -1025,13 +1328,13 @@ export namespace Prisma {
     refresh_token: number
     kick_token_expires_at: number
     points: number
-    display_name: number
-    bio: number
-    profile_accent: number
     isAdmin: number
     isKickBroadcaster: number
     createdAt: number
     updatedAt: number
+    bio: number
+    display_name: number
+    profile_accent: number
     _all: number
   }
 
@@ -1054,13 +1357,13 @@ export namespace Prisma {
     refresh_token?: true
     kick_token_expires_at?: true
     points?: true
-    display_name?: true
-    bio?: true
-    profile_accent?: true
     isAdmin?: true
     isKickBroadcaster?: true
     createdAt?: true
     updatedAt?: true
+    bio?: true
+    display_name?: true
+    profile_accent?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -1073,13 +1376,13 @@ export namespace Prisma {
     refresh_token?: true
     kick_token_expires_at?: true
     points?: true
-    display_name?: true
-    bio?: true
-    profile_accent?: true
     isAdmin?: true
     isKickBroadcaster?: true
     createdAt?: true
     updatedAt?: true
+    bio?: true
+    display_name?: true
+    profile_accent?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -1092,13 +1395,13 @@ export namespace Prisma {
     refresh_token?: true
     kick_token_expires_at?: true
     points?: true
-    display_name?: true
-    bio?: true
-    profile_accent?: true
     isAdmin?: true
     isKickBroadcaster?: true
     createdAt?: true
     updatedAt?: true
+    bio?: true
+    display_name?: true
+    profile_accent?: true
     _all?: true
   }
 
@@ -1198,13 +1501,13 @@ export namespace Prisma {
     refresh_token: string | null
     kick_token_expires_at: Date | null
     points: number
-    display_name: string | null
-    bio: string | null
-    profile_accent: string | null
     isAdmin: boolean
     isKickBroadcaster: boolean
     createdAt: Date
     updatedAt: Date
+    bio: string | null
+    display_name: string | null
+    profile_accent: string | null
     _count: UserCountAggregateOutputType | null
     _avg: UserAvgAggregateOutputType | null
     _sum: UserSumAggregateOutputType | null
@@ -1236,13 +1539,13 @@ export namespace Prisma {
     refresh_token?: boolean
     kick_token_expires_at?: boolean
     points?: boolean
-    display_name?: boolean
-    bio?: boolean
-    profile_accent?: boolean
     isAdmin?: boolean
     isKickBroadcaster?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    bio?: boolean
+    display_name?: boolean
+    profile_accent?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -1255,13 +1558,13 @@ export namespace Prisma {
     refresh_token?: boolean
     kick_token_expires_at?: boolean
     points?: boolean
-    display_name?: boolean
-    bio?: boolean
-    profile_accent?: boolean
     isAdmin?: boolean
     isKickBroadcaster?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    bio?: boolean
+    display_name?: boolean
+    profile_accent?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -1274,13 +1577,13 @@ export namespace Prisma {
     refresh_token?: boolean
     kick_token_expires_at?: boolean
     points?: boolean
-    display_name?: boolean
-    bio?: boolean
-    profile_accent?: boolean
     isAdmin?: boolean
     isKickBroadcaster?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    bio?: boolean
+    display_name?: boolean
+    profile_accent?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectScalar = {
@@ -1293,16 +1596,16 @@ export namespace Prisma {
     refresh_token?: boolean
     kick_token_expires_at?: boolean
     points?: boolean
-    display_name?: boolean
-    bio?: boolean
-    profile_accent?: boolean
     isAdmin?: boolean
     isKickBroadcaster?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    bio?: boolean
+    display_name?: boolean
+    profile_accent?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "kick_user_id" | "kick_username" | "email" | "avatar" | "access_token" | "refresh_token" | "kick_token_expires_at" | "points" | "display_name" | "bio" | "profile_accent" | "isAdmin" | "isKickBroadcaster" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "kick_user_id" | "kick_username" | "email" | "avatar" | "access_token" | "refresh_token" | "kick_token_expires_at" | "points" | "isAdmin" | "isKickBroadcaster" | "createdAt" | "updatedAt" | "bio" | "display_name" | "profile_accent", ExtArgs["result"]["user"]>
 
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
@@ -1317,13 +1620,13 @@ export namespace Prisma {
       refresh_token: string | null
       kick_token_expires_at: Date | null
       points: number
-      display_name: string | null
-      bio: string | null
-      profile_accent: string | null
       isAdmin: boolean
       isKickBroadcaster: boolean
       createdAt: Date
       updatedAt: Date
+      bio: string | null
+      display_name: string | null
+      profile_accent: string | null
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -1756,13 +2059,13 @@ export namespace Prisma {
     readonly refresh_token: FieldRef<"User", 'String'>
     readonly kick_token_expires_at: FieldRef<"User", 'DateTime'>
     readonly points: FieldRef<"User", 'Int'>
-    readonly display_name: FieldRef<"User", 'String'>
-    readonly bio: FieldRef<"User", 'String'>
-    readonly profile_accent: FieldRef<"User", 'String'>
     readonly isAdmin: FieldRef<"User", 'Boolean'>
     readonly isKickBroadcaster: FieldRef<"User", 'Boolean'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
+    readonly bio: FieldRef<"User", 'String'>
+    readonly display_name: FieldRef<"User", 'String'>
+    readonly profile_accent: FieldRef<"User", 'String'>
   }
     
 
@@ -3269,6 +3572,3221 @@ export namespace Prisma {
 
 
   /**
+   * Model SiteSettings
+   */
+
+  export type AggregateSiteSettings = {
+    _count: SiteSettingsCountAggregateOutputType | null
+    _min: SiteSettingsMinAggregateOutputType | null
+    _max: SiteSettingsMaxAggregateOutputType | null
+  }
+
+  export type SiteSettingsMinAggregateOutputType = {
+    id: string | null
+    kickUrl: string | null
+    discordUrl: string | null
+    youtubeUrl: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SiteSettingsMaxAggregateOutputType = {
+    id: string | null
+    kickUrl: string | null
+    discordUrl: string | null
+    youtubeUrl: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SiteSettingsCountAggregateOutputType = {
+    id: number
+    kickUrl: number
+    discordUrl: number
+    youtubeUrl: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type SiteSettingsMinAggregateInputType = {
+    id?: true
+    kickUrl?: true
+    discordUrl?: true
+    youtubeUrl?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SiteSettingsMaxAggregateInputType = {
+    id?: true
+    kickUrl?: true
+    discordUrl?: true
+    youtubeUrl?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SiteSettingsCountAggregateInputType = {
+    id?: true
+    kickUrl?: true
+    discordUrl?: true
+    youtubeUrl?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type SiteSettingsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SiteSettings to aggregate.
+     */
+    where?: SiteSettingsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SiteSettings to fetch.
+     */
+    orderBy?: SiteSettingsOrderByWithRelationInput | SiteSettingsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SiteSettingsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SiteSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SiteSettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SiteSettings
+    **/
+    _count?: true | SiteSettingsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SiteSettingsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SiteSettingsMaxAggregateInputType
+  }
+
+  export type GetSiteSettingsAggregateType<T extends SiteSettingsAggregateArgs> = {
+        [P in keyof T & keyof AggregateSiteSettings]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSiteSettings[P]>
+      : GetScalarType<T[P], AggregateSiteSettings[P]>
+  }
+
+
+
+
+  export type SiteSettingsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SiteSettingsWhereInput
+    orderBy?: SiteSettingsOrderByWithAggregationInput | SiteSettingsOrderByWithAggregationInput[]
+    by: SiteSettingsScalarFieldEnum[] | SiteSettingsScalarFieldEnum
+    having?: SiteSettingsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SiteSettingsCountAggregateInputType | true
+    _min?: SiteSettingsMinAggregateInputType
+    _max?: SiteSettingsMaxAggregateInputType
+  }
+
+  export type SiteSettingsGroupByOutputType = {
+    id: string
+    kickUrl: string
+    discordUrl: string | null
+    youtubeUrl: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: SiteSettingsCountAggregateOutputType | null
+    _min: SiteSettingsMinAggregateOutputType | null
+    _max: SiteSettingsMaxAggregateOutputType | null
+  }
+
+  type GetSiteSettingsGroupByPayload<T extends SiteSettingsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SiteSettingsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SiteSettingsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SiteSettingsGroupByOutputType[P]>
+            : GetScalarType<T[P], SiteSettingsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SiteSettingsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    kickUrl?: boolean
+    discordUrl?: boolean
+    youtubeUrl?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["siteSettings"]>
+
+  export type SiteSettingsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    kickUrl?: boolean
+    discordUrl?: boolean
+    youtubeUrl?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["siteSettings"]>
+
+  export type SiteSettingsSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    kickUrl?: boolean
+    discordUrl?: boolean
+    youtubeUrl?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["siteSettings"]>
+
+  export type SiteSettingsSelectScalar = {
+    id?: boolean
+    kickUrl?: boolean
+    discordUrl?: boolean
+    youtubeUrl?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type SiteSettingsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "kickUrl" | "discordUrl" | "youtubeUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["siteSettings"]>
+
+  export type $SiteSettingsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SiteSettings"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      kickUrl: string
+      discordUrl: string | null
+      youtubeUrl: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["siteSettings"]>
+    composites: {}
+  }
+
+  type SiteSettingsGetPayload<S extends boolean | null | undefined | SiteSettingsDefaultArgs> = $Result.GetResult<Prisma.$SiteSettingsPayload, S>
+
+  type SiteSettingsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SiteSettingsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SiteSettingsCountAggregateInputType | true
+    }
+
+  export interface SiteSettingsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SiteSettings'], meta: { name: 'SiteSettings' } }
+    /**
+     * Find zero or one SiteSettings that matches the filter.
+     * @param {SiteSettingsFindUniqueArgs} args - Arguments to find a SiteSettings
+     * @example
+     * // Get one SiteSettings
+     * const siteSettings = await prisma.siteSettings.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SiteSettingsFindUniqueArgs>(args: SelectSubset<T, SiteSettingsFindUniqueArgs<ExtArgs>>): Prisma__SiteSettingsClient<$Result.GetResult<Prisma.$SiteSettingsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SiteSettings that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SiteSettingsFindUniqueOrThrowArgs} args - Arguments to find a SiteSettings
+     * @example
+     * // Get one SiteSettings
+     * const siteSettings = await prisma.siteSettings.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SiteSettingsFindUniqueOrThrowArgs>(args: SelectSubset<T, SiteSettingsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SiteSettingsClient<$Result.GetResult<Prisma.$SiteSettingsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SiteSettings that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SiteSettingsFindFirstArgs} args - Arguments to find a SiteSettings
+     * @example
+     * // Get one SiteSettings
+     * const siteSettings = await prisma.siteSettings.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SiteSettingsFindFirstArgs>(args?: SelectSubset<T, SiteSettingsFindFirstArgs<ExtArgs>>): Prisma__SiteSettingsClient<$Result.GetResult<Prisma.$SiteSettingsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SiteSettings that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SiteSettingsFindFirstOrThrowArgs} args - Arguments to find a SiteSettings
+     * @example
+     * // Get one SiteSettings
+     * const siteSettings = await prisma.siteSettings.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SiteSettingsFindFirstOrThrowArgs>(args?: SelectSubset<T, SiteSettingsFindFirstOrThrowArgs<ExtArgs>>): Prisma__SiteSettingsClient<$Result.GetResult<Prisma.$SiteSettingsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SiteSettings that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SiteSettingsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SiteSettings
+     * const siteSettings = await prisma.siteSettings.findMany()
+     * 
+     * // Get first 10 SiteSettings
+     * const siteSettings = await prisma.siteSettings.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const siteSettingsWithIdOnly = await prisma.siteSettings.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SiteSettingsFindManyArgs>(args?: SelectSubset<T, SiteSettingsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SiteSettingsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SiteSettings.
+     * @param {SiteSettingsCreateArgs} args - Arguments to create a SiteSettings.
+     * @example
+     * // Create one SiteSettings
+     * const SiteSettings = await prisma.siteSettings.create({
+     *   data: {
+     *     // ... data to create a SiteSettings
+     *   }
+     * })
+     * 
+     */
+    create<T extends SiteSettingsCreateArgs>(args: SelectSubset<T, SiteSettingsCreateArgs<ExtArgs>>): Prisma__SiteSettingsClient<$Result.GetResult<Prisma.$SiteSettingsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SiteSettings.
+     * @param {SiteSettingsCreateManyArgs} args - Arguments to create many SiteSettings.
+     * @example
+     * // Create many SiteSettings
+     * const siteSettings = await prisma.siteSettings.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SiteSettingsCreateManyArgs>(args?: SelectSubset<T, SiteSettingsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SiteSettings and returns the data saved in the database.
+     * @param {SiteSettingsCreateManyAndReturnArgs} args - Arguments to create many SiteSettings.
+     * @example
+     * // Create many SiteSettings
+     * const siteSettings = await prisma.siteSettings.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SiteSettings and only return the `id`
+     * const siteSettingsWithIdOnly = await prisma.siteSettings.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SiteSettingsCreateManyAndReturnArgs>(args?: SelectSubset<T, SiteSettingsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SiteSettingsPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SiteSettings.
+     * @param {SiteSettingsDeleteArgs} args - Arguments to delete one SiteSettings.
+     * @example
+     * // Delete one SiteSettings
+     * const SiteSettings = await prisma.siteSettings.delete({
+     *   where: {
+     *     // ... filter to delete one SiteSettings
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SiteSettingsDeleteArgs>(args: SelectSubset<T, SiteSettingsDeleteArgs<ExtArgs>>): Prisma__SiteSettingsClient<$Result.GetResult<Prisma.$SiteSettingsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SiteSettings.
+     * @param {SiteSettingsUpdateArgs} args - Arguments to update one SiteSettings.
+     * @example
+     * // Update one SiteSettings
+     * const siteSettings = await prisma.siteSettings.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SiteSettingsUpdateArgs>(args: SelectSubset<T, SiteSettingsUpdateArgs<ExtArgs>>): Prisma__SiteSettingsClient<$Result.GetResult<Prisma.$SiteSettingsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SiteSettings.
+     * @param {SiteSettingsDeleteManyArgs} args - Arguments to filter SiteSettings to delete.
+     * @example
+     * // Delete a few SiteSettings
+     * const { count } = await prisma.siteSettings.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SiteSettingsDeleteManyArgs>(args?: SelectSubset<T, SiteSettingsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SiteSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SiteSettingsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SiteSettings
+     * const siteSettings = await prisma.siteSettings.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SiteSettingsUpdateManyArgs>(args: SelectSubset<T, SiteSettingsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SiteSettings and returns the data updated in the database.
+     * @param {SiteSettingsUpdateManyAndReturnArgs} args - Arguments to update many SiteSettings.
+     * @example
+     * // Update many SiteSettings
+     * const siteSettings = await prisma.siteSettings.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SiteSettings and only return the `id`
+     * const siteSettingsWithIdOnly = await prisma.siteSettings.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SiteSettingsUpdateManyAndReturnArgs>(args: SelectSubset<T, SiteSettingsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SiteSettingsPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SiteSettings.
+     * @param {SiteSettingsUpsertArgs} args - Arguments to update or create a SiteSettings.
+     * @example
+     * // Update or create a SiteSettings
+     * const siteSettings = await prisma.siteSettings.upsert({
+     *   create: {
+     *     // ... data to create a SiteSettings
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SiteSettings we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SiteSettingsUpsertArgs>(args: SelectSubset<T, SiteSettingsUpsertArgs<ExtArgs>>): Prisma__SiteSettingsClient<$Result.GetResult<Prisma.$SiteSettingsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SiteSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SiteSettingsCountArgs} args - Arguments to filter SiteSettings to count.
+     * @example
+     * // Count the number of SiteSettings
+     * const count = await prisma.siteSettings.count({
+     *   where: {
+     *     // ... the filter for the SiteSettings we want to count
+     *   }
+     * })
+    **/
+    count<T extends SiteSettingsCountArgs>(
+      args?: Subset<T, SiteSettingsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SiteSettingsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SiteSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SiteSettingsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SiteSettingsAggregateArgs>(args: Subset<T, SiteSettingsAggregateArgs>): Prisma.PrismaPromise<GetSiteSettingsAggregateType<T>>
+
+    /**
+     * Group by SiteSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SiteSettingsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SiteSettingsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SiteSettingsGroupByArgs['orderBy'] }
+        : { orderBy?: SiteSettingsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SiteSettingsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSiteSettingsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SiteSettings model
+   */
+  readonly fields: SiteSettingsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SiteSettings.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SiteSettingsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SiteSettings model
+   */
+  interface SiteSettingsFieldRefs {
+    readonly id: FieldRef<"SiteSettings", 'String'>
+    readonly kickUrl: FieldRef<"SiteSettings", 'String'>
+    readonly discordUrl: FieldRef<"SiteSettings", 'String'>
+    readonly youtubeUrl: FieldRef<"SiteSettings", 'String'>
+    readonly createdAt: FieldRef<"SiteSettings", 'DateTime'>
+    readonly updatedAt: FieldRef<"SiteSettings", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SiteSettings findUnique
+   */
+  export type SiteSettingsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SiteSettings
+     */
+    select?: SiteSettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SiteSettings
+     */
+    omit?: SiteSettingsOmit<ExtArgs> | null
+    /**
+     * Filter, which SiteSettings to fetch.
+     */
+    where: SiteSettingsWhereUniqueInput
+  }
+
+  /**
+   * SiteSettings findUniqueOrThrow
+   */
+  export type SiteSettingsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SiteSettings
+     */
+    select?: SiteSettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SiteSettings
+     */
+    omit?: SiteSettingsOmit<ExtArgs> | null
+    /**
+     * Filter, which SiteSettings to fetch.
+     */
+    where: SiteSettingsWhereUniqueInput
+  }
+
+  /**
+   * SiteSettings findFirst
+   */
+  export type SiteSettingsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SiteSettings
+     */
+    select?: SiteSettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SiteSettings
+     */
+    omit?: SiteSettingsOmit<ExtArgs> | null
+    /**
+     * Filter, which SiteSettings to fetch.
+     */
+    where?: SiteSettingsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SiteSettings to fetch.
+     */
+    orderBy?: SiteSettingsOrderByWithRelationInput | SiteSettingsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SiteSettings.
+     */
+    cursor?: SiteSettingsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SiteSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SiteSettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SiteSettings.
+     */
+    distinct?: SiteSettingsScalarFieldEnum | SiteSettingsScalarFieldEnum[]
+  }
+
+  /**
+   * SiteSettings findFirstOrThrow
+   */
+  export type SiteSettingsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SiteSettings
+     */
+    select?: SiteSettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SiteSettings
+     */
+    omit?: SiteSettingsOmit<ExtArgs> | null
+    /**
+     * Filter, which SiteSettings to fetch.
+     */
+    where?: SiteSettingsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SiteSettings to fetch.
+     */
+    orderBy?: SiteSettingsOrderByWithRelationInput | SiteSettingsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SiteSettings.
+     */
+    cursor?: SiteSettingsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SiteSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SiteSettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SiteSettings.
+     */
+    distinct?: SiteSettingsScalarFieldEnum | SiteSettingsScalarFieldEnum[]
+  }
+
+  /**
+   * SiteSettings findMany
+   */
+  export type SiteSettingsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SiteSettings
+     */
+    select?: SiteSettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SiteSettings
+     */
+    omit?: SiteSettingsOmit<ExtArgs> | null
+    /**
+     * Filter, which SiteSettings to fetch.
+     */
+    where?: SiteSettingsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SiteSettings to fetch.
+     */
+    orderBy?: SiteSettingsOrderByWithRelationInput | SiteSettingsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SiteSettings.
+     */
+    cursor?: SiteSettingsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SiteSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SiteSettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SiteSettings.
+     */
+    distinct?: SiteSettingsScalarFieldEnum | SiteSettingsScalarFieldEnum[]
+  }
+
+  /**
+   * SiteSettings create
+   */
+  export type SiteSettingsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SiteSettings
+     */
+    select?: SiteSettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SiteSettings
+     */
+    omit?: SiteSettingsOmit<ExtArgs> | null
+    /**
+     * The data needed to create a SiteSettings.
+     */
+    data: XOR<SiteSettingsCreateInput, SiteSettingsUncheckedCreateInput>
+  }
+
+  /**
+   * SiteSettings createMany
+   */
+  export type SiteSettingsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SiteSettings.
+     */
+    data: SiteSettingsCreateManyInput | SiteSettingsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SiteSettings createManyAndReturn
+   */
+  export type SiteSettingsCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SiteSettings
+     */
+    select?: SiteSettingsSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SiteSettings
+     */
+    omit?: SiteSettingsOmit<ExtArgs> | null
+    /**
+     * The data used to create many SiteSettings.
+     */
+    data: SiteSettingsCreateManyInput | SiteSettingsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SiteSettings update
+   */
+  export type SiteSettingsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SiteSettings
+     */
+    select?: SiteSettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SiteSettings
+     */
+    omit?: SiteSettingsOmit<ExtArgs> | null
+    /**
+     * The data needed to update a SiteSettings.
+     */
+    data: XOR<SiteSettingsUpdateInput, SiteSettingsUncheckedUpdateInput>
+    /**
+     * Choose, which SiteSettings to update.
+     */
+    where: SiteSettingsWhereUniqueInput
+  }
+
+  /**
+   * SiteSettings updateMany
+   */
+  export type SiteSettingsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SiteSettings.
+     */
+    data: XOR<SiteSettingsUpdateManyMutationInput, SiteSettingsUncheckedUpdateManyInput>
+    /**
+     * Filter which SiteSettings to update
+     */
+    where?: SiteSettingsWhereInput
+    /**
+     * Limit how many SiteSettings to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SiteSettings updateManyAndReturn
+   */
+  export type SiteSettingsUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SiteSettings
+     */
+    select?: SiteSettingsSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SiteSettings
+     */
+    omit?: SiteSettingsOmit<ExtArgs> | null
+    /**
+     * The data used to update SiteSettings.
+     */
+    data: XOR<SiteSettingsUpdateManyMutationInput, SiteSettingsUncheckedUpdateManyInput>
+    /**
+     * Filter which SiteSettings to update
+     */
+    where?: SiteSettingsWhereInput
+    /**
+     * Limit how many SiteSettings to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SiteSettings upsert
+   */
+  export type SiteSettingsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SiteSettings
+     */
+    select?: SiteSettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SiteSettings
+     */
+    omit?: SiteSettingsOmit<ExtArgs> | null
+    /**
+     * The filter to search for the SiteSettings to update in case it exists.
+     */
+    where: SiteSettingsWhereUniqueInput
+    /**
+     * In case the SiteSettings found by the `where` argument doesn't exist, create a new SiteSettings with this data.
+     */
+    create: XOR<SiteSettingsCreateInput, SiteSettingsUncheckedCreateInput>
+    /**
+     * In case the SiteSettings was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SiteSettingsUpdateInput, SiteSettingsUncheckedUpdateInput>
+  }
+
+  /**
+   * SiteSettings delete
+   */
+  export type SiteSettingsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SiteSettings
+     */
+    select?: SiteSettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SiteSettings
+     */
+    omit?: SiteSettingsOmit<ExtArgs> | null
+    /**
+     * Filter which SiteSettings to delete.
+     */
+    where: SiteSettingsWhereUniqueInput
+  }
+
+  /**
+   * SiteSettings deleteMany
+   */
+  export type SiteSettingsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SiteSettings to delete
+     */
+    where?: SiteSettingsWhereInput
+    /**
+     * Limit how many SiteSettings to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SiteSettings without action
+   */
+  export type SiteSettingsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SiteSettings
+     */
+    select?: SiteSettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SiteSettings
+     */
+    omit?: SiteSettingsOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model LeaderboardSettings
+   */
+
+  export type AggregateLeaderboardSettings = {
+    _count: LeaderboardSettingsCountAggregateOutputType | null
+    _min: LeaderboardSettingsMinAggregateOutputType | null
+    _max: LeaderboardSettingsMaxAggregateOutputType | null
+  }
+
+  export type LeaderboardSettingsMinAggregateOutputType = {
+    id: string | null
+    title: string | null
+    subtitle: string | null
+    countdownTarget: Date | null
+    startDate: Date | null
+    endDate: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type LeaderboardSettingsMaxAggregateOutputType = {
+    id: string | null
+    title: string | null
+    subtitle: string | null
+    countdownTarget: Date | null
+    startDate: Date | null
+    endDate: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type LeaderboardSettingsCountAggregateOutputType = {
+    id: number
+    title: number
+    subtitle: number
+    countdownTarget: number
+    startDate: number
+    endDate: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type LeaderboardSettingsMinAggregateInputType = {
+    id?: true
+    title?: true
+    subtitle?: true
+    countdownTarget?: true
+    startDate?: true
+    endDate?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type LeaderboardSettingsMaxAggregateInputType = {
+    id?: true
+    title?: true
+    subtitle?: true
+    countdownTarget?: true
+    startDate?: true
+    endDate?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type LeaderboardSettingsCountAggregateInputType = {
+    id?: true
+    title?: true
+    subtitle?: true
+    countdownTarget?: true
+    startDate?: true
+    endDate?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type LeaderboardSettingsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which LeaderboardSettings to aggregate.
+     */
+    where?: LeaderboardSettingsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LeaderboardSettings to fetch.
+     */
+    orderBy?: LeaderboardSettingsOrderByWithRelationInput | LeaderboardSettingsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: LeaderboardSettingsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LeaderboardSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LeaderboardSettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned LeaderboardSettings
+    **/
+    _count?: true | LeaderboardSettingsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: LeaderboardSettingsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: LeaderboardSettingsMaxAggregateInputType
+  }
+
+  export type GetLeaderboardSettingsAggregateType<T extends LeaderboardSettingsAggregateArgs> = {
+        [P in keyof T & keyof AggregateLeaderboardSettings]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateLeaderboardSettings[P]>
+      : GetScalarType<T[P], AggregateLeaderboardSettings[P]>
+  }
+
+
+
+
+  export type LeaderboardSettingsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: LeaderboardSettingsWhereInput
+    orderBy?: LeaderboardSettingsOrderByWithAggregationInput | LeaderboardSettingsOrderByWithAggregationInput[]
+    by: LeaderboardSettingsScalarFieldEnum[] | LeaderboardSettingsScalarFieldEnum
+    having?: LeaderboardSettingsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: LeaderboardSettingsCountAggregateInputType | true
+    _min?: LeaderboardSettingsMinAggregateInputType
+    _max?: LeaderboardSettingsMaxAggregateInputType
+  }
+
+  export type LeaderboardSettingsGroupByOutputType = {
+    id: string
+    title: string
+    subtitle: string
+    countdownTarget: Date
+    startDate: Date | null
+    endDate: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: LeaderboardSettingsCountAggregateOutputType | null
+    _min: LeaderboardSettingsMinAggregateOutputType | null
+    _max: LeaderboardSettingsMaxAggregateOutputType | null
+  }
+
+  type GetLeaderboardSettingsGroupByPayload<T extends LeaderboardSettingsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<LeaderboardSettingsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof LeaderboardSettingsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], LeaderboardSettingsGroupByOutputType[P]>
+            : GetScalarType<T[P], LeaderboardSettingsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type LeaderboardSettingsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    subtitle?: boolean
+    countdownTarget?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    prizeTiers?: boolean | LeaderboardSettings$prizeTiersArgs<ExtArgs>
+    _count?: boolean | LeaderboardSettingsCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["leaderboardSettings"]>
+
+  export type LeaderboardSettingsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    subtitle?: boolean
+    countdownTarget?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["leaderboardSettings"]>
+
+  export type LeaderboardSettingsSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    subtitle?: boolean
+    countdownTarget?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["leaderboardSettings"]>
+
+  export type LeaderboardSettingsSelectScalar = {
+    id?: boolean
+    title?: boolean
+    subtitle?: boolean
+    countdownTarget?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type LeaderboardSettingsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "subtitle" | "countdownTarget" | "startDate" | "endDate" | "createdAt" | "updatedAt", ExtArgs["result"]["leaderboardSettings"]>
+  export type LeaderboardSettingsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    prizeTiers?: boolean | LeaderboardSettings$prizeTiersArgs<ExtArgs>
+    _count?: boolean | LeaderboardSettingsCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type LeaderboardSettingsIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type LeaderboardSettingsIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $LeaderboardSettingsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "LeaderboardSettings"
+    objects: {
+      prizeTiers: Prisma.$LeaderboardPrizeTierPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      title: string
+      subtitle: string
+      countdownTarget: Date
+      startDate: Date | null
+      endDate: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["leaderboardSettings"]>
+    composites: {}
+  }
+
+  type LeaderboardSettingsGetPayload<S extends boolean | null | undefined | LeaderboardSettingsDefaultArgs> = $Result.GetResult<Prisma.$LeaderboardSettingsPayload, S>
+
+  type LeaderboardSettingsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<LeaderboardSettingsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: LeaderboardSettingsCountAggregateInputType | true
+    }
+
+  export interface LeaderboardSettingsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['LeaderboardSettings'], meta: { name: 'LeaderboardSettings' } }
+    /**
+     * Find zero or one LeaderboardSettings that matches the filter.
+     * @param {LeaderboardSettingsFindUniqueArgs} args - Arguments to find a LeaderboardSettings
+     * @example
+     * // Get one LeaderboardSettings
+     * const leaderboardSettings = await prisma.leaderboardSettings.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends LeaderboardSettingsFindUniqueArgs>(args: SelectSubset<T, LeaderboardSettingsFindUniqueArgs<ExtArgs>>): Prisma__LeaderboardSettingsClient<$Result.GetResult<Prisma.$LeaderboardSettingsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one LeaderboardSettings that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {LeaderboardSettingsFindUniqueOrThrowArgs} args - Arguments to find a LeaderboardSettings
+     * @example
+     * // Get one LeaderboardSettings
+     * const leaderboardSettings = await prisma.leaderboardSettings.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends LeaderboardSettingsFindUniqueOrThrowArgs>(args: SelectSubset<T, LeaderboardSettingsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__LeaderboardSettingsClient<$Result.GetResult<Prisma.$LeaderboardSettingsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first LeaderboardSettings that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LeaderboardSettingsFindFirstArgs} args - Arguments to find a LeaderboardSettings
+     * @example
+     * // Get one LeaderboardSettings
+     * const leaderboardSettings = await prisma.leaderboardSettings.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends LeaderboardSettingsFindFirstArgs>(args?: SelectSubset<T, LeaderboardSettingsFindFirstArgs<ExtArgs>>): Prisma__LeaderboardSettingsClient<$Result.GetResult<Prisma.$LeaderboardSettingsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first LeaderboardSettings that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LeaderboardSettingsFindFirstOrThrowArgs} args - Arguments to find a LeaderboardSettings
+     * @example
+     * // Get one LeaderboardSettings
+     * const leaderboardSettings = await prisma.leaderboardSettings.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends LeaderboardSettingsFindFirstOrThrowArgs>(args?: SelectSubset<T, LeaderboardSettingsFindFirstOrThrowArgs<ExtArgs>>): Prisma__LeaderboardSettingsClient<$Result.GetResult<Prisma.$LeaderboardSettingsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more LeaderboardSettings that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LeaderboardSettingsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all LeaderboardSettings
+     * const leaderboardSettings = await prisma.leaderboardSettings.findMany()
+     * 
+     * // Get first 10 LeaderboardSettings
+     * const leaderboardSettings = await prisma.leaderboardSettings.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const leaderboardSettingsWithIdOnly = await prisma.leaderboardSettings.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends LeaderboardSettingsFindManyArgs>(args?: SelectSubset<T, LeaderboardSettingsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LeaderboardSettingsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a LeaderboardSettings.
+     * @param {LeaderboardSettingsCreateArgs} args - Arguments to create a LeaderboardSettings.
+     * @example
+     * // Create one LeaderboardSettings
+     * const LeaderboardSettings = await prisma.leaderboardSettings.create({
+     *   data: {
+     *     // ... data to create a LeaderboardSettings
+     *   }
+     * })
+     * 
+     */
+    create<T extends LeaderboardSettingsCreateArgs>(args: SelectSubset<T, LeaderboardSettingsCreateArgs<ExtArgs>>): Prisma__LeaderboardSettingsClient<$Result.GetResult<Prisma.$LeaderboardSettingsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many LeaderboardSettings.
+     * @param {LeaderboardSettingsCreateManyArgs} args - Arguments to create many LeaderboardSettings.
+     * @example
+     * // Create many LeaderboardSettings
+     * const leaderboardSettings = await prisma.leaderboardSettings.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends LeaderboardSettingsCreateManyArgs>(args?: SelectSubset<T, LeaderboardSettingsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many LeaderboardSettings and returns the data saved in the database.
+     * @param {LeaderboardSettingsCreateManyAndReturnArgs} args - Arguments to create many LeaderboardSettings.
+     * @example
+     * // Create many LeaderboardSettings
+     * const leaderboardSettings = await prisma.leaderboardSettings.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many LeaderboardSettings and only return the `id`
+     * const leaderboardSettingsWithIdOnly = await prisma.leaderboardSettings.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends LeaderboardSettingsCreateManyAndReturnArgs>(args?: SelectSubset<T, LeaderboardSettingsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LeaderboardSettingsPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a LeaderboardSettings.
+     * @param {LeaderboardSettingsDeleteArgs} args - Arguments to delete one LeaderboardSettings.
+     * @example
+     * // Delete one LeaderboardSettings
+     * const LeaderboardSettings = await prisma.leaderboardSettings.delete({
+     *   where: {
+     *     // ... filter to delete one LeaderboardSettings
+     *   }
+     * })
+     * 
+     */
+    delete<T extends LeaderboardSettingsDeleteArgs>(args: SelectSubset<T, LeaderboardSettingsDeleteArgs<ExtArgs>>): Prisma__LeaderboardSettingsClient<$Result.GetResult<Prisma.$LeaderboardSettingsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one LeaderboardSettings.
+     * @param {LeaderboardSettingsUpdateArgs} args - Arguments to update one LeaderboardSettings.
+     * @example
+     * // Update one LeaderboardSettings
+     * const leaderboardSettings = await prisma.leaderboardSettings.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends LeaderboardSettingsUpdateArgs>(args: SelectSubset<T, LeaderboardSettingsUpdateArgs<ExtArgs>>): Prisma__LeaderboardSettingsClient<$Result.GetResult<Prisma.$LeaderboardSettingsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more LeaderboardSettings.
+     * @param {LeaderboardSettingsDeleteManyArgs} args - Arguments to filter LeaderboardSettings to delete.
+     * @example
+     * // Delete a few LeaderboardSettings
+     * const { count } = await prisma.leaderboardSettings.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends LeaderboardSettingsDeleteManyArgs>(args?: SelectSubset<T, LeaderboardSettingsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more LeaderboardSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LeaderboardSettingsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many LeaderboardSettings
+     * const leaderboardSettings = await prisma.leaderboardSettings.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends LeaderboardSettingsUpdateManyArgs>(args: SelectSubset<T, LeaderboardSettingsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more LeaderboardSettings and returns the data updated in the database.
+     * @param {LeaderboardSettingsUpdateManyAndReturnArgs} args - Arguments to update many LeaderboardSettings.
+     * @example
+     * // Update many LeaderboardSettings
+     * const leaderboardSettings = await prisma.leaderboardSettings.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more LeaderboardSettings and only return the `id`
+     * const leaderboardSettingsWithIdOnly = await prisma.leaderboardSettings.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends LeaderboardSettingsUpdateManyAndReturnArgs>(args: SelectSubset<T, LeaderboardSettingsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LeaderboardSettingsPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one LeaderboardSettings.
+     * @param {LeaderboardSettingsUpsertArgs} args - Arguments to update or create a LeaderboardSettings.
+     * @example
+     * // Update or create a LeaderboardSettings
+     * const leaderboardSettings = await prisma.leaderboardSettings.upsert({
+     *   create: {
+     *     // ... data to create a LeaderboardSettings
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the LeaderboardSettings we want to update
+     *   }
+     * })
+     */
+    upsert<T extends LeaderboardSettingsUpsertArgs>(args: SelectSubset<T, LeaderboardSettingsUpsertArgs<ExtArgs>>): Prisma__LeaderboardSettingsClient<$Result.GetResult<Prisma.$LeaderboardSettingsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of LeaderboardSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LeaderboardSettingsCountArgs} args - Arguments to filter LeaderboardSettings to count.
+     * @example
+     * // Count the number of LeaderboardSettings
+     * const count = await prisma.leaderboardSettings.count({
+     *   where: {
+     *     // ... the filter for the LeaderboardSettings we want to count
+     *   }
+     * })
+    **/
+    count<T extends LeaderboardSettingsCountArgs>(
+      args?: Subset<T, LeaderboardSettingsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], LeaderboardSettingsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a LeaderboardSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LeaderboardSettingsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends LeaderboardSettingsAggregateArgs>(args: Subset<T, LeaderboardSettingsAggregateArgs>): Prisma.PrismaPromise<GetLeaderboardSettingsAggregateType<T>>
+
+    /**
+     * Group by LeaderboardSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LeaderboardSettingsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends LeaderboardSettingsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: LeaderboardSettingsGroupByArgs['orderBy'] }
+        : { orderBy?: LeaderboardSettingsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, LeaderboardSettingsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetLeaderboardSettingsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the LeaderboardSettings model
+   */
+  readonly fields: LeaderboardSettingsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for LeaderboardSettings.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__LeaderboardSettingsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    prizeTiers<T extends LeaderboardSettings$prizeTiersArgs<ExtArgs> = {}>(args?: Subset<T, LeaderboardSettings$prizeTiersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LeaderboardPrizeTierPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the LeaderboardSettings model
+   */
+  interface LeaderboardSettingsFieldRefs {
+    readonly id: FieldRef<"LeaderboardSettings", 'String'>
+    readonly title: FieldRef<"LeaderboardSettings", 'String'>
+    readonly subtitle: FieldRef<"LeaderboardSettings", 'String'>
+    readonly countdownTarget: FieldRef<"LeaderboardSettings", 'DateTime'>
+    readonly startDate: FieldRef<"LeaderboardSettings", 'DateTime'>
+    readonly endDate: FieldRef<"LeaderboardSettings", 'DateTime'>
+    readonly createdAt: FieldRef<"LeaderboardSettings", 'DateTime'>
+    readonly updatedAt: FieldRef<"LeaderboardSettings", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * LeaderboardSettings findUnique
+   */
+  export type LeaderboardSettingsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LeaderboardSettings
+     */
+    select?: LeaderboardSettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LeaderboardSettings
+     */
+    omit?: LeaderboardSettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LeaderboardSettingsInclude<ExtArgs> | null
+    /**
+     * Filter, which LeaderboardSettings to fetch.
+     */
+    where: LeaderboardSettingsWhereUniqueInput
+  }
+
+  /**
+   * LeaderboardSettings findUniqueOrThrow
+   */
+  export type LeaderboardSettingsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LeaderboardSettings
+     */
+    select?: LeaderboardSettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LeaderboardSettings
+     */
+    omit?: LeaderboardSettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LeaderboardSettingsInclude<ExtArgs> | null
+    /**
+     * Filter, which LeaderboardSettings to fetch.
+     */
+    where: LeaderboardSettingsWhereUniqueInput
+  }
+
+  /**
+   * LeaderboardSettings findFirst
+   */
+  export type LeaderboardSettingsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LeaderboardSettings
+     */
+    select?: LeaderboardSettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LeaderboardSettings
+     */
+    omit?: LeaderboardSettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LeaderboardSettingsInclude<ExtArgs> | null
+    /**
+     * Filter, which LeaderboardSettings to fetch.
+     */
+    where?: LeaderboardSettingsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LeaderboardSettings to fetch.
+     */
+    orderBy?: LeaderboardSettingsOrderByWithRelationInput | LeaderboardSettingsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for LeaderboardSettings.
+     */
+    cursor?: LeaderboardSettingsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LeaderboardSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LeaderboardSettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of LeaderboardSettings.
+     */
+    distinct?: LeaderboardSettingsScalarFieldEnum | LeaderboardSettingsScalarFieldEnum[]
+  }
+
+  /**
+   * LeaderboardSettings findFirstOrThrow
+   */
+  export type LeaderboardSettingsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LeaderboardSettings
+     */
+    select?: LeaderboardSettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LeaderboardSettings
+     */
+    omit?: LeaderboardSettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LeaderboardSettingsInclude<ExtArgs> | null
+    /**
+     * Filter, which LeaderboardSettings to fetch.
+     */
+    where?: LeaderboardSettingsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LeaderboardSettings to fetch.
+     */
+    orderBy?: LeaderboardSettingsOrderByWithRelationInput | LeaderboardSettingsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for LeaderboardSettings.
+     */
+    cursor?: LeaderboardSettingsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LeaderboardSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LeaderboardSettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of LeaderboardSettings.
+     */
+    distinct?: LeaderboardSettingsScalarFieldEnum | LeaderboardSettingsScalarFieldEnum[]
+  }
+
+  /**
+   * LeaderboardSettings findMany
+   */
+  export type LeaderboardSettingsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LeaderboardSettings
+     */
+    select?: LeaderboardSettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LeaderboardSettings
+     */
+    omit?: LeaderboardSettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LeaderboardSettingsInclude<ExtArgs> | null
+    /**
+     * Filter, which LeaderboardSettings to fetch.
+     */
+    where?: LeaderboardSettingsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LeaderboardSettings to fetch.
+     */
+    orderBy?: LeaderboardSettingsOrderByWithRelationInput | LeaderboardSettingsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing LeaderboardSettings.
+     */
+    cursor?: LeaderboardSettingsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LeaderboardSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LeaderboardSettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of LeaderboardSettings.
+     */
+    distinct?: LeaderboardSettingsScalarFieldEnum | LeaderboardSettingsScalarFieldEnum[]
+  }
+
+  /**
+   * LeaderboardSettings create
+   */
+  export type LeaderboardSettingsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LeaderboardSettings
+     */
+    select?: LeaderboardSettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LeaderboardSettings
+     */
+    omit?: LeaderboardSettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LeaderboardSettingsInclude<ExtArgs> | null
+    /**
+     * The data needed to create a LeaderboardSettings.
+     */
+    data: XOR<LeaderboardSettingsCreateInput, LeaderboardSettingsUncheckedCreateInput>
+  }
+
+  /**
+   * LeaderboardSettings createMany
+   */
+  export type LeaderboardSettingsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many LeaderboardSettings.
+     */
+    data: LeaderboardSettingsCreateManyInput | LeaderboardSettingsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * LeaderboardSettings createManyAndReturn
+   */
+  export type LeaderboardSettingsCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LeaderboardSettings
+     */
+    select?: LeaderboardSettingsSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the LeaderboardSettings
+     */
+    omit?: LeaderboardSettingsOmit<ExtArgs> | null
+    /**
+     * The data used to create many LeaderboardSettings.
+     */
+    data: LeaderboardSettingsCreateManyInput | LeaderboardSettingsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * LeaderboardSettings update
+   */
+  export type LeaderboardSettingsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LeaderboardSettings
+     */
+    select?: LeaderboardSettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LeaderboardSettings
+     */
+    omit?: LeaderboardSettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LeaderboardSettingsInclude<ExtArgs> | null
+    /**
+     * The data needed to update a LeaderboardSettings.
+     */
+    data: XOR<LeaderboardSettingsUpdateInput, LeaderboardSettingsUncheckedUpdateInput>
+    /**
+     * Choose, which LeaderboardSettings to update.
+     */
+    where: LeaderboardSettingsWhereUniqueInput
+  }
+
+  /**
+   * LeaderboardSettings updateMany
+   */
+  export type LeaderboardSettingsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update LeaderboardSettings.
+     */
+    data: XOR<LeaderboardSettingsUpdateManyMutationInput, LeaderboardSettingsUncheckedUpdateManyInput>
+    /**
+     * Filter which LeaderboardSettings to update
+     */
+    where?: LeaderboardSettingsWhereInput
+    /**
+     * Limit how many LeaderboardSettings to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * LeaderboardSettings updateManyAndReturn
+   */
+  export type LeaderboardSettingsUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LeaderboardSettings
+     */
+    select?: LeaderboardSettingsSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the LeaderboardSettings
+     */
+    omit?: LeaderboardSettingsOmit<ExtArgs> | null
+    /**
+     * The data used to update LeaderboardSettings.
+     */
+    data: XOR<LeaderboardSettingsUpdateManyMutationInput, LeaderboardSettingsUncheckedUpdateManyInput>
+    /**
+     * Filter which LeaderboardSettings to update
+     */
+    where?: LeaderboardSettingsWhereInput
+    /**
+     * Limit how many LeaderboardSettings to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * LeaderboardSettings upsert
+   */
+  export type LeaderboardSettingsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LeaderboardSettings
+     */
+    select?: LeaderboardSettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LeaderboardSettings
+     */
+    omit?: LeaderboardSettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LeaderboardSettingsInclude<ExtArgs> | null
+    /**
+     * The filter to search for the LeaderboardSettings to update in case it exists.
+     */
+    where: LeaderboardSettingsWhereUniqueInput
+    /**
+     * In case the LeaderboardSettings found by the `where` argument doesn't exist, create a new LeaderboardSettings with this data.
+     */
+    create: XOR<LeaderboardSettingsCreateInput, LeaderboardSettingsUncheckedCreateInput>
+    /**
+     * In case the LeaderboardSettings was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<LeaderboardSettingsUpdateInput, LeaderboardSettingsUncheckedUpdateInput>
+  }
+
+  /**
+   * LeaderboardSettings delete
+   */
+  export type LeaderboardSettingsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LeaderboardSettings
+     */
+    select?: LeaderboardSettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LeaderboardSettings
+     */
+    omit?: LeaderboardSettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LeaderboardSettingsInclude<ExtArgs> | null
+    /**
+     * Filter which LeaderboardSettings to delete.
+     */
+    where: LeaderboardSettingsWhereUniqueInput
+  }
+
+  /**
+   * LeaderboardSettings deleteMany
+   */
+  export type LeaderboardSettingsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which LeaderboardSettings to delete
+     */
+    where?: LeaderboardSettingsWhereInput
+    /**
+     * Limit how many LeaderboardSettings to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * LeaderboardSettings.prizeTiers
+   */
+  export type LeaderboardSettings$prizeTiersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LeaderboardPrizeTier
+     */
+    select?: LeaderboardPrizeTierSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LeaderboardPrizeTier
+     */
+    omit?: LeaderboardPrizeTierOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LeaderboardPrizeTierInclude<ExtArgs> | null
+    where?: LeaderboardPrizeTierWhereInput
+    orderBy?: LeaderboardPrizeTierOrderByWithRelationInput | LeaderboardPrizeTierOrderByWithRelationInput[]
+    cursor?: LeaderboardPrizeTierWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: LeaderboardPrizeTierScalarFieldEnum | LeaderboardPrizeTierScalarFieldEnum[]
+  }
+
+  /**
+   * LeaderboardSettings without action
+   */
+  export type LeaderboardSettingsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LeaderboardSettings
+     */
+    select?: LeaderboardSettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LeaderboardSettings
+     */
+    omit?: LeaderboardSettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LeaderboardSettingsInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model LeaderboardPrizeTier
+   */
+
+  export type AggregateLeaderboardPrizeTier = {
+    _count: LeaderboardPrizeTierCountAggregateOutputType | null
+    _avg: LeaderboardPrizeTierAvgAggregateOutputType | null
+    _sum: LeaderboardPrizeTierSumAggregateOutputType | null
+    _min: LeaderboardPrizeTierMinAggregateOutputType | null
+    _max: LeaderboardPrizeTierMaxAggregateOutputType | null
+  }
+
+  export type LeaderboardPrizeTierAvgAggregateOutputType = {
+    place: number | null
+    prize: number | null
+  }
+
+  export type LeaderboardPrizeTierSumAggregateOutputType = {
+    place: number | null
+    prize: number | null
+  }
+
+  export type LeaderboardPrizeTierMinAggregateOutputType = {
+    id: string | null
+    leaderboardId: string | null
+    place: number | null
+    prize: number | null
+  }
+
+  export type LeaderboardPrizeTierMaxAggregateOutputType = {
+    id: string | null
+    leaderboardId: string | null
+    place: number | null
+    prize: number | null
+  }
+
+  export type LeaderboardPrizeTierCountAggregateOutputType = {
+    id: number
+    leaderboardId: number
+    place: number
+    prize: number
+    _all: number
+  }
+
+
+  export type LeaderboardPrizeTierAvgAggregateInputType = {
+    place?: true
+    prize?: true
+  }
+
+  export type LeaderboardPrizeTierSumAggregateInputType = {
+    place?: true
+    prize?: true
+  }
+
+  export type LeaderboardPrizeTierMinAggregateInputType = {
+    id?: true
+    leaderboardId?: true
+    place?: true
+    prize?: true
+  }
+
+  export type LeaderboardPrizeTierMaxAggregateInputType = {
+    id?: true
+    leaderboardId?: true
+    place?: true
+    prize?: true
+  }
+
+  export type LeaderboardPrizeTierCountAggregateInputType = {
+    id?: true
+    leaderboardId?: true
+    place?: true
+    prize?: true
+    _all?: true
+  }
+
+  export type LeaderboardPrizeTierAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which LeaderboardPrizeTier to aggregate.
+     */
+    where?: LeaderboardPrizeTierWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LeaderboardPrizeTiers to fetch.
+     */
+    orderBy?: LeaderboardPrizeTierOrderByWithRelationInput | LeaderboardPrizeTierOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: LeaderboardPrizeTierWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LeaderboardPrizeTiers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LeaderboardPrizeTiers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned LeaderboardPrizeTiers
+    **/
+    _count?: true | LeaderboardPrizeTierCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: LeaderboardPrizeTierAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: LeaderboardPrizeTierSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: LeaderboardPrizeTierMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: LeaderboardPrizeTierMaxAggregateInputType
+  }
+
+  export type GetLeaderboardPrizeTierAggregateType<T extends LeaderboardPrizeTierAggregateArgs> = {
+        [P in keyof T & keyof AggregateLeaderboardPrizeTier]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateLeaderboardPrizeTier[P]>
+      : GetScalarType<T[P], AggregateLeaderboardPrizeTier[P]>
+  }
+
+
+
+
+  export type LeaderboardPrizeTierGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: LeaderboardPrizeTierWhereInput
+    orderBy?: LeaderboardPrizeTierOrderByWithAggregationInput | LeaderboardPrizeTierOrderByWithAggregationInput[]
+    by: LeaderboardPrizeTierScalarFieldEnum[] | LeaderboardPrizeTierScalarFieldEnum
+    having?: LeaderboardPrizeTierScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: LeaderboardPrizeTierCountAggregateInputType | true
+    _avg?: LeaderboardPrizeTierAvgAggregateInputType
+    _sum?: LeaderboardPrizeTierSumAggregateInputType
+    _min?: LeaderboardPrizeTierMinAggregateInputType
+    _max?: LeaderboardPrizeTierMaxAggregateInputType
+  }
+
+  export type LeaderboardPrizeTierGroupByOutputType = {
+    id: string
+    leaderboardId: string
+    place: number
+    prize: number
+    _count: LeaderboardPrizeTierCountAggregateOutputType | null
+    _avg: LeaderboardPrizeTierAvgAggregateOutputType | null
+    _sum: LeaderboardPrizeTierSumAggregateOutputType | null
+    _min: LeaderboardPrizeTierMinAggregateOutputType | null
+    _max: LeaderboardPrizeTierMaxAggregateOutputType | null
+  }
+
+  type GetLeaderboardPrizeTierGroupByPayload<T extends LeaderboardPrizeTierGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<LeaderboardPrizeTierGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof LeaderboardPrizeTierGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], LeaderboardPrizeTierGroupByOutputType[P]>
+            : GetScalarType<T[P], LeaderboardPrizeTierGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type LeaderboardPrizeTierSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    leaderboardId?: boolean
+    place?: boolean
+    prize?: boolean
+    leaderboard?: boolean | LeaderboardSettingsDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["leaderboardPrizeTier"]>
+
+  export type LeaderboardPrizeTierSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    leaderboardId?: boolean
+    place?: boolean
+    prize?: boolean
+    leaderboard?: boolean | LeaderboardSettingsDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["leaderboardPrizeTier"]>
+
+  export type LeaderboardPrizeTierSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    leaderboardId?: boolean
+    place?: boolean
+    prize?: boolean
+    leaderboard?: boolean | LeaderboardSettingsDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["leaderboardPrizeTier"]>
+
+  export type LeaderboardPrizeTierSelectScalar = {
+    id?: boolean
+    leaderboardId?: boolean
+    place?: boolean
+    prize?: boolean
+  }
+
+  export type LeaderboardPrizeTierOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "leaderboardId" | "place" | "prize", ExtArgs["result"]["leaderboardPrizeTier"]>
+  export type LeaderboardPrizeTierInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    leaderboard?: boolean | LeaderboardSettingsDefaultArgs<ExtArgs>
+  }
+  export type LeaderboardPrizeTierIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    leaderboard?: boolean | LeaderboardSettingsDefaultArgs<ExtArgs>
+  }
+  export type LeaderboardPrizeTierIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    leaderboard?: boolean | LeaderboardSettingsDefaultArgs<ExtArgs>
+  }
+
+  export type $LeaderboardPrizeTierPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "LeaderboardPrizeTier"
+    objects: {
+      leaderboard: Prisma.$LeaderboardSettingsPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      leaderboardId: string
+      place: number
+      prize: number
+    }, ExtArgs["result"]["leaderboardPrizeTier"]>
+    composites: {}
+  }
+
+  type LeaderboardPrizeTierGetPayload<S extends boolean | null | undefined | LeaderboardPrizeTierDefaultArgs> = $Result.GetResult<Prisma.$LeaderboardPrizeTierPayload, S>
+
+  type LeaderboardPrizeTierCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<LeaderboardPrizeTierFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: LeaderboardPrizeTierCountAggregateInputType | true
+    }
+
+  export interface LeaderboardPrizeTierDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['LeaderboardPrizeTier'], meta: { name: 'LeaderboardPrizeTier' } }
+    /**
+     * Find zero or one LeaderboardPrizeTier that matches the filter.
+     * @param {LeaderboardPrizeTierFindUniqueArgs} args - Arguments to find a LeaderboardPrizeTier
+     * @example
+     * // Get one LeaderboardPrizeTier
+     * const leaderboardPrizeTier = await prisma.leaderboardPrizeTier.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends LeaderboardPrizeTierFindUniqueArgs>(args: SelectSubset<T, LeaderboardPrizeTierFindUniqueArgs<ExtArgs>>): Prisma__LeaderboardPrizeTierClient<$Result.GetResult<Prisma.$LeaderboardPrizeTierPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one LeaderboardPrizeTier that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {LeaderboardPrizeTierFindUniqueOrThrowArgs} args - Arguments to find a LeaderboardPrizeTier
+     * @example
+     * // Get one LeaderboardPrizeTier
+     * const leaderboardPrizeTier = await prisma.leaderboardPrizeTier.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends LeaderboardPrizeTierFindUniqueOrThrowArgs>(args: SelectSubset<T, LeaderboardPrizeTierFindUniqueOrThrowArgs<ExtArgs>>): Prisma__LeaderboardPrizeTierClient<$Result.GetResult<Prisma.$LeaderboardPrizeTierPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first LeaderboardPrizeTier that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LeaderboardPrizeTierFindFirstArgs} args - Arguments to find a LeaderboardPrizeTier
+     * @example
+     * // Get one LeaderboardPrizeTier
+     * const leaderboardPrizeTier = await prisma.leaderboardPrizeTier.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends LeaderboardPrizeTierFindFirstArgs>(args?: SelectSubset<T, LeaderboardPrizeTierFindFirstArgs<ExtArgs>>): Prisma__LeaderboardPrizeTierClient<$Result.GetResult<Prisma.$LeaderboardPrizeTierPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first LeaderboardPrizeTier that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LeaderboardPrizeTierFindFirstOrThrowArgs} args - Arguments to find a LeaderboardPrizeTier
+     * @example
+     * // Get one LeaderboardPrizeTier
+     * const leaderboardPrizeTier = await prisma.leaderboardPrizeTier.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends LeaderboardPrizeTierFindFirstOrThrowArgs>(args?: SelectSubset<T, LeaderboardPrizeTierFindFirstOrThrowArgs<ExtArgs>>): Prisma__LeaderboardPrizeTierClient<$Result.GetResult<Prisma.$LeaderboardPrizeTierPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more LeaderboardPrizeTiers that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LeaderboardPrizeTierFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all LeaderboardPrizeTiers
+     * const leaderboardPrizeTiers = await prisma.leaderboardPrizeTier.findMany()
+     * 
+     * // Get first 10 LeaderboardPrizeTiers
+     * const leaderboardPrizeTiers = await prisma.leaderboardPrizeTier.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const leaderboardPrizeTierWithIdOnly = await prisma.leaderboardPrizeTier.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends LeaderboardPrizeTierFindManyArgs>(args?: SelectSubset<T, LeaderboardPrizeTierFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LeaderboardPrizeTierPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a LeaderboardPrizeTier.
+     * @param {LeaderboardPrizeTierCreateArgs} args - Arguments to create a LeaderboardPrizeTier.
+     * @example
+     * // Create one LeaderboardPrizeTier
+     * const LeaderboardPrizeTier = await prisma.leaderboardPrizeTier.create({
+     *   data: {
+     *     // ... data to create a LeaderboardPrizeTier
+     *   }
+     * })
+     * 
+     */
+    create<T extends LeaderboardPrizeTierCreateArgs>(args: SelectSubset<T, LeaderboardPrizeTierCreateArgs<ExtArgs>>): Prisma__LeaderboardPrizeTierClient<$Result.GetResult<Prisma.$LeaderboardPrizeTierPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many LeaderboardPrizeTiers.
+     * @param {LeaderboardPrizeTierCreateManyArgs} args - Arguments to create many LeaderboardPrizeTiers.
+     * @example
+     * // Create many LeaderboardPrizeTiers
+     * const leaderboardPrizeTier = await prisma.leaderboardPrizeTier.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends LeaderboardPrizeTierCreateManyArgs>(args?: SelectSubset<T, LeaderboardPrizeTierCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many LeaderboardPrizeTiers and returns the data saved in the database.
+     * @param {LeaderboardPrizeTierCreateManyAndReturnArgs} args - Arguments to create many LeaderboardPrizeTiers.
+     * @example
+     * // Create many LeaderboardPrizeTiers
+     * const leaderboardPrizeTier = await prisma.leaderboardPrizeTier.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many LeaderboardPrizeTiers and only return the `id`
+     * const leaderboardPrizeTierWithIdOnly = await prisma.leaderboardPrizeTier.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends LeaderboardPrizeTierCreateManyAndReturnArgs>(args?: SelectSubset<T, LeaderboardPrizeTierCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LeaderboardPrizeTierPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a LeaderboardPrizeTier.
+     * @param {LeaderboardPrizeTierDeleteArgs} args - Arguments to delete one LeaderboardPrizeTier.
+     * @example
+     * // Delete one LeaderboardPrizeTier
+     * const LeaderboardPrizeTier = await prisma.leaderboardPrizeTier.delete({
+     *   where: {
+     *     // ... filter to delete one LeaderboardPrizeTier
+     *   }
+     * })
+     * 
+     */
+    delete<T extends LeaderboardPrizeTierDeleteArgs>(args: SelectSubset<T, LeaderboardPrizeTierDeleteArgs<ExtArgs>>): Prisma__LeaderboardPrizeTierClient<$Result.GetResult<Prisma.$LeaderboardPrizeTierPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one LeaderboardPrizeTier.
+     * @param {LeaderboardPrizeTierUpdateArgs} args - Arguments to update one LeaderboardPrizeTier.
+     * @example
+     * // Update one LeaderboardPrizeTier
+     * const leaderboardPrizeTier = await prisma.leaderboardPrizeTier.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends LeaderboardPrizeTierUpdateArgs>(args: SelectSubset<T, LeaderboardPrizeTierUpdateArgs<ExtArgs>>): Prisma__LeaderboardPrizeTierClient<$Result.GetResult<Prisma.$LeaderboardPrizeTierPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more LeaderboardPrizeTiers.
+     * @param {LeaderboardPrizeTierDeleteManyArgs} args - Arguments to filter LeaderboardPrizeTiers to delete.
+     * @example
+     * // Delete a few LeaderboardPrizeTiers
+     * const { count } = await prisma.leaderboardPrizeTier.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends LeaderboardPrizeTierDeleteManyArgs>(args?: SelectSubset<T, LeaderboardPrizeTierDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more LeaderboardPrizeTiers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LeaderboardPrizeTierUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many LeaderboardPrizeTiers
+     * const leaderboardPrizeTier = await prisma.leaderboardPrizeTier.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends LeaderboardPrizeTierUpdateManyArgs>(args: SelectSubset<T, LeaderboardPrizeTierUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more LeaderboardPrizeTiers and returns the data updated in the database.
+     * @param {LeaderboardPrizeTierUpdateManyAndReturnArgs} args - Arguments to update many LeaderboardPrizeTiers.
+     * @example
+     * // Update many LeaderboardPrizeTiers
+     * const leaderboardPrizeTier = await prisma.leaderboardPrizeTier.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more LeaderboardPrizeTiers and only return the `id`
+     * const leaderboardPrizeTierWithIdOnly = await prisma.leaderboardPrizeTier.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends LeaderboardPrizeTierUpdateManyAndReturnArgs>(args: SelectSubset<T, LeaderboardPrizeTierUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LeaderboardPrizeTierPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one LeaderboardPrizeTier.
+     * @param {LeaderboardPrizeTierUpsertArgs} args - Arguments to update or create a LeaderboardPrizeTier.
+     * @example
+     * // Update or create a LeaderboardPrizeTier
+     * const leaderboardPrizeTier = await prisma.leaderboardPrizeTier.upsert({
+     *   create: {
+     *     // ... data to create a LeaderboardPrizeTier
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the LeaderboardPrizeTier we want to update
+     *   }
+     * })
+     */
+    upsert<T extends LeaderboardPrizeTierUpsertArgs>(args: SelectSubset<T, LeaderboardPrizeTierUpsertArgs<ExtArgs>>): Prisma__LeaderboardPrizeTierClient<$Result.GetResult<Prisma.$LeaderboardPrizeTierPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of LeaderboardPrizeTiers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LeaderboardPrizeTierCountArgs} args - Arguments to filter LeaderboardPrizeTiers to count.
+     * @example
+     * // Count the number of LeaderboardPrizeTiers
+     * const count = await prisma.leaderboardPrizeTier.count({
+     *   where: {
+     *     // ... the filter for the LeaderboardPrizeTiers we want to count
+     *   }
+     * })
+    **/
+    count<T extends LeaderboardPrizeTierCountArgs>(
+      args?: Subset<T, LeaderboardPrizeTierCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], LeaderboardPrizeTierCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a LeaderboardPrizeTier.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LeaderboardPrizeTierAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends LeaderboardPrizeTierAggregateArgs>(args: Subset<T, LeaderboardPrizeTierAggregateArgs>): Prisma.PrismaPromise<GetLeaderboardPrizeTierAggregateType<T>>
+
+    /**
+     * Group by LeaderboardPrizeTier.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LeaderboardPrizeTierGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends LeaderboardPrizeTierGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: LeaderboardPrizeTierGroupByArgs['orderBy'] }
+        : { orderBy?: LeaderboardPrizeTierGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, LeaderboardPrizeTierGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetLeaderboardPrizeTierGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the LeaderboardPrizeTier model
+   */
+  readonly fields: LeaderboardPrizeTierFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for LeaderboardPrizeTier.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__LeaderboardPrizeTierClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    leaderboard<T extends LeaderboardSettingsDefaultArgs<ExtArgs> = {}>(args?: Subset<T, LeaderboardSettingsDefaultArgs<ExtArgs>>): Prisma__LeaderboardSettingsClient<$Result.GetResult<Prisma.$LeaderboardSettingsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the LeaderboardPrizeTier model
+   */
+  interface LeaderboardPrizeTierFieldRefs {
+    readonly id: FieldRef<"LeaderboardPrizeTier", 'String'>
+    readonly leaderboardId: FieldRef<"LeaderboardPrizeTier", 'String'>
+    readonly place: FieldRef<"LeaderboardPrizeTier", 'Int'>
+    readonly prize: FieldRef<"LeaderboardPrizeTier", 'Int'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * LeaderboardPrizeTier findUnique
+   */
+  export type LeaderboardPrizeTierFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LeaderboardPrizeTier
+     */
+    select?: LeaderboardPrizeTierSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LeaderboardPrizeTier
+     */
+    omit?: LeaderboardPrizeTierOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LeaderboardPrizeTierInclude<ExtArgs> | null
+    /**
+     * Filter, which LeaderboardPrizeTier to fetch.
+     */
+    where: LeaderboardPrizeTierWhereUniqueInput
+  }
+
+  /**
+   * LeaderboardPrizeTier findUniqueOrThrow
+   */
+  export type LeaderboardPrizeTierFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LeaderboardPrizeTier
+     */
+    select?: LeaderboardPrizeTierSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LeaderboardPrizeTier
+     */
+    omit?: LeaderboardPrizeTierOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LeaderboardPrizeTierInclude<ExtArgs> | null
+    /**
+     * Filter, which LeaderboardPrizeTier to fetch.
+     */
+    where: LeaderboardPrizeTierWhereUniqueInput
+  }
+
+  /**
+   * LeaderboardPrizeTier findFirst
+   */
+  export type LeaderboardPrizeTierFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LeaderboardPrizeTier
+     */
+    select?: LeaderboardPrizeTierSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LeaderboardPrizeTier
+     */
+    omit?: LeaderboardPrizeTierOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LeaderboardPrizeTierInclude<ExtArgs> | null
+    /**
+     * Filter, which LeaderboardPrizeTier to fetch.
+     */
+    where?: LeaderboardPrizeTierWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LeaderboardPrizeTiers to fetch.
+     */
+    orderBy?: LeaderboardPrizeTierOrderByWithRelationInput | LeaderboardPrizeTierOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for LeaderboardPrizeTiers.
+     */
+    cursor?: LeaderboardPrizeTierWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LeaderboardPrizeTiers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LeaderboardPrizeTiers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of LeaderboardPrizeTiers.
+     */
+    distinct?: LeaderboardPrizeTierScalarFieldEnum | LeaderboardPrizeTierScalarFieldEnum[]
+  }
+
+  /**
+   * LeaderboardPrizeTier findFirstOrThrow
+   */
+  export type LeaderboardPrizeTierFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LeaderboardPrizeTier
+     */
+    select?: LeaderboardPrizeTierSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LeaderboardPrizeTier
+     */
+    omit?: LeaderboardPrizeTierOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LeaderboardPrizeTierInclude<ExtArgs> | null
+    /**
+     * Filter, which LeaderboardPrizeTier to fetch.
+     */
+    where?: LeaderboardPrizeTierWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LeaderboardPrizeTiers to fetch.
+     */
+    orderBy?: LeaderboardPrizeTierOrderByWithRelationInput | LeaderboardPrizeTierOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for LeaderboardPrizeTiers.
+     */
+    cursor?: LeaderboardPrizeTierWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LeaderboardPrizeTiers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LeaderboardPrizeTiers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of LeaderboardPrizeTiers.
+     */
+    distinct?: LeaderboardPrizeTierScalarFieldEnum | LeaderboardPrizeTierScalarFieldEnum[]
+  }
+
+  /**
+   * LeaderboardPrizeTier findMany
+   */
+  export type LeaderboardPrizeTierFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LeaderboardPrizeTier
+     */
+    select?: LeaderboardPrizeTierSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LeaderboardPrizeTier
+     */
+    omit?: LeaderboardPrizeTierOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LeaderboardPrizeTierInclude<ExtArgs> | null
+    /**
+     * Filter, which LeaderboardPrizeTiers to fetch.
+     */
+    where?: LeaderboardPrizeTierWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LeaderboardPrizeTiers to fetch.
+     */
+    orderBy?: LeaderboardPrizeTierOrderByWithRelationInput | LeaderboardPrizeTierOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing LeaderboardPrizeTiers.
+     */
+    cursor?: LeaderboardPrizeTierWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LeaderboardPrizeTiers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LeaderboardPrizeTiers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of LeaderboardPrizeTiers.
+     */
+    distinct?: LeaderboardPrizeTierScalarFieldEnum | LeaderboardPrizeTierScalarFieldEnum[]
+  }
+
+  /**
+   * LeaderboardPrizeTier create
+   */
+  export type LeaderboardPrizeTierCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LeaderboardPrizeTier
+     */
+    select?: LeaderboardPrizeTierSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LeaderboardPrizeTier
+     */
+    omit?: LeaderboardPrizeTierOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LeaderboardPrizeTierInclude<ExtArgs> | null
+    /**
+     * The data needed to create a LeaderboardPrizeTier.
+     */
+    data: XOR<LeaderboardPrizeTierCreateInput, LeaderboardPrizeTierUncheckedCreateInput>
+  }
+
+  /**
+   * LeaderboardPrizeTier createMany
+   */
+  export type LeaderboardPrizeTierCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many LeaderboardPrizeTiers.
+     */
+    data: LeaderboardPrizeTierCreateManyInput | LeaderboardPrizeTierCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * LeaderboardPrizeTier createManyAndReturn
+   */
+  export type LeaderboardPrizeTierCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LeaderboardPrizeTier
+     */
+    select?: LeaderboardPrizeTierSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the LeaderboardPrizeTier
+     */
+    omit?: LeaderboardPrizeTierOmit<ExtArgs> | null
+    /**
+     * The data used to create many LeaderboardPrizeTiers.
+     */
+    data: LeaderboardPrizeTierCreateManyInput | LeaderboardPrizeTierCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LeaderboardPrizeTierIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * LeaderboardPrizeTier update
+   */
+  export type LeaderboardPrizeTierUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LeaderboardPrizeTier
+     */
+    select?: LeaderboardPrizeTierSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LeaderboardPrizeTier
+     */
+    omit?: LeaderboardPrizeTierOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LeaderboardPrizeTierInclude<ExtArgs> | null
+    /**
+     * The data needed to update a LeaderboardPrizeTier.
+     */
+    data: XOR<LeaderboardPrizeTierUpdateInput, LeaderboardPrizeTierUncheckedUpdateInput>
+    /**
+     * Choose, which LeaderboardPrizeTier to update.
+     */
+    where: LeaderboardPrizeTierWhereUniqueInput
+  }
+
+  /**
+   * LeaderboardPrizeTier updateMany
+   */
+  export type LeaderboardPrizeTierUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update LeaderboardPrizeTiers.
+     */
+    data: XOR<LeaderboardPrizeTierUpdateManyMutationInput, LeaderboardPrizeTierUncheckedUpdateManyInput>
+    /**
+     * Filter which LeaderboardPrizeTiers to update
+     */
+    where?: LeaderboardPrizeTierWhereInput
+    /**
+     * Limit how many LeaderboardPrizeTiers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * LeaderboardPrizeTier updateManyAndReturn
+   */
+  export type LeaderboardPrizeTierUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LeaderboardPrizeTier
+     */
+    select?: LeaderboardPrizeTierSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the LeaderboardPrizeTier
+     */
+    omit?: LeaderboardPrizeTierOmit<ExtArgs> | null
+    /**
+     * The data used to update LeaderboardPrizeTiers.
+     */
+    data: XOR<LeaderboardPrizeTierUpdateManyMutationInput, LeaderboardPrizeTierUncheckedUpdateManyInput>
+    /**
+     * Filter which LeaderboardPrizeTiers to update
+     */
+    where?: LeaderboardPrizeTierWhereInput
+    /**
+     * Limit how many LeaderboardPrizeTiers to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LeaderboardPrizeTierIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * LeaderboardPrizeTier upsert
+   */
+  export type LeaderboardPrizeTierUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LeaderboardPrizeTier
+     */
+    select?: LeaderboardPrizeTierSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LeaderboardPrizeTier
+     */
+    omit?: LeaderboardPrizeTierOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LeaderboardPrizeTierInclude<ExtArgs> | null
+    /**
+     * The filter to search for the LeaderboardPrizeTier to update in case it exists.
+     */
+    where: LeaderboardPrizeTierWhereUniqueInput
+    /**
+     * In case the LeaderboardPrizeTier found by the `where` argument doesn't exist, create a new LeaderboardPrizeTier with this data.
+     */
+    create: XOR<LeaderboardPrizeTierCreateInput, LeaderboardPrizeTierUncheckedCreateInput>
+    /**
+     * In case the LeaderboardPrizeTier was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<LeaderboardPrizeTierUpdateInput, LeaderboardPrizeTierUncheckedUpdateInput>
+  }
+
+  /**
+   * LeaderboardPrizeTier delete
+   */
+  export type LeaderboardPrizeTierDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LeaderboardPrizeTier
+     */
+    select?: LeaderboardPrizeTierSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LeaderboardPrizeTier
+     */
+    omit?: LeaderboardPrizeTierOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LeaderboardPrizeTierInclude<ExtArgs> | null
+    /**
+     * Filter which LeaderboardPrizeTier to delete.
+     */
+    where: LeaderboardPrizeTierWhereUniqueInput
+  }
+
+  /**
+   * LeaderboardPrizeTier deleteMany
+   */
+  export type LeaderboardPrizeTierDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which LeaderboardPrizeTiers to delete
+     */
+    where?: LeaderboardPrizeTierWhereInput
+    /**
+     * Limit how many LeaderboardPrizeTiers to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * LeaderboardPrizeTier without action
+   */
+  export type LeaderboardPrizeTierDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LeaderboardPrizeTier
+     */
+    select?: LeaderboardPrizeTierSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LeaderboardPrizeTier
+     */
+    omit?: LeaderboardPrizeTierOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LeaderboardPrizeTierInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -3292,13 +6810,13 @@ export namespace Prisma {
     refresh_token: 'refresh_token',
     kick_token_expires_at: 'kick_token_expires_at',
     points: 'points',
-    display_name: 'display_name',
-    bio: 'bio',
-    profile_accent: 'profile_accent',
     isAdmin: 'isAdmin',
     isKickBroadcaster: 'isKickBroadcaster',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    bio: 'bio',
+    display_name: 'display_name',
+    profile_accent: 'profile_accent'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -3321,6 +6839,42 @@ export namespace Prisma {
   };
 
   export type KickRewardScalarFieldEnum = (typeof KickRewardScalarFieldEnum)[keyof typeof KickRewardScalarFieldEnum]
+
+
+  export const SiteSettingsScalarFieldEnum: {
+    id: 'id',
+    kickUrl: 'kickUrl',
+    discordUrl: 'discordUrl',
+    youtubeUrl: 'youtubeUrl',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type SiteSettingsScalarFieldEnum = (typeof SiteSettingsScalarFieldEnum)[keyof typeof SiteSettingsScalarFieldEnum]
+
+
+  export const LeaderboardSettingsScalarFieldEnum: {
+    id: 'id',
+    title: 'title',
+    subtitle: 'subtitle',
+    countdownTarget: 'countdownTarget',
+    startDate: 'startDate',
+    endDate: 'endDate',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type LeaderboardSettingsScalarFieldEnum = (typeof LeaderboardSettingsScalarFieldEnum)[keyof typeof LeaderboardSettingsScalarFieldEnum]
+
+
+  export const LeaderboardPrizeTierScalarFieldEnum: {
+    id: 'id',
+    leaderboardId: 'leaderboardId',
+    place: 'place',
+    prize: 'prize'
+  };
+
+  export type LeaderboardPrizeTierScalarFieldEnum = (typeof LeaderboardPrizeTierScalarFieldEnum)[keyof typeof LeaderboardPrizeTierScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -3462,13 +7016,13 @@ export namespace Prisma {
     refresh_token?: StringNullableFilter<"User"> | string | null
     kick_token_expires_at?: DateTimeNullableFilter<"User"> | Date | string | null
     points?: IntFilter<"User"> | number
-    display_name?: StringNullableFilter<"User"> | string | null
-    bio?: StringNullableFilter<"User"> | string | null
-    profile_accent?: StringNullableFilter<"User"> | string | null
     isAdmin?: BoolFilter<"User"> | boolean
     isKickBroadcaster?: BoolFilter<"User"> | boolean
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
+    bio?: StringNullableFilter<"User"> | string | null
+    display_name?: StringNullableFilter<"User"> | string | null
+    profile_accent?: StringNullableFilter<"User"> | string | null
   }
 
   export type UserOrderByWithRelationInput = {
@@ -3481,13 +7035,13 @@ export namespace Prisma {
     refresh_token?: SortOrderInput | SortOrder
     kick_token_expires_at?: SortOrderInput | SortOrder
     points?: SortOrder
-    display_name?: SortOrderInput | SortOrder
-    bio?: SortOrderInput | SortOrder
-    profile_accent?: SortOrderInput | SortOrder
     isAdmin?: SortOrder
     isKickBroadcaster?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    bio?: SortOrderInput | SortOrder
+    display_name?: SortOrderInput | SortOrder
+    profile_accent?: SortOrderInput | SortOrder
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -3503,13 +7057,13 @@ export namespace Prisma {
     refresh_token?: StringNullableFilter<"User"> | string | null
     kick_token_expires_at?: DateTimeNullableFilter<"User"> | Date | string | null
     points?: IntFilter<"User"> | number
-    display_name?: StringNullableFilter<"User"> | string | null
-    bio?: StringNullableFilter<"User"> | string | null
-    profile_accent?: StringNullableFilter<"User"> | string | null
     isAdmin?: BoolFilter<"User"> | boolean
     isKickBroadcaster?: BoolFilter<"User"> | boolean
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
+    bio?: StringNullableFilter<"User"> | string | null
+    display_name?: StringNullableFilter<"User"> | string | null
+    profile_accent?: StringNullableFilter<"User"> | string | null
   }, "id" | "kick_user_id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -3522,13 +7076,13 @@ export namespace Prisma {
     refresh_token?: SortOrderInput | SortOrder
     kick_token_expires_at?: SortOrderInput | SortOrder
     points?: SortOrder
-    display_name?: SortOrderInput | SortOrder
-    bio?: SortOrderInput | SortOrder
-    profile_accent?: SortOrderInput | SortOrder
     isAdmin?: SortOrder
     isKickBroadcaster?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    bio?: SortOrderInput | SortOrder
+    display_name?: SortOrderInput | SortOrder
+    profile_accent?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
     _avg?: UserAvgOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
@@ -3549,13 +7103,13 @@ export namespace Prisma {
     refresh_token?: StringNullableWithAggregatesFilter<"User"> | string | null
     kick_token_expires_at?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     points?: IntWithAggregatesFilter<"User"> | number
-    display_name?: StringNullableWithAggregatesFilter<"User"> | string | null
-    bio?: StringNullableWithAggregatesFilter<"User"> | string | null
-    profile_accent?: StringNullableWithAggregatesFilter<"User"> | string | null
     isAdmin?: BoolWithAggregatesFilter<"User"> | boolean
     isKickBroadcaster?: BoolWithAggregatesFilter<"User"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
+    bio?: StringNullableWithAggregatesFilter<"User"> | string | null
+    display_name?: StringNullableWithAggregatesFilter<"User"> | string | null
+    profile_accent?: StringNullableWithAggregatesFilter<"User"> | string | null
   }
 
   export type KickRewardWhereInput = {
@@ -3652,6 +7206,186 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"KickReward"> | Date | string
   }
 
+  export type SiteSettingsWhereInput = {
+    AND?: SiteSettingsWhereInput | SiteSettingsWhereInput[]
+    OR?: SiteSettingsWhereInput[]
+    NOT?: SiteSettingsWhereInput | SiteSettingsWhereInput[]
+    id?: StringFilter<"SiteSettings"> | string
+    kickUrl?: StringFilter<"SiteSettings"> | string
+    discordUrl?: StringNullableFilter<"SiteSettings"> | string | null
+    youtubeUrl?: StringNullableFilter<"SiteSettings"> | string | null
+    createdAt?: DateTimeFilter<"SiteSettings"> | Date | string
+    updatedAt?: DateTimeFilter<"SiteSettings"> | Date | string
+  }
+
+  export type SiteSettingsOrderByWithRelationInput = {
+    id?: SortOrder
+    kickUrl?: SortOrder
+    discordUrl?: SortOrderInput | SortOrder
+    youtubeUrl?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SiteSettingsWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: SiteSettingsWhereInput | SiteSettingsWhereInput[]
+    OR?: SiteSettingsWhereInput[]
+    NOT?: SiteSettingsWhereInput | SiteSettingsWhereInput[]
+    kickUrl?: StringFilter<"SiteSettings"> | string
+    discordUrl?: StringNullableFilter<"SiteSettings"> | string | null
+    youtubeUrl?: StringNullableFilter<"SiteSettings"> | string | null
+    createdAt?: DateTimeFilter<"SiteSettings"> | Date | string
+    updatedAt?: DateTimeFilter<"SiteSettings"> | Date | string
+  }, "id">
+
+  export type SiteSettingsOrderByWithAggregationInput = {
+    id?: SortOrder
+    kickUrl?: SortOrder
+    discordUrl?: SortOrderInput | SortOrder
+    youtubeUrl?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: SiteSettingsCountOrderByAggregateInput
+    _max?: SiteSettingsMaxOrderByAggregateInput
+    _min?: SiteSettingsMinOrderByAggregateInput
+  }
+
+  export type SiteSettingsScalarWhereWithAggregatesInput = {
+    AND?: SiteSettingsScalarWhereWithAggregatesInput | SiteSettingsScalarWhereWithAggregatesInput[]
+    OR?: SiteSettingsScalarWhereWithAggregatesInput[]
+    NOT?: SiteSettingsScalarWhereWithAggregatesInput | SiteSettingsScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"SiteSettings"> | string
+    kickUrl?: StringWithAggregatesFilter<"SiteSettings"> | string
+    discordUrl?: StringNullableWithAggregatesFilter<"SiteSettings"> | string | null
+    youtubeUrl?: StringNullableWithAggregatesFilter<"SiteSettings"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"SiteSettings"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"SiteSettings"> | Date | string
+  }
+
+  export type LeaderboardSettingsWhereInput = {
+    AND?: LeaderboardSettingsWhereInput | LeaderboardSettingsWhereInput[]
+    OR?: LeaderboardSettingsWhereInput[]
+    NOT?: LeaderboardSettingsWhereInput | LeaderboardSettingsWhereInput[]
+    id?: StringFilter<"LeaderboardSettings"> | string
+    title?: StringFilter<"LeaderboardSettings"> | string
+    subtitle?: StringFilter<"LeaderboardSettings"> | string
+    countdownTarget?: DateTimeFilter<"LeaderboardSettings"> | Date | string
+    startDate?: DateTimeNullableFilter<"LeaderboardSettings"> | Date | string | null
+    endDate?: DateTimeNullableFilter<"LeaderboardSettings"> | Date | string | null
+    createdAt?: DateTimeFilter<"LeaderboardSettings"> | Date | string
+    updatedAt?: DateTimeFilter<"LeaderboardSettings"> | Date | string
+    prizeTiers?: LeaderboardPrizeTierListRelationFilter
+  }
+
+  export type LeaderboardSettingsOrderByWithRelationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    subtitle?: SortOrder
+    countdownTarget?: SortOrder
+    startDate?: SortOrderInput | SortOrder
+    endDate?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    prizeTiers?: LeaderboardPrizeTierOrderByRelationAggregateInput
+  }
+
+  export type LeaderboardSettingsWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: LeaderboardSettingsWhereInput | LeaderboardSettingsWhereInput[]
+    OR?: LeaderboardSettingsWhereInput[]
+    NOT?: LeaderboardSettingsWhereInput | LeaderboardSettingsWhereInput[]
+    title?: StringFilter<"LeaderboardSettings"> | string
+    subtitle?: StringFilter<"LeaderboardSettings"> | string
+    countdownTarget?: DateTimeFilter<"LeaderboardSettings"> | Date | string
+    startDate?: DateTimeNullableFilter<"LeaderboardSettings"> | Date | string | null
+    endDate?: DateTimeNullableFilter<"LeaderboardSettings"> | Date | string | null
+    createdAt?: DateTimeFilter<"LeaderboardSettings"> | Date | string
+    updatedAt?: DateTimeFilter<"LeaderboardSettings"> | Date | string
+    prizeTiers?: LeaderboardPrizeTierListRelationFilter
+  }, "id">
+
+  export type LeaderboardSettingsOrderByWithAggregationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    subtitle?: SortOrder
+    countdownTarget?: SortOrder
+    startDate?: SortOrderInput | SortOrder
+    endDate?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: LeaderboardSettingsCountOrderByAggregateInput
+    _max?: LeaderboardSettingsMaxOrderByAggregateInput
+    _min?: LeaderboardSettingsMinOrderByAggregateInput
+  }
+
+  export type LeaderboardSettingsScalarWhereWithAggregatesInput = {
+    AND?: LeaderboardSettingsScalarWhereWithAggregatesInput | LeaderboardSettingsScalarWhereWithAggregatesInput[]
+    OR?: LeaderboardSettingsScalarWhereWithAggregatesInput[]
+    NOT?: LeaderboardSettingsScalarWhereWithAggregatesInput | LeaderboardSettingsScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"LeaderboardSettings"> | string
+    title?: StringWithAggregatesFilter<"LeaderboardSettings"> | string
+    subtitle?: StringWithAggregatesFilter<"LeaderboardSettings"> | string
+    countdownTarget?: DateTimeWithAggregatesFilter<"LeaderboardSettings"> | Date | string
+    startDate?: DateTimeNullableWithAggregatesFilter<"LeaderboardSettings"> | Date | string | null
+    endDate?: DateTimeNullableWithAggregatesFilter<"LeaderboardSettings"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"LeaderboardSettings"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"LeaderboardSettings"> | Date | string
+  }
+
+  export type LeaderboardPrizeTierWhereInput = {
+    AND?: LeaderboardPrizeTierWhereInput | LeaderboardPrizeTierWhereInput[]
+    OR?: LeaderboardPrizeTierWhereInput[]
+    NOT?: LeaderboardPrizeTierWhereInput | LeaderboardPrizeTierWhereInput[]
+    id?: StringFilter<"LeaderboardPrizeTier"> | string
+    leaderboardId?: StringFilter<"LeaderboardPrizeTier"> | string
+    place?: IntFilter<"LeaderboardPrizeTier"> | number
+    prize?: IntFilter<"LeaderboardPrizeTier"> | number
+    leaderboard?: XOR<LeaderboardSettingsScalarRelationFilter, LeaderboardSettingsWhereInput>
+  }
+
+  export type LeaderboardPrizeTierOrderByWithRelationInput = {
+    id?: SortOrder
+    leaderboardId?: SortOrder
+    place?: SortOrder
+    prize?: SortOrder
+    leaderboard?: LeaderboardSettingsOrderByWithRelationInput
+  }
+
+  export type LeaderboardPrizeTierWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    leaderboardId_place?: LeaderboardPrizeTierLeaderboardIdPlaceCompoundUniqueInput
+    AND?: LeaderboardPrizeTierWhereInput | LeaderboardPrizeTierWhereInput[]
+    OR?: LeaderboardPrizeTierWhereInput[]
+    NOT?: LeaderboardPrizeTierWhereInput | LeaderboardPrizeTierWhereInput[]
+    leaderboardId?: StringFilter<"LeaderboardPrizeTier"> | string
+    place?: IntFilter<"LeaderboardPrizeTier"> | number
+    prize?: IntFilter<"LeaderboardPrizeTier"> | number
+    leaderboard?: XOR<LeaderboardSettingsScalarRelationFilter, LeaderboardSettingsWhereInput>
+  }, "id" | "leaderboardId_place">
+
+  export type LeaderboardPrizeTierOrderByWithAggregationInput = {
+    id?: SortOrder
+    leaderboardId?: SortOrder
+    place?: SortOrder
+    prize?: SortOrder
+    _count?: LeaderboardPrizeTierCountOrderByAggregateInput
+    _avg?: LeaderboardPrizeTierAvgOrderByAggregateInput
+    _max?: LeaderboardPrizeTierMaxOrderByAggregateInput
+    _min?: LeaderboardPrizeTierMinOrderByAggregateInput
+    _sum?: LeaderboardPrizeTierSumOrderByAggregateInput
+  }
+
+  export type LeaderboardPrizeTierScalarWhereWithAggregatesInput = {
+    AND?: LeaderboardPrizeTierScalarWhereWithAggregatesInput | LeaderboardPrizeTierScalarWhereWithAggregatesInput[]
+    OR?: LeaderboardPrizeTierScalarWhereWithAggregatesInput[]
+    NOT?: LeaderboardPrizeTierScalarWhereWithAggregatesInput | LeaderboardPrizeTierScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"LeaderboardPrizeTier"> | string
+    leaderboardId?: StringWithAggregatesFilter<"LeaderboardPrizeTier"> | string
+    place?: IntWithAggregatesFilter<"LeaderboardPrizeTier"> | number
+    prize?: IntWithAggregatesFilter<"LeaderboardPrizeTier"> | number
+  }
+
   export type UserCreateInput = {
     id?: string
     kick_user_id?: string | null
@@ -3662,13 +7396,13 @@ export namespace Prisma {
     refresh_token?: string | null
     kick_token_expires_at?: Date | string | null
     points?: number
-    display_name?: string | null
-    bio?: string | null
-    profile_accent?: string | null
     isAdmin?: boolean
     isKickBroadcaster?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    bio?: string | null
+    display_name?: string | null
+    profile_accent?: string | null
   }
 
   export type UserUncheckedCreateInput = {
@@ -3681,13 +7415,13 @@ export namespace Prisma {
     refresh_token?: string | null
     kick_token_expires_at?: Date | string | null
     points?: number
-    display_name?: string | null
-    bio?: string | null
-    profile_accent?: string | null
     isAdmin?: boolean
     isKickBroadcaster?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    bio?: string | null
+    display_name?: string | null
+    profile_accent?: string | null
   }
 
   export type UserUpdateInput = {
@@ -3700,13 +7434,13 @@ export namespace Prisma {
     refresh_token?: NullableStringFieldUpdateOperationsInput | string | null
     kick_token_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     points?: IntFieldUpdateOperationsInput | number
-    display_name?: NullableStringFieldUpdateOperationsInput | string | null
-    bio?: NullableStringFieldUpdateOperationsInput | string | null
-    profile_accent?: NullableStringFieldUpdateOperationsInput | string | null
     isAdmin?: BoolFieldUpdateOperationsInput | boolean
     isKickBroadcaster?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    display_name?: NullableStringFieldUpdateOperationsInput | string | null
+    profile_accent?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type UserUncheckedUpdateInput = {
@@ -3719,13 +7453,13 @@ export namespace Prisma {
     refresh_token?: NullableStringFieldUpdateOperationsInput | string | null
     kick_token_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     points?: IntFieldUpdateOperationsInput | number
-    display_name?: NullableStringFieldUpdateOperationsInput | string | null
-    bio?: NullableStringFieldUpdateOperationsInput | string | null
-    profile_accent?: NullableStringFieldUpdateOperationsInput | string | null
     isAdmin?: BoolFieldUpdateOperationsInput | boolean
     isKickBroadcaster?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    display_name?: NullableStringFieldUpdateOperationsInput | string | null
+    profile_accent?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type UserCreateManyInput = {
@@ -3738,13 +7472,13 @@ export namespace Prisma {
     refresh_token?: string | null
     kick_token_expires_at?: Date | string | null
     points?: number
-    display_name?: string | null
-    bio?: string | null
-    profile_accent?: string | null
     isAdmin?: boolean
     isKickBroadcaster?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    bio?: string | null
+    display_name?: string | null
+    profile_accent?: string | null
   }
 
   export type UserUpdateManyMutationInput = {
@@ -3757,13 +7491,13 @@ export namespace Prisma {
     refresh_token?: NullableStringFieldUpdateOperationsInput | string | null
     kick_token_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     points?: IntFieldUpdateOperationsInput | number
-    display_name?: NullableStringFieldUpdateOperationsInput | string | null
-    bio?: NullableStringFieldUpdateOperationsInput | string | null
-    profile_accent?: NullableStringFieldUpdateOperationsInput | string | null
     isAdmin?: BoolFieldUpdateOperationsInput | boolean
     isKickBroadcaster?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    display_name?: NullableStringFieldUpdateOperationsInput | string | null
+    profile_accent?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -3776,13 +7510,13 @@ export namespace Prisma {
     refresh_token?: NullableStringFieldUpdateOperationsInput | string | null
     kick_token_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     points?: IntFieldUpdateOperationsInput | number
-    display_name?: NullableStringFieldUpdateOperationsInput | string | null
-    bio?: NullableStringFieldUpdateOperationsInput | string | null
-    profile_accent?: NullableStringFieldUpdateOperationsInput | string | null
     isAdmin?: BoolFieldUpdateOperationsInput | boolean
     isKickBroadcaster?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    display_name?: NullableStringFieldUpdateOperationsInput | string | null
+    profile_accent?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type KickRewardCreateInput = {
@@ -3897,6 +7631,198 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type SiteSettingsCreateInput = {
+    id?: string
+    kickUrl: string
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SiteSettingsUncheckedCreateInput = {
+    id?: string
+    kickUrl: string
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SiteSettingsUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kickUrl?: StringFieldUpdateOperationsInput | string
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SiteSettingsUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kickUrl?: StringFieldUpdateOperationsInput | string
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SiteSettingsCreateManyInput = {
+    id?: string
+    kickUrl: string
+    discordUrl?: string | null
+    youtubeUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SiteSettingsUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kickUrl?: StringFieldUpdateOperationsInput | string
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SiteSettingsUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kickUrl?: StringFieldUpdateOperationsInput | string
+    discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LeaderboardSettingsCreateInput = {
+    id?: string
+    title: string
+    subtitle: string
+    countdownTarget: Date | string
+    startDate?: Date | string | null
+    endDate?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    prizeTiers?: LeaderboardPrizeTierCreateNestedManyWithoutLeaderboardInput
+  }
+
+  export type LeaderboardSettingsUncheckedCreateInput = {
+    id?: string
+    title: string
+    subtitle: string
+    countdownTarget: Date | string
+    startDate?: Date | string | null
+    endDate?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    prizeTiers?: LeaderboardPrizeTierUncheckedCreateNestedManyWithoutLeaderboardInput
+  }
+
+  export type LeaderboardSettingsUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    subtitle?: StringFieldUpdateOperationsInput | string
+    countdownTarget?: DateTimeFieldUpdateOperationsInput | Date | string
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    prizeTiers?: LeaderboardPrizeTierUpdateManyWithoutLeaderboardNestedInput
+  }
+
+  export type LeaderboardSettingsUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    subtitle?: StringFieldUpdateOperationsInput | string
+    countdownTarget?: DateTimeFieldUpdateOperationsInput | Date | string
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    prizeTiers?: LeaderboardPrizeTierUncheckedUpdateManyWithoutLeaderboardNestedInput
+  }
+
+  export type LeaderboardSettingsCreateManyInput = {
+    id?: string
+    title: string
+    subtitle: string
+    countdownTarget: Date | string
+    startDate?: Date | string | null
+    endDate?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type LeaderboardSettingsUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    subtitle?: StringFieldUpdateOperationsInput | string
+    countdownTarget?: DateTimeFieldUpdateOperationsInput | Date | string
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LeaderboardSettingsUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    subtitle?: StringFieldUpdateOperationsInput | string
+    countdownTarget?: DateTimeFieldUpdateOperationsInput | Date | string
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LeaderboardPrizeTierCreateInput = {
+    id?: string
+    place: number
+    prize: number
+    leaderboard: LeaderboardSettingsCreateNestedOneWithoutPrizeTiersInput
+  }
+
+  export type LeaderboardPrizeTierUncheckedCreateInput = {
+    id?: string
+    leaderboardId: string
+    place: number
+    prize: number
+  }
+
+  export type LeaderboardPrizeTierUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    place?: IntFieldUpdateOperationsInput | number
+    prize?: IntFieldUpdateOperationsInput | number
+    leaderboard?: LeaderboardSettingsUpdateOneRequiredWithoutPrizeTiersNestedInput
+  }
+
+  export type LeaderboardPrizeTierUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    leaderboardId?: StringFieldUpdateOperationsInput | string
+    place?: IntFieldUpdateOperationsInput | number
+    prize?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type LeaderboardPrizeTierCreateManyInput = {
+    id?: string
+    leaderboardId: string
+    place: number
+    prize: number
+  }
+
+  export type LeaderboardPrizeTierUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    place?: IntFieldUpdateOperationsInput | number
+    prize?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type LeaderboardPrizeTierUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    leaderboardId?: StringFieldUpdateOperationsInput | string
+    place?: IntFieldUpdateOperationsInput | number
+    prize?: IntFieldUpdateOperationsInput | number
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -3980,13 +7906,13 @@ export namespace Prisma {
     refresh_token?: SortOrder
     kick_token_expires_at?: SortOrder
     points?: SortOrder
-    display_name?: SortOrder
-    bio?: SortOrder
-    profile_accent?: SortOrder
     isAdmin?: SortOrder
     isKickBroadcaster?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    bio?: SortOrder
+    display_name?: SortOrder
+    profile_accent?: SortOrder
   }
 
   export type UserAvgOrderByAggregateInput = {
@@ -4003,13 +7929,13 @@ export namespace Prisma {
     refresh_token?: SortOrder
     kick_token_expires_at?: SortOrder
     points?: SortOrder
-    display_name?: SortOrder
-    bio?: SortOrder
-    profile_accent?: SortOrder
     isAdmin?: SortOrder
     isKickBroadcaster?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    bio?: SortOrder
+    display_name?: SortOrder
+    profile_accent?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -4022,13 +7948,13 @@ export namespace Prisma {
     refresh_token?: SortOrder
     kick_token_expires_at?: SortOrder
     points?: SortOrder
-    display_name?: SortOrder
-    bio?: SortOrder
-    profile_accent?: SortOrder
     isAdmin?: SortOrder
     isKickBroadcaster?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    bio?: SortOrder
+    display_name?: SortOrder
+    profile_accent?: SortOrder
   }
 
   export type UserSumOrderByAggregateInput = {
@@ -4226,6 +8152,117 @@ export namespace Prisma {
     _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
+  export type SiteSettingsCountOrderByAggregateInput = {
+    id?: SortOrder
+    kickUrl?: SortOrder
+    discordUrl?: SortOrder
+    youtubeUrl?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SiteSettingsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    kickUrl?: SortOrder
+    discordUrl?: SortOrder
+    youtubeUrl?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SiteSettingsMinOrderByAggregateInput = {
+    id?: SortOrder
+    kickUrl?: SortOrder
+    discordUrl?: SortOrder
+    youtubeUrl?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type LeaderboardPrizeTierListRelationFilter = {
+    every?: LeaderboardPrizeTierWhereInput
+    some?: LeaderboardPrizeTierWhereInput
+    none?: LeaderboardPrizeTierWhereInput
+  }
+
+  export type LeaderboardPrizeTierOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type LeaderboardSettingsCountOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    subtitle?: SortOrder
+    countdownTarget?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type LeaderboardSettingsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    subtitle?: SortOrder
+    countdownTarget?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type LeaderboardSettingsMinOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    subtitle?: SortOrder
+    countdownTarget?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type LeaderboardSettingsScalarRelationFilter = {
+    is?: LeaderboardSettingsWhereInput
+    isNot?: LeaderboardSettingsWhereInput
+  }
+
+  export type LeaderboardPrizeTierLeaderboardIdPlaceCompoundUniqueInput = {
+    leaderboardId: string
+    place: number
+  }
+
+  export type LeaderboardPrizeTierCountOrderByAggregateInput = {
+    id?: SortOrder
+    leaderboardId?: SortOrder
+    place?: SortOrder
+    prize?: SortOrder
+  }
+
+  export type LeaderboardPrizeTierAvgOrderByAggregateInput = {
+    place?: SortOrder
+    prize?: SortOrder
+  }
+
+  export type LeaderboardPrizeTierMaxOrderByAggregateInput = {
+    id?: SortOrder
+    leaderboardId?: SortOrder
+    place?: SortOrder
+    prize?: SortOrder
+  }
+
+  export type LeaderboardPrizeTierMinOrderByAggregateInput = {
+    id?: SortOrder
+    leaderboardId?: SortOrder
+    place?: SortOrder
+    prize?: SortOrder
+  }
+
+  export type LeaderboardPrizeTierSumOrderByAggregateInput = {
+    place?: SortOrder
+    prize?: SortOrder
+  }
+
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
@@ -4252,6 +8289,62 @@ export namespace Prisma {
 
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
+  }
+
+  export type LeaderboardPrizeTierCreateNestedManyWithoutLeaderboardInput = {
+    create?: XOR<LeaderboardPrizeTierCreateWithoutLeaderboardInput, LeaderboardPrizeTierUncheckedCreateWithoutLeaderboardInput> | LeaderboardPrizeTierCreateWithoutLeaderboardInput[] | LeaderboardPrizeTierUncheckedCreateWithoutLeaderboardInput[]
+    connectOrCreate?: LeaderboardPrizeTierCreateOrConnectWithoutLeaderboardInput | LeaderboardPrizeTierCreateOrConnectWithoutLeaderboardInput[]
+    createMany?: LeaderboardPrizeTierCreateManyLeaderboardInputEnvelope
+    connect?: LeaderboardPrizeTierWhereUniqueInput | LeaderboardPrizeTierWhereUniqueInput[]
+  }
+
+  export type LeaderboardPrizeTierUncheckedCreateNestedManyWithoutLeaderboardInput = {
+    create?: XOR<LeaderboardPrizeTierCreateWithoutLeaderboardInput, LeaderboardPrizeTierUncheckedCreateWithoutLeaderboardInput> | LeaderboardPrizeTierCreateWithoutLeaderboardInput[] | LeaderboardPrizeTierUncheckedCreateWithoutLeaderboardInput[]
+    connectOrCreate?: LeaderboardPrizeTierCreateOrConnectWithoutLeaderboardInput | LeaderboardPrizeTierCreateOrConnectWithoutLeaderboardInput[]
+    createMany?: LeaderboardPrizeTierCreateManyLeaderboardInputEnvelope
+    connect?: LeaderboardPrizeTierWhereUniqueInput | LeaderboardPrizeTierWhereUniqueInput[]
+  }
+
+  export type LeaderboardPrizeTierUpdateManyWithoutLeaderboardNestedInput = {
+    create?: XOR<LeaderboardPrizeTierCreateWithoutLeaderboardInput, LeaderboardPrizeTierUncheckedCreateWithoutLeaderboardInput> | LeaderboardPrizeTierCreateWithoutLeaderboardInput[] | LeaderboardPrizeTierUncheckedCreateWithoutLeaderboardInput[]
+    connectOrCreate?: LeaderboardPrizeTierCreateOrConnectWithoutLeaderboardInput | LeaderboardPrizeTierCreateOrConnectWithoutLeaderboardInput[]
+    upsert?: LeaderboardPrizeTierUpsertWithWhereUniqueWithoutLeaderboardInput | LeaderboardPrizeTierUpsertWithWhereUniqueWithoutLeaderboardInput[]
+    createMany?: LeaderboardPrizeTierCreateManyLeaderboardInputEnvelope
+    set?: LeaderboardPrizeTierWhereUniqueInput | LeaderboardPrizeTierWhereUniqueInput[]
+    disconnect?: LeaderboardPrizeTierWhereUniqueInput | LeaderboardPrizeTierWhereUniqueInput[]
+    delete?: LeaderboardPrizeTierWhereUniqueInput | LeaderboardPrizeTierWhereUniqueInput[]
+    connect?: LeaderboardPrizeTierWhereUniqueInput | LeaderboardPrizeTierWhereUniqueInput[]
+    update?: LeaderboardPrizeTierUpdateWithWhereUniqueWithoutLeaderboardInput | LeaderboardPrizeTierUpdateWithWhereUniqueWithoutLeaderboardInput[]
+    updateMany?: LeaderboardPrizeTierUpdateManyWithWhereWithoutLeaderboardInput | LeaderboardPrizeTierUpdateManyWithWhereWithoutLeaderboardInput[]
+    deleteMany?: LeaderboardPrizeTierScalarWhereInput | LeaderboardPrizeTierScalarWhereInput[]
+  }
+
+  export type LeaderboardPrizeTierUncheckedUpdateManyWithoutLeaderboardNestedInput = {
+    create?: XOR<LeaderboardPrizeTierCreateWithoutLeaderboardInput, LeaderboardPrizeTierUncheckedCreateWithoutLeaderboardInput> | LeaderboardPrizeTierCreateWithoutLeaderboardInput[] | LeaderboardPrizeTierUncheckedCreateWithoutLeaderboardInput[]
+    connectOrCreate?: LeaderboardPrizeTierCreateOrConnectWithoutLeaderboardInput | LeaderboardPrizeTierCreateOrConnectWithoutLeaderboardInput[]
+    upsert?: LeaderboardPrizeTierUpsertWithWhereUniqueWithoutLeaderboardInput | LeaderboardPrizeTierUpsertWithWhereUniqueWithoutLeaderboardInput[]
+    createMany?: LeaderboardPrizeTierCreateManyLeaderboardInputEnvelope
+    set?: LeaderboardPrizeTierWhereUniqueInput | LeaderboardPrizeTierWhereUniqueInput[]
+    disconnect?: LeaderboardPrizeTierWhereUniqueInput | LeaderboardPrizeTierWhereUniqueInput[]
+    delete?: LeaderboardPrizeTierWhereUniqueInput | LeaderboardPrizeTierWhereUniqueInput[]
+    connect?: LeaderboardPrizeTierWhereUniqueInput | LeaderboardPrizeTierWhereUniqueInput[]
+    update?: LeaderboardPrizeTierUpdateWithWhereUniqueWithoutLeaderboardInput | LeaderboardPrizeTierUpdateWithWhereUniqueWithoutLeaderboardInput[]
+    updateMany?: LeaderboardPrizeTierUpdateManyWithWhereWithoutLeaderboardInput | LeaderboardPrizeTierUpdateManyWithWhereWithoutLeaderboardInput[]
+    deleteMany?: LeaderboardPrizeTierScalarWhereInput | LeaderboardPrizeTierScalarWhereInput[]
+  }
+
+  export type LeaderboardSettingsCreateNestedOneWithoutPrizeTiersInput = {
+    create?: XOR<LeaderboardSettingsCreateWithoutPrizeTiersInput, LeaderboardSettingsUncheckedCreateWithoutPrizeTiersInput>
+    connectOrCreate?: LeaderboardSettingsCreateOrConnectWithoutPrizeTiersInput
+    connect?: LeaderboardSettingsWhereUniqueInput
+  }
+
+  export type LeaderboardSettingsUpdateOneRequiredWithoutPrizeTiersNestedInput = {
+    create?: XOR<LeaderboardSettingsCreateWithoutPrizeTiersInput, LeaderboardSettingsUncheckedCreateWithoutPrizeTiersInput>
+    connectOrCreate?: LeaderboardSettingsCreateOrConnectWithoutPrizeTiersInput
+    upsert?: LeaderboardSettingsUpsertWithoutPrizeTiersInput
+    connect?: LeaderboardSettingsWhereUniqueInput
+    update?: XOR<XOR<LeaderboardSettingsUpdateToOneWithWhereWithoutPrizeTiersInput, LeaderboardSettingsUpdateWithoutPrizeTiersInput>, LeaderboardSettingsUncheckedUpdateWithoutPrizeTiersInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -4449,6 +8542,138 @@ export namespace Prisma {
     gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
     gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type LeaderboardPrizeTierCreateWithoutLeaderboardInput = {
+    id?: string
+    place: number
+    prize: number
+  }
+
+  export type LeaderboardPrizeTierUncheckedCreateWithoutLeaderboardInput = {
+    id?: string
+    place: number
+    prize: number
+  }
+
+  export type LeaderboardPrizeTierCreateOrConnectWithoutLeaderboardInput = {
+    where: LeaderboardPrizeTierWhereUniqueInput
+    create: XOR<LeaderboardPrizeTierCreateWithoutLeaderboardInput, LeaderboardPrizeTierUncheckedCreateWithoutLeaderboardInput>
+  }
+
+  export type LeaderboardPrizeTierCreateManyLeaderboardInputEnvelope = {
+    data: LeaderboardPrizeTierCreateManyLeaderboardInput | LeaderboardPrizeTierCreateManyLeaderboardInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type LeaderboardPrizeTierUpsertWithWhereUniqueWithoutLeaderboardInput = {
+    where: LeaderboardPrizeTierWhereUniqueInput
+    update: XOR<LeaderboardPrizeTierUpdateWithoutLeaderboardInput, LeaderboardPrizeTierUncheckedUpdateWithoutLeaderboardInput>
+    create: XOR<LeaderboardPrizeTierCreateWithoutLeaderboardInput, LeaderboardPrizeTierUncheckedCreateWithoutLeaderboardInput>
+  }
+
+  export type LeaderboardPrizeTierUpdateWithWhereUniqueWithoutLeaderboardInput = {
+    where: LeaderboardPrizeTierWhereUniqueInput
+    data: XOR<LeaderboardPrizeTierUpdateWithoutLeaderboardInput, LeaderboardPrizeTierUncheckedUpdateWithoutLeaderboardInput>
+  }
+
+  export type LeaderboardPrizeTierUpdateManyWithWhereWithoutLeaderboardInput = {
+    where: LeaderboardPrizeTierScalarWhereInput
+    data: XOR<LeaderboardPrizeTierUpdateManyMutationInput, LeaderboardPrizeTierUncheckedUpdateManyWithoutLeaderboardInput>
+  }
+
+  export type LeaderboardPrizeTierScalarWhereInput = {
+    AND?: LeaderboardPrizeTierScalarWhereInput | LeaderboardPrizeTierScalarWhereInput[]
+    OR?: LeaderboardPrizeTierScalarWhereInput[]
+    NOT?: LeaderboardPrizeTierScalarWhereInput | LeaderboardPrizeTierScalarWhereInput[]
+    id?: StringFilter<"LeaderboardPrizeTier"> | string
+    leaderboardId?: StringFilter<"LeaderboardPrizeTier"> | string
+    place?: IntFilter<"LeaderboardPrizeTier"> | number
+    prize?: IntFilter<"LeaderboardPrizeTier"> | number
+  }
+
+  export type LeaderboardSettingsCreateWithoutPrizeTiersInput = {
+    id?: string
+    title: string
+    subtitle: string
+    countdownTarget: Date | string
+    startDate?: Date | string | null
+    endDate?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type LeaderboardSettingsUncheckedCreateWithoutPrizeTiersInput = {
+    id?: string
+    title: string
+    subtitle: string
+    countdownTarget: Date | string
+    startDate?: Date | string | null
+    endDate?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type LeaderboardSettingsCreateOrConnectWithoutPrizeTiersInput = {
+    where: LeaderboardSettingsWhereUniqueInput
+    create: XOR<LeaderboardSettingsCreateWithoutPrizeTiersInput, LeaderboardSettingsUncheckedCreateWithoutPrizeTiersInput>
+  }
+
+  export type LeaderboardSettingsUpsertWithoutPrizeTiersInput = {
+    update: XOR<LeaderboardSettingsUpdateWithoutPrizeTiersInput, LeaderboardSettingsUncheckedUpdateWithoutPrizeTiersInput>
+    create: XOR<LeaderboardSettingsCreateWithoutPrizeTiersInput, LeaderboardSettingsUncheckedCreateWithoutPrizeTiersInput>
+    where?: LeaderboardSettingsWhereInput
+  }
+
+  export type LeaderboardSettingsUpdateToOneWithWhereWithoutPrizeTiersInput = {
+    where?: LeaderboardSettingsWhereInput
+    data: XOR<LeaderboardSettingsUpdateWithoutPrizeTiersInput, LeaderboardSettingsUncheckedUpdateWithoutPrizeTiersInput>
+  }
+
+  export type LeaderboardSettingsUpdateWithoutPrizeTiersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    subtitle?: StringFieldUpdateOperationsInput | string
+    countdownTarget?: DateTimeFieldUpdateOperationsInput | Date | string
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LeaderboardSettingsUncheckedUpdateWithoutPrizeTiersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    subtitle?: StringFieldUpdateOperationsInput | string
+    countdownTarget?: DateTimeFieldUpdateOperationsInput | Date | string
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LeaderboardPrizeTierCreateManyLeaderboardInput = {
+    id?: string
+    place: number
+    prize: number
+  }
+
+  export type LeaderboardPrizeTierUpdateWithoutLeaderboardInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    place?: IntFieldUpdateOperationsInput | number
+    prize?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type LeaderboardPrizeTierUncheckedUpdateWithoutLeaderboardInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    place?: IntFieldUpdateOperationsInput | number
+    prize?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type LeaderboardPrizeTierUncheckedUpdateManyWithoutLeaderboardInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    place?: IntFieldUpdateOperationsInput | number
+    prize?: IntFieldUpdateOperationsInput | number
   }
 
 
