@@ -1,8 +1,28 @@
+// FILE: src/app/(public)/leaderboard/page.tsx
+
 import { PageHero } from "@/components/ui/PageHero";
 import { CountdownTimer } from "@/components/leaderboard/CountdownTimer";
 import { TopThreeCards } from "@/components/leaderboard/TopThreeCards";
 import { prisma } from "@/lib/prisma";
-import { dataRepository } from "@/lib/data/repository";
+import { getRoobetLeaderboard } from "@/lib/roobet";
+
+type RawLeaderboardEntry = {
+  id?: string | number;
+  userId?: string | number;
+  username?: string;
+  name?: string;
+  wagered?: number;
+  wager?: number;
+  amount?: number;
+};
+
+type LeaderboardEntry = {
+  id: string | number;
+  rank: number;
+  username: string;
+  wageredTotal: number;
+  prize: number | null;
+};
 
 export default async function LeaderboardPage() {
   const settings = await prisma.leaderboardSettings.findUnique({
@@ -14,7 +34,38 @@ export default async function LeaderboardPage() {
     },
   });
 
-  const entries = dataRepository.getLeaderboardEntries();
+  let entries: LeaderboardEntry[] = [];
+
+  try {
+    const raw = await getRoobetLeaderboard();
+
+    const source: RawLeaderboardEntry[] = Array.isArray(raw)
+      ? raw
+      : Array.isArray((raw as { entries?: RawLeaderboardEntry[] })?.entries)
+      ? (raw as { entries: RawLeaderboardEntry[] }).entries
+      : Array.isArray((raw as { data?: RawLeaderboardEntry[] })?.data)
+      ? (raw as { data: RawLeaderboardEntry[] }).data
+      : [];
+
+    entries = source.map((item, index) => ({
+      id: item.id ?? item.userId ?? `${item.username ?? item.name ?? "user"}-${index}`,
+      rank: index + 1,
+      username: item.username ?? item.name ?? "Unknown",
+      wageredTotal:
+        typeof item.wagered === "number"
+          ? item.wagered
+          : typeof item.wager === "number"
+          ? item.wager
+          : typeof item.amount === "number"
+          ? item.amount
+          : 0,
+      prize: settings?.prizeTiers?.find((tier) => tier.place === index + 1)?.amount ?? null,
+    }));
+  } catch (error) {
+    console.error("Roobet leaderboard failed on leaderboard page:", error);
+    entries = [];
+  }
+
   const topThree = entries.slice(0, 3);
   const remaining = entries.slice(3);
 
@@ -24,16 +75,12 @@ export default async function LeaderboardPage() {
     "Top grinders earn premium payouts before the weekly reset. Every wager matters.";
 
   const countdownTarget =
-    settings?.countdownTarget.toISOString().slice(0, 16) ||
+    settings?.countdownTarget?.toISOString().slice(0, 16) ||
     new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16);
 
   return (
     <div className="space-y-8">
-      <PageHero
-        eyebrow="Leaderboard"
-        title={title}
-        description={subtitle}
-      />
+      <PageHero eyebrow="Leaderboard" title={title} description={subtitle} />
 
       <div className="mx-auto w-full max-w-[1200px]">
         <CountdownTimer target={countdownTarget} />
@@ -59,30 +106,30 @@ export default async function LeaderboardPage() {
           </div>
 
           <div className="divide-y divide-white/10">
-            {remaining.map((entry: any, index: number) => (
-              <div
-                key={entry.id ?? `${entry.username}-${index}`}
-                className="grid grid-cols-[80px_minmax(0,1fr)_180px] items-center px-4 py-4 text-sm"
-              >
-                <div className="font-semibold text-white">#{index + 4}</div>
+            {remaining.length > 0 ? (
+              remaining.map((entry) => (
+                <div
+                  key={entry.id}
+                  className="grid grid-cols-[80px_minmax(0,1fr)_180px] items-center px-4 py-4 text-sm"
+                >
+                  <div className="font-semibold text-white">#{entry.rank}</div>
 
-                <div className="min-w-0">
-                  <div className="truncate font-semibold text-white">
-                    {entry.username ?? entry.name ?? "Unknown"}
+                  <div className="min-w-0">
+                    <div className="truncate font-semibold text-white">
+                      {entry.username}
+                    </div>
+                  </div>
+
+                  <div className="text-right font-semibold text-zinc-200">
+                    ${entry.wageredTotal.toLocaleString()}
                   </div>
                 </div>
-
-                <div className="text-right font-semibold text-zinc-200">
-                  {typeof entry.wagered === "number"
-                    ? `$${entry.wagered.toLocaleString()}`
-                    : typeof entry.wager === "number"
-                    ? `$${entry.wager.toLocaleString()}`
-                    : typeof entry.amount === "number"
-                    ? `$${entry.amount.toLocaleString()}`
-                    : "$0"}
-                </div>
+              ))
+            ) : (
+              <div className="px-4 py-8 text-center text-sm text-zinc-400">
+                No leaderboard entries available right now.
               </div>
-            ))}
+            )}
           </div>
         </div>
       </section>

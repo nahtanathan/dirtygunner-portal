@@ -1,6 +1,9 @@
+// FILE: src/components/layout/PageShell.tsx
+
 import type { ReactNode } from "react";
 import AppSidebar from "@/components/navigation/AppSidebar";
 import MobileNav from "@/components/navigation/MobileNav";
+import { HeaderAuth } from "@/components/layout/header-auth";
 
 type PageShellProps = {
   children: ReactNode;
@@ -8,34 +11,26 @@ type PageShellProps = {
 
 export default function PageShell({ children }: PageShellProps) {
   return (
-    <div className="min-h-screen" style={{ background: "var(--bg-main)" }}>
-      <AppSidebar />
-      <MobileNav />
+    <div className="min-h-screen bg-[#020817] text-white">
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-[300px] lg:block">
+        <AppSidebar />
+      </aside>
 
-      <main className="min-h-screen md:pl-[286px]">
-        <div className="relative">
-          <div className="pointer-events-none absolute inset-0 overflow-hidden">
-            <div
-              className="absolute left-[-140px] top-[-120px] h-[380px] w-[380px] rounded-full blur-3xl"
-              style={{ background: "rgba(59,130,246,0.09)" }}
-            />
-            <div
-              className="absolute right-[-100px] top-[8%] h-[320px] w-[320px] rounded-full blur-3xl"
-              style={{ background: "rgba(34,211,238,0.06)" }}
-            />
-            <div
-              className="absolute bottom-[-140px] left-[18%] h-[280px] w-[280px] rounded-full blur-3xl"
-              style={{ background: "rgba(59,130,246,0.05)" }}
-            />
-          </div>
+      <div className="flex min-h-screen flex-col lg:ml-[300px]">
+        <div className="lg:hidden">
+          <MobileNav />
+        </div>
 
-          <div className="relative w-full pb-10 pt-4 md:pb-14 md:pt-8">
-            <div className="mx-auto w-full max-w-[1400px] px-4 md:px-6 xl:px-8">
-              {children}
-            </div>
+        <div className="pointer-events-none fixed right-4 top-4 z-50 lg:right-6 lg:top-5">
+          <div className="pointer-events-auto">
+            <HeaderAuth />
           </div>
         </div>
-      </main>
+
+        <main className="min-h-screen flex-1 overflow-x-hidden bg-[#020817] px-4 pb-6 pt-20 sm:px-6 lg:px-8 lg:pb-8 lg:pt-24">
+          {children}
+        </main>
+      </div>
     </div>
   );
 }

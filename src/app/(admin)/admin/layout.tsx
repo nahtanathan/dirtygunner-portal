@@ -1,9 +1,12 @@
-import { AdminShell } from "@/components/admin/AdminShell";
+// FILE: src/app/(admin)/admin/layout.tsx
+
+import type { ReactNode } from "react";
+import PageShell from "@/components/layout/PageShell";
 
 export default function AdminLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
-  return <AdminShell>{children}</AdminShell>;
+  return <PageShell>{children}</PageShell>;
 }
