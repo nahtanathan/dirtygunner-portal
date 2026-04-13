@@ -1,6 +1,7 @@
 // FILE: src/app/(public)/raffles/page.tsx
 
 import Link from "next/link";
+import { unstable_noStore as noStore } from "next/cache";
 import {
   ChevronLeft,
   ChevronRight,
@@ -13,6 +14,9 @@ import {
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { PageHero } from "@/components/ui/PageHero";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 type PrismaRaffle = {
   id: string;
@@ -44,12 +48,24 @@ type DisplayRaffle = {
 };
 
 export default async function RafflesPage() {
+  noStore();
+
   let raffles: DisplayRaffle[] = [];
 
   try {
     const rows = await prisma.raffle.findMany({
       orderBy: [{ status: "asc" }, { endDate: "asc" }, { createdAt: "desc" }],
     });
+
+    console.log(
+      "Public raffles page rows:",
+      rows.map((row) => ({
+        id: row.id,
+        title: row.title,
+        status: row.status,
+        endDate: row.endDate,
+      })),
+    );
 
     raffles = rows.map(normalizeRaffle);
   } catch (error) {
@@ -173,12 +189,14 @@ export default async function RafflesPage() {
 }
 
 function normalizeRaffle(item: PrismaRaffle): DisplayRaffle {
+  const normalizedStatus = item.status === "active" ? "active" : "ended";
+
   return {
     id: item.id,
     title: item.title,
     description: item.description ?? "",
     image: item.image,
-    status: item.status === "active" ? "active" : "ended",
+    status: normalizedStatus,
     entryMethod: item.entryMethod,
     totalEntries: item.totalEntries,
     startDate: item.startDate.toISOString(),
@@ -192,6 +210,7 @@ function normalizeRaffle(item: PrismaRaffle): DisplayRaffle {
 function inferWinnerCount(prizeDetails: string) {
   const match = prizeDetails.match(/(\d+)\s*winners?/i);
   if (!match) return 1;
+
   const value = Number(match[1]);
   return Number.isFinite(value) && value > 0 ? value : 1;
 }

@@ -1,4 +1,4 @@
-// FILE: src/app/admin/page.tsx
+// FILE: src/app/(admin)/admin/page.tsx
 
 "use client";
 
@@ -23,8 +23,27 @@ const raffleSchema = z.object({
   image: z.string().nullable().optional(),
 });
 
+function createEmptyRaffle(): Raffle {
+  return {
+    id: crypto.randomUUID(),
+    title: "",
+    description: "",
+    status: "active",
+    entryMethod: "Join for Free",
+    totalEntries: 0,
+    startDate: new Date().toISOString().slice(0, 16),
+    endDate: new Date(Date.now() + 24 * 60 * 60 * 1000)
+      .toISOString()
+      .slice(0, 16),
+    prizeDetails: "",
+    winner: null,
+    image: "",
+  };
+}
+
 export default function AdminPage() {
   const [raffles, setRaffles] = useState<Raffle[]>([]);
+  const [emptyRaffle, setEmptyRaffle] = useState<Raffle>(createEmptyRaffle());
 
   useEffect(() => {
     void loadRaffles();
@@ -49,10 +68,7 @@ export default function AdminPage() {
           label="Active Raffles"
           value={String(raffles.filter((item) => item.status === "active").length)}
         />
-        <AdminStatCard
-          label="Total Raffles"
-          value={String(raffles.length)}
-        />
+        <AdminStatCard label="Total Raffles" value={String(raffles.length)} />
         <AdminStatCard
           label="Backend Status"
           value="Prisma Live"
@@ -65,23 +81,16 @@ export default function AdminPage() {
         description="Create and manage raffles"
         items={raffles}
         schema={raffleSchema}
-        emptyValue={{
-          id: crypto.randomUUID(),
-          title: "",
-          description: "",
-          status: "active",
-          entryMethod: "Join for Free",
-          totalEntries: 0,
-          startDate: new Date().toISOString().slice(0, 16),
-          endDate: new Date().toISOString().slice(0, 16),
-          prizeDetails: "",
-          winner: null,
-          image: "",
-        }}
+        emptyValue={emptyRaffle}
         fields={[
           { name: "title", label: "Title" },
           { name: "description", label: "Description", type: "textarea" },
-          { name: "status", label: "Status", type: "select", options: ["active", "ended"] },
+          {
+            name: "status",
+            label: "Status",
+            type: "select",
+            options: ["active", "ended"],
+          },
           { name: "entryMethod", label: "Button Text" },
           { name: "totalEntries", label: "Entries", type: "number" },
           { name: "startDate", label: "Start Date", type: "datetime-local" },
@@ -91,25 +100,48 @@ export default function AdminPage() {
           { name: "image", label: "Image URL", type: "url" },
         ]}
         onSave={async (raffle) => {
-          await fetch("/api/raffles", {
+          const payload = {
+            ...raffle,
+            description: raffle.description || "",
+            image: raffle.image || null,
+            winner: raffle.winner || null,
+            startDate: new Date(raffle.startDate).toISOString(),
+            endDate: new Date(raffle.endDate).toISOString(),
+          };
+
+          const res = await fetch("/api/raffles", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(raffle),
+            body: JSON.stringify(payload),
           });
 
+          if (!res.ok) {
+            const text = await res.text();
+            throw new Error(text || "Failed to save raffle");
+          }
+
           await loadRaffles();
+          setEmptyRaffle(createEmptyRaffle());
         }}
         onDelete={async (id) => {
-          await fetch("/api/raffles", {
+          const res = await fetch("/api/raffles", {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ id }),
           });
 
+          if (!res.ok) {
+            const text = await res.text();
+            throw new Error(text || "Failed to delete raffle");
+          }
+
           await loadRaffles();
+          setEmptyRaffle(createEmptyRaffle());
         }}
         renderMeta={(item) =>
-          `${item.status} • ${item.totalEntries} entries • ends ${new Date(item.endDate).toLocaleString()}`
+          `${item.status} • ${item.totalEntries} entries • ends ${new Date(
+            item.endDate,
+          ).toLocaleString()}`
         }
       />
     </div>

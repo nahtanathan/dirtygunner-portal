@@ -9166,7 +9166,7 @@ export namespace Prisma {
   }
 
   export type RaffleCreateInput = {
-    id?: string
+    id: string
     title: string
     description?: string | null
     image?: string | null
@@ -9182,7 +9182,7 @@ export namespace Prisma {
   }
 
   export type RaffleUncheckedCreateInput = {
-    id?: string
+    id: string
     title: string
     description?: string | null
     image?: string | null
@@ -9230,7 +9230,7 @@ export namespace Prisma {
   }
 
   export type RaffleCreateManyInput = {
-    id?: string
+    id: string
     title: string
     description?: string | null
     image?: string | null

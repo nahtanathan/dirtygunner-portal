@@ -1,21 +1,25 @@
-'use client';
+// FILE: src/components/admin/AdminResourceManager.tsx
 
-import { ReactNode, useMemo, useState } from 'react';
-import { FieldValues, Path, useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { ZodType } from 'zod';
-import { PremiumPanel } from '@/components/ui/PremiumPanel';
-import { Toast } from '@/components/admin/Toast';
-import { useToast } from '@/components/admin/useToast';
+"use client";
+
+import { ReactNode, useMemo, useState } from "react";
+import { FieldValues, Path, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ZodType } from "zod";
+import { PremiumPanel } from "@/components/ui/PremiumPanel";
+import { Toast } from "@/components/admin/Toast";
+import { useToast } from "@/components/admin/useToast";
 
 type FieldConfig<T extends FieldValues> = {
   name: Path<T>;
   label: string;
-  type?: 'text' | 'number' | 'textarea' | 'datetime-local' | 'select' | 'url';
+  type?: "text" | "number" | "textarea" | "datetime-local" | "select" | "url";
   options?: string[];
 };
 
-export function AdminResourceManager<T extends FieldValues & { id: string; title?: string }>({
+export function AdminResourceManager<
+  T extends FieldValues & { id: string; title?: string }
+>({
   title,
   description,
   items,
@@ -32,11 +36,13 @@ export function AdminResourceManager<T extends FieldValues & { id: string; title
   schema: ZodType<T>;
   emptyValue: T;
   fields: FieldConfig<T>[];
-  onSave: (value: T) => void;
-  onDelete: (id: string) => void;
+  onSave: (value: T) => Promise<void>;
+  onDelete: (id: string) => Promise<void>;
   renderMeta?: (item: T) => ReactNode;
 }) {
   const [editing, setEditing] = useState<T>(emptyValue);
+  const [isSaving, setIsSaving] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const { message, showToast } = useToast();
 
   const form = useForm<T>({
@@ -46,14 +52,22 @@ export function AdminResourceManager<T extends FieldValues & { id: string; title
 
   const isEditingExisting = useMemo(
     () => items.some((item) => item.id === editing.id),
-    [items, editing.id]
+    [items, editing.id],
   );
 
-  const submit = form.handleSubmit((values) => {
-    onSave(values);
-    showToast(isEditingExisting ? `${title} updated` : `${title} created`);
-    setEditing(emptyValue);
-    form.reset(emptyValue);
+  const submit = form.handleSubmit(async (values) => {
+    try {
+      setIsSaving(true);
+      await onSave(values);
+      showToast(isEditingExisting ? `${title} updated` : `${title} created`);
+      setEditing(emptyValue);
+      form.reset(emptyValue);
+    } catch (error) {
+      console.error(`Failed to save ${title}:`, error);
+      showToast(`Failed to save ${title}`);
+    } finally {
+      setIsSaving(false);
+    }
   });
 
   return (
@@ -70,11 +84,18 @@ export function AdminResourceManager<T extends FieldValues & { id: string; title
 
         <div className="space-y-3">
           {items.map((item) => (
-            <div key={item.id} className="rounded-2xl border border-white/10 bg-black/20 p-4">
+            <div
+              key={item.id}
+              className="rounded-2xl border border-white/10 bg-black/20 p-4"
+            >
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <div className="text-lg font-semibold text-white">{item.title ?? item.id}</div>
-                  <div className="mt-1 text-sm text-silver/60">{renderMeta?.(item)}</div>
+                  <div className="text-lg font-semibold text-white">
+                    {item.title ?? item.id}
+                  </div>
+                  <div className="mt-1 text-sm text-silver/60">
+                    {renderMeta?.(item)}
+                  </div>
                 </div>
 
                 <div className="flex gap-2">
@@ -85,19 +106,29 @@ export function AdminResourceManager<T extends FieldValues & { id: string; title
                       form.reset(item);
                     }}
                     className="rounded-xl border border-white/10 px-3 py-2 text-sm text-white hover:bg-white/[0.05]"
+                    disabled={isSaving || deletingId === item.id}
                   >
                     Edit
                   </button>
 
                   <button
                     type="button"
-                    onClick={() => {
-                      onDelete(item.id);
-                      showToast(`${title} removed`);
+                    onClick={async () => {
+                      try {
+                        setDeletingId(item.id);
+                        await onDelete(item.id);
+                        showToast(`${title} removed`);
+                      } catch (error) {
+                        console.error(`Failed to delete ${title}:`, error);
+                        showToast(`Failed to delete ${title}`);
+                      } finally {
+                        setDeletingId(null);
+                      }
                     }}
                     className="rounded-xl border border-danger/20 bg-danger/10 px-3 py-2 text-sm text-red-200"
+                    disabled={isSaving || deletingId === item.id}
                   >
-                    Delete
+                    {deletingId === item.id ? "Deleting..." : "Delete"}
                   </button>
                 </div>
               </div>
@@ -113,7 +144,7 @@ export function AdminResourceManager<T extends FieldValues & { id: string; title
               Editor
             </div>
             <h3 className="mt-2 font-display text-2xl font-bold uppercase tracking-wide text-white">
-              {isEditingExisting ? 'Edit Item' : 'Create Item'}
+              {isEditingExisting ? "Edit Item" : "Create Item"}
             </h3>
           </div>
 
@@ -124,6 +155,7 @@ export function AdminResourceManager<T extends FieldValues & { id: string; title
               setEditing(emptyValue);
               form.reset(emptyValue);
             }}
+            disabled={isSaving}
           >
             Reset
           </button>
@@ -136,13 +168,13 @@ export function AdminResourceManager<T extends FieldValues & { id: string; title
                 {field.label}
               </label>
 
-              {field.type === 'textarea' ? (
+              {field.type === "textarea" ? (
                 <textarea
                   {...form.register(field.name)}
                   rows={4}
                   className="w-full rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-white outline-none transition focus:border-electric/40"
                 />
-              ) : field.type === 'select' ? (
+              ) : field.type === "select" ? (
                 <select
                   {...form.register(field.name)}
                   className="w-full rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-white outline-none transition focus:border-electric/40"
@@ -155,15 +187,20 @@ export function AdminResourceManager<T extends FieldValues & { id: string; title
                 </select>
               ) : (
                 <input
-                  {...form.register(field.name, field.type === 'number' ? { valueAsNumber: true } : undefined)}
-                  type={field.type ?? 'text'}
+                  {...form.register(
+                    field.name,
+                    field.type === "number" ? { valueAsNumber: true } : undefined,
+                  )}
+                  type={field.type ?? "text"}
                   className="w-full rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-white outline-none transition focus:border-electric/40"
                 />
               )}
 
               {form.formState.errors[field.name] ? (
                 <p className="mt-2 text-xs text-red-300">
-                  {String(form.formState.errors[field.name]?.message ?? 'Invalid field')}
+                  {String(
+                    form.formState.errors[field.name]?.message ?? "Invalid field",
+                  )}
                 </p>
               ) : null}
             </div>
@@ -171,9 +208,10 @@ export function AdminResourceManager<T extends FieldValues & { id: string; title
 
           <button
             type="submit"
-            className="w-full rounded-2xl bg-[linear-gradient(135deg,rgba(78,164,255,0.95),rgba(139,92,246,0.9))] px-4 py-3 font-semibold uppercase tracking-[0.2em] text-white shadow-glow"
+            disabled={isSaving}
+            className="w-full rounded-2xl bg-[linear-gradient(135deg,rgba(78,164,255,0.95),rgba(139,92,246,0.9))] px-4 py-3 font-semibold uppercase tracking-[0.2em] text-white shadow-glow disabled:cursor-not-allowed disabled:opacity-60"
           >
-            Save
+            {isSaving ? "Saving..." : "Save"}
           </button>
         </form>
       </PremiumPanel>

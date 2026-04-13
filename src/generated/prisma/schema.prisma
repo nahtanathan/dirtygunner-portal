@@ -76,7 +76,7 @@ model LeaderboardPrizeTier {
 }
 
 model Raffle {
-  id           String   @id @default(cuid())
+  id           String   @id
   title        String
   description  String?
   image        String?
