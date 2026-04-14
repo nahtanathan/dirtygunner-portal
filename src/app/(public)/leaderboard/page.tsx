@@ -10,7 +10,7 @@ type LeaderboardEntry = {
   rank: number;
   username: string;
   wageredTotal: number;
-  prize?: number | null;
+  prize?: number;
 };
 
 export default async function LeaderboardPage() {
@@ -29,17 +29,22 @@ export default async function LeaderboardPage() {
     const raw = await getRoobetLeaderboard();
 
     entries = Array.isArray(raw)
-      ? raw.map((item) => ({
-          rank: typeof item.rank === "number" ? item.rank : 0,
-          username: item.username ?? "Unknown",
-          wageredTotal:
-            typeof item.wageredTotal === "number" ? item.wageredTotal : 0,
-          prize:
-            settings?.prizeTiers?.find((tier) => tier.place === item.rank)
-              ?.prize ??
-            item.prize ??
-            null,
-        }))
+      ? raw.map((item) => {
+          const settingsPrize = settings?.prizeTiers?.find(
+            (tier) => tier.place === item.rank,
+          )?.prize;
+
+          const fallbackPrize =
+            typeof item.prize === "number" ? item.prize : undefined;
+
+          return {
+            rank: typeof item.rank === "number" ? item.rank : 0,
+            username: item.username ?? "Unknown",
+            wageredTotal:
+              typeof item.wageredTotal === "number" ? item.wageredTotal : 0,
+            prize: settingsPrize ?? fallbackPrize,
+          };
+        })
       : [];
   } catch (error) {
     console.error("Roobet leaderboard failed on leaderboard page:", error);
