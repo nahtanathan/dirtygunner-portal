@@ -19,6 +19,12 @@ function sha256Base64Url(input: string) {
 export async function GET() {
   const { KICK_CLIENT_ID, KICK_REDIRECT_URI } = requireKickAuthEnv();
 
+  console.log("=== KICK LOGIN ROUTE DEBUG ===");
+  console.log("KICK_CLIENT_ID:", KICK_CLIENT_ID);
+  console.log("KICK_REDIRECT_URI:", KICK_REDIRECT_URI);
+  console.log("NODE_ENV:", process.env.NODE_ENV);
+  console.log("==============================");
+
   const state = randomString(32);
   const verifier = randomString(64);
   const challenge = sha256Base64Url(verifier);
@@ -35,11 +41,13 @@ export async function GET() {
       "channel:rewards:read",
       "channel:rewards:write",
       "events:subscribe",
-    ].join(" "),
+    ].join(" ")
   );
   url.searchParams.set("state", state);
   url.searchParams.set("code_challenge", challenge);
   url.searchParams.set("code_challenge_method", "S256");
+
+  console.log("KICK AUTHORIZE URL:", url.toString());
 
   const store = await cookies();
 
