@@ -8,6 +8,8 @@ import { dataRepository } from "@/lib/data/repository";
 import { prisma } from "@/lib/prisma";
 import { getRoobetLeaderboard } from "@/lib/roobet";
 
+export const dynamic = "force-dynamic";
+
 export default async function HomePage() {
   let kickUrl = "https://kick.com/dirtygunner";
 
@@ -23,13 +25,22 @@ export default async function HomePage() {
     console.error("Failed to load site settings:", error);
   }
 
-  const leaderboardSettings = await prisma.leaderboardSettings.findUnique({
-    where: { id: "leaderboard-settings" },
-  });
-
-  const countdownTarget =
-    leaderboardSettings?.countdownTarget.toISOString().slice(0, 16) ||
+  let countdownTarget =
     new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16);
+
+  try {
+    const leaderboardSettings = await prisma.leaderboardSettings.findUnique({
+      where: { id: "leaderboard-settings" },
+    });
+
+    if (leaderboardSettings?.countdownTarget) {
+      countdownTarget = leaderboardSettings.countdownTarget
+        .toISOString()
+        .slice(0, 16);
+    }
+  } catch (error) {
+    console.error("Failed to load leaderboard settings:", error);
+  }
 
   let leaderboard: any[] = [];
 
