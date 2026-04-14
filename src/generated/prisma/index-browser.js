@@ -215,11 +215,33 @@ exports.Prisma.ChallengeScalarFieldEnum = {
   title: 'title',
   description: 'description',
   status: 'status',
-  goal: 'goal',
-  currentProgress: 'currentProgress',
+  challengeType: 'challengeType',
+  targetValue: 'targetValue',
+  minBet: 'minBet',
   reward: 'reward',
+  rules: 'rules',
+  slotName: 'slotName',
+  provider: 'provider',
+  imageUrl: 'imageUrl',
+  imageSource: 'imageSource',
+  claimLimit: 'claimLimit',
+  requiresProof: 'requiresProof',
   startDate: 'startDate',
   endDate: 'endDate',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ChallengeClaimScalarFieldEnum = {
+  id: 'id',
+  challengeId: 'challengeId',
+  userId: 'userId',
+  proofImageUrl: 'proofImageUrl',
+  note: 'note',
+  status: 'status',
+  rejectionReason: 'rejectionReason',
+  reviewedAt: 'reviewedAt',
+  reviewedById: 'reviewedById',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -259,7 +281,8 @@ exports.Prisma.ModelName = {
   LeaderboardPrizeTier: 'LeaderboardPrizeTier',
   Raffle: 'Raffle',
   RaffleEntry: 'RaffleEntry',
-  Challenge: 'Challenge'
+  Challenge: 'Challenge',
+  ChallengeClaim: 'ChallengeClaim'
 };
 
 /**

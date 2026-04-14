@@ -1,7 +1,3 @@
-// FILE: src/lib/types.ts
-
-// FILE: src/lib/types.ts
-
 export type SiteSettings = {
   kickUrl: string;
   discordUrl?: string;
@@ -54,18 +50,50 @@ export type Raffle = {
   updatedAt?: string;
 };
 
+export type ChallengeType = "multiplier" | "win_amount";
+export type ChallengeStatus = "active" | "completed";
+export type ChallengeClaimStatus = "none" | "pending" | "approved" | "rejected";
+
 export type Challenge = {
   id: string;
   title: string;
   description?: string | null;
-  status: "active" | "completed";
-  goal: number;
-  currentProgress: number;
+  status: ChallengeStatus;
+  challengeType: ChallengeType;
+  targetValue: number;
+  minBet: number;
   reward: string;
+  rules?: string | null;
+  slotName?: string | null;
+  provider?: string | null;
+  imageUrl?: string | null;
+  imageSource?: string | null;
+  claimLimit: number;
+  approvedClaims: number;
+  pendingClaims: number;
+  remainingClaims: number;
+  requiresProof: boolean;
   startDate: string;
   endDate: string;
   createdAt?: string;
   updatedAt?: string;
+  viewerClaimStatus?: ChallengeClaimStatus;
+};
+
+export type ChallengeClaim = {
+  id: string;
+  challengeId: string;
+  challengeTitle: string;
+  userId: string;
+  userLabel: string;
+  proofImageUrl: string;
+  note?: string | null;
+  status: Exclude<ChallengeClaimStatus, "none">;
+  rejectionReason?: string | null;
+  reviewedAt?: string | null;
+  reviewedByLabel?: string | null;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type BonusHuntBonus = {

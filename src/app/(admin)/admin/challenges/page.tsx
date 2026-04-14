@@ -1,5 +1,3 @@
-// FILE: src/app/(admin)/admin/challenges/page.tsx
-
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -7,6 +5,7 @@ import {
   CheckCircle2,
   Clock3,
   Flag,
+  Image as ImageIcon,
   Loader2,
   Pencil,
   Plus,
@@ -14,6 +13,7 @@ import {
   ShieldAlert,
   Target,
   Trash2,
+  XCircle,
 } from "lucide-react";
 
 type AdminUser = {
@@ -26,13 +26,40 @@ type ChallengeItem = {
   title: string;
   description: string | null;
   status: "active" | "completed";
-  goal: number;
-  currentProgress: number;
+  challengeType: "multiplier" | "win_amount";
+  targetValue: number;
+  minBet: number;
   reward: string;
+  rules: string | null;
+  slotName: string | null;
+  provider: string | null;
+  imageUrl: string | null;
+  imageSource: string | null;
+  claimLimit: number;
+  approvedClaims: number;
+  pendingClaims: number;
+  remainingClaims: number;
+  requiresProof: boolean;
   startDate: string;
   endDate: string;
   createdAt?: string;
   updatedAt?: string;
+};
+
+type ClaimItem = {
+  id: string;
+  challengeId: string;
+  challengeTitle: string;
+  userId: string;
+  userLabel: string;
+  proofImageUrl: string;
+  note: string | null;
+  status: "pending" | "approved" | "rejected";
+  rejectionReason: string | null;
+  reviewedAt: string | null;
+  reviewedByLabel: string | null;
+  createdAt: string;
+  updatedAt: string;
 };
 
 type ChallengeFormState = {
@@ -40,9 +67,16 @@ type ChallengeFormState = {
   title: string;
   description: string;
   status: "active" | "completed";
-  goal: string;
-  currentProgress: string;
+  challengeType: "multiplier" | "win_amount";
+  targetValue: string;
+  minBet: string;
   reward: string;
+  rules: string;
+  slotName: string;
+  provider: string;
+  imageUrl: string;
+  claimLimit: string;
+  requiresProof: boolean;
   startDate: string;
   endDate: string;
 };
@@ -52,9 +86,16 @@ const EMPTY_FORM: ChallengeFormState = {
   title: "",
   description: "",
   status: "active",
-  goal: "1000",
-  currentProgress: "0",
+  challengeType: "multiplier",
+  targetValue: "500",
+  minBet: "0.20",
   reward: "",
+  rules: "",
+  slotName: "",
+  provider: "",
+  imageUrl: "",
+  claimLimit: "1",
+  requiresProof: true,
   startDate: "",
   endDate: "",
 };
@@ -64,10 +105,6 @@ const inputClassName =
 
 const textareaClassName =
   "min-h-[110px] w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/30 focus:border-white/20 focus:bg-white/[0.05]";
-
-function formatNumber(value: number) {
-  return new Intl.NumberFormat("en-US").format(value);
-}
 
 function toLocalDateTimeValue(date: Date) {
   const offset = date.getTimezoneOffset();
@@ -79,9 +116,29 @@ function createChallengeId() {
   return `challenge-${Date.now()}`;
 }
 
-function progressPercent(item: Pick<ChallengeItem, "goal" | "currentProgress">) {
-  if (item.goal <= 0) return 0;
-  return Math.min(Math.round((item.currentProgress / item.goal) * 100), 100);
+function formatDate(value: string) {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "Invalid date";
+  }
+
+  return new Intl.DateTimeFormat(undefined, {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(date);
+}
+
+function formatTarget(type: ChallengeItem["challengeType"], value: number) {
+  if (type === "win_amount") {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      maximumFractionDigits: 2,
+    }).format(value);
+  }
+
+  return `${value.toLocaleString()}x`;
 }
 
 function Field({
@@ -102,19 +159,7 @@ function Field({
 }
 
 async function readApiResponse<T>(res: Response): Promise<T> {
-  const contentType = res.headers.get("content-type") || "";
   const text = await res.text();
-
-  if (!contentType.includes("application/json")) {
-    const trimmed = text.trim();
-    const shortPreview =
-      trimmed.length > 220 ? `${trimmed.slice(0, 220)}...` : trimmed;
-
-    throw new Error(
-      `API did not return JSON. This usually means the route crashed or Prisma is not updated yet. Run: npx prisma generate && npx prisma db push. Response preview: ${shortPreview}`,
-    );
-  }
-
   return JSON.parse(text) as T;
 }
 
@@ -122,11 +167,14 @@ export default function AdminChallengesPage() {
   const [me, setMe] = useState<AdminUser | null>(null);
   const [loadingUser, setLoadingUser] = useState(true);
   const [loadingChallenges, setLoadingChallenges] = useState(true);
+  const [loadingClaims, setLoadingClaims] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [actionChallengeId, setActionChallengeId] = useState<string | null>(null);
+  const [reviewClaimId, setReviewClaimId] = useState<string | null>(null);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [challenges, setChallenges] = useState<ChallengeItem[]>([]);
+  const [claims, setClaims] = useState<ClaimItem[]>([]);
   const [form, setForm] = useState<ChallengeFormState>(EMPTY_FORM);
   const [editingId, setEditingId] = useState<string | null>(null);
 
@@ -150,7 +198,6 @@ export default function AdminChallengesPage() {
 
   async function loadChallenges() {
     setLoadingChallenges(true);
-    setError("");
 
     try {
       const res = await fetch("/api/challenges", {
@@ -180,9 +227,41 @@ export default function AdminChallengesPage() {
     }
   }
 
+  async function loadClaims() {
+    setLoadingClaims(true);
+
+    try {
+      const res = await fetch("/api/admin/challenge-claims", {
+        method: "GET",
+        cache: "no-store",
+      });
+
+      const data = await readApiResponse<ClaimItem[] | { error?: string }>(res);
+
+      if (!res.ok || !Array.isArray(data)) {
+        throw new Error(
+          !Array.isArray(data) && typeof data?.error === "string"
+            ? data.error
+            : "Failed to load claims",
+        );
+      }
+
+      setClaims(data);
+    } catch (fetchError) {
+      setError(
+        fetchError instanceof Error
+          ? fetchError.message
+          : "Failed to load claims",
+      );
+    } finally {
+      setLoadingClaims(false);
+    }
+  }
+
   useEffect(() => {
     void loadUser();
     void loadChallenges();
+    void loadClaims();
   }, []);
 
   const activeChallenges = useMemo(
@@ -190,25 +269,10 @@ export default function AdminChallengesPage() {
     [challenges],
   );
 
-  const completedChallenges = useMemo(
-    () => challenges.filter((item) => item.status === "completed"),
-    [challenges],
+  const pendingClaims = useMemo(
+    () => claims.filter((item) => item.status === "pending"),
+    [claims],
   );
-
-  const totalGoal = useMemo(
-    () => activeChallenges.reduce((sum, item) => sum + item.goal, 0),
-    [activeChallenges],
-  );
-
-  const totalProgress = useMemo(
-    () => activeChallenges.reduce((sum, item) => sum + item.currentProgress, 0),
-    [activeChallenges],
-  );
-
-  const totalPercent =
-    totalGoal > 0
-      ? Math.min(Math.round((totalProgress / totalGoal) * 100), 100)
-      : 0;
 
   function setField<K extends keyof ChallengeFormState>(
     key: K,
@@ -223,8 +287,8 @@ export default function AdminChallengesPage() {
   function resetForm() {
     setForm(EMPTY_FORM);
     setEditingId(null);
-    setError("");
     setMessage("");
+    setError("");
   }
 
   function startCreate() {
@@ -232,16 +296,23 @@ export default function AdminChallengesPage() {
     const inSevenDays = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
 
     setEditingId(null);
-    setError("");
     setMessage("");
+    setError("");
     setForm({
       id: createChallengeId(),
       title: "",
       description: "",
       status: "active",
-      goal: "1000",
-      currentProgress: "0",
+      challengeType: "multiplier",
+      targetValue: "500",
+      minBet: "0.20",
       reward: "",
+      rules: "",
+      slotName: "",
+      provider: "",
+      imageUrl: "",
+      claimLimit: "1",
+      requiresProof: true,
       startDate: toLocalDateTimeValue(now),
       endDate: toLocalDateTimeValue(inSevenDays),
     });
@@ -249,16 +320,23 @@ export default function AdminChallengesPage() {
 
   function startEdit(challenge: ChallengeItem) {
     setEditingId(challenge.id);
-    setError("");
     setMessage("");
+    setError("");
     setForm({
       id: challenge.id,
       title: challenge.title,
       description: challenge.description ?? "",
       status: challenge.status,
-      goal: String(challenge.goal),
-      currentProgress: String(challenge.currentProgress),
+      challengeType: challenge.challengeType,
+      targetValue: String(challenge.targetValue),
+      minBet: String(challenge.minBet),
       reward: challenge.reward,
+      rules: challenge.rules ?? "",
+      slotName: challenge.slotName ?? "",
+      provider: challenge.provider ?? "",
+      imageUrl: challenge.imageUrl ?? "",
+      claimLimit: String(challenge.claimLimit),
+      requiresProof: challenge.requiresProof,
       startDate: toLocalDateTimeValue(new Date(challenge.startDate)),
       endDate: toLocalDateTimeValue(new Date(challenge.endDate)),
     });
@@ -267,8 +345,8 @@ export default function AdminChallengesPage() {
   async function handleSave(event: React.FormEvent) {
     event.preventDefault();
     setIsSaving(true);
-    setError("");
     setMessage("");
+    setError("");
 
     try {
       const payload = {
@@ -276,9 +354,16 @@ export default function AdminChallengesPage() {
         title: form.title.trim(),
         description: form.description.trim() || null,
         status: form.status,
-        goal: Number(form.goal || 0),
-        currentProgress: Number(form.currentProgress || 0),
+        challengeType: form.challengeType,
+        targetValue: Number(form.targetValue || 0),
+        minBet: Number(form.minBet || 0),
         reward: form.reward.trim(),
+        rules: form.rules.trim() || null,
+        slotName: form.slotName.trim() || null,
+        provider: form.provider.trim() || null,
+        imageUrl: form.imageUrl.trim() || null,
+        claimLimit: Number(form.claimLimit || 1),
+        requiresProof: form.requiresProof,
         startDate: new Date(form.startDate).toISOString(),
         endDate: new Date(form.endDate).toISOString(),
       };
@@ -320,8 +405,8 @@ export default function AdminChallengesPage() {
     }
 
     setActionChallengeId(challengeId);
-    setError("");
     setMessage("");
+    setError("");
 
     try {
       const res = await fetch("/api/challenges", {
@@ -343,7 +428,7 @@ export default function AdminChallengesPage() {
       }
 
       setMessage("Challenge deleted.");
-      await loadChallenges();
+      await Promise.all([loadChallenges(), loadClaims()]);
     } catch (deleteError) {
       setError(
         deleteError instanceof Error
@@ -352,6 +437,54 @@ export default function AdminChallengesPage() {
       );
     } finally {
       setActionChallengeId(null);
+    }
+  }
+
+  async function handleReview(
+    claimId: string,
+    action: "approve" | "reject",
+  ) {
+    const rejectionReason =
+      action === "reject"
+        ? window.prompt("Reason for rejection:", "Proof did not meet challenge rules.")
+        : null;
+
+    if (action === "reject" && rejectionReason === null) {
+      return;
+    }
+
+    setReviewClaimId(claimId);
+    setMessage("");
+    setError("");
+
+    try {
+      const res = await fetch(`/api/admin/challenge-claims/${claimId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          action,
+          rejectionReason,
+        }),
+      });
+
+      const data = await readApiResponse<{ error?: string }>(res);
+
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to review claim");
+      }
+
+      setMessage(action === "approve" ? "Claim approved." : "Claim rejected.");
+      await Promise.all([loadChallenges(), loadClaims()]);
+    } catch (reviewError) {
+      setError(
+        reviewError instanceof Error
+          ? reviewError.message
+          : "Failed to review claim",
+      );
+    } finally {
+      setReviewClaimId(null);
     }
   }
 
@@ -396,8 +529,8 @@ export default function AdminChallengesPage() {
               Challenges Control
             </h1>
             <p className="mt-3 max-w-3xl text-sm leading-7 text-white/65">
-              Create, edit, delete, and sync public challenge cards from one
-              place with the same admin protection pattern used for live raffles.
+              Create slot challenges, auto-fill slot art when available, and review
+              proof submissions from users.
             </p>
           </div>
 
@@ -409,13 +542,13 @@ export default function AdminChallengesPage() {
             />
             <StatCard
               icon={<CheckCircle2 className="h-4 w-4" />}
-              label="Completed"
-              value={String(completedChallenges.length)}
+              label="Pending Claims"
+              value={String(pendingClaims.length)}
             />
             <StatCard
               icon={<Target className="h-4 w-4" />}
-              label="Progress"
-              value={`${totalPercent}%`}
+              label="Total Challenges"
+              value={String(challenges.length)}
             />
           </div>
         </div>
@@ -427,13 +560,13 @@ export default function AdminChallengesPage() {
         ) : null}
 
         {error ? (
-          <div className="mt-5 rounded-2xl border border-red-400/20 bg-red-500/10 px-4 py-3 text-sm text-red-100 whitespace-pre-wrap">
+          <div className="mt-5 rounded-2xl border border-red-400/20 bg-red-500/10 px-4 py-3 text-sm whitespace-pre-wrap text-red-100">
             {error}
           </div>
         ) : null}
       </section>
 
-      <div className="grid gap-8 xl:grid-cols-[420px,minmax(0,1fr)]">
+      <div className="grid gap-8 xl:grid-cols-[430px,minmax(0,1fr)]">
         <section className="rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(12,18,34,0.96),rgba(7,12,24,0.98))] p-6 shadow-[0_18px_70px_rgba(0,0,0,0.34)] backdrop-blur-xl">
           <div className="mb-6 flex items-center justify-between gap-3">
             <div>
@@ -461,7 +594,7 @@ export default function AdminChallengesPage() {
                 value={form.id}
                 onChange={(event) => setField("id", event.target.value)}
                 className={inputClassName}
-                placeholder="challenge-weekend-push"
+                placeholder="challenge-gates-500x"
                 disabled={Boolean(editingId)}
               />
             </Field>
@@ -471,7 +604,7 @@ export default function AdminChallengesPage() {
                 value={form.title}
                 onChange={(event) => setField("title", event.target.value)}
                 className={inputClassName}
-                placeholder="Weekend Wager Sprint"
+                placeholder="Hit 500x on Gates of Olympus"
               />
             </Field>
 
@@ -480,7 +613,7 @@ export default function AdminChallengesPage() {
                 value={form.description}
                 onChange={(event) => setField("description", event.target.value)}
                 className={textareaClassName}
-                placeholder="Short premium description for the public challenges page"
+                placeholder="Short public description"
               />
             </Field>
 
@@ -501,37 +634,116 @@ export default function AdminChallengesPage() {
                 </select>
               </Field>
 
-              <Field label="Reward">
-                <input
-                  value={form.reward}
-                  onChange={(event) => setField("reward", event.target.value)}
+              <Field label="Challenge Type">
+                <select
+                  value={form.challengeType}
+                  onChange={(event) =>
+                    setField(
+                      "challengeType",
+                      event.target.value as "multiplier" | "win_amount",
+                    )
+                  }
                   className={inputClassName}
-                  placeholder="Bonus stream + giveaway"
-                />
+                >
+                  <option value="multiplier">multiplier</option>
+                  <option value="win_amount">win_amount</option>
+                </select>
               </Field>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <Field label="Goal">
+              <Field label="Target Value">
                 <input
                   type="number"
-                  min="1"
-                  value={form.goal}
-                  onChange={(event) => setField("goal", event.target.value)}
+                  min="0"
+                  step="0.01"
+                  value={form.targetValue}
+                  onChange={(event) => setField("targetValue", event.target.value)}
                   className={inputClassName}
                 />
               </Field>
 
-              <Field label="Current Progress">
+              <Field label="Minimum Bet">
                 <input
                   type="number"
                   min="0"
-                  value={form.currentProgress}
-                  onChange={(event) =>
-                    setField("currentProgress", event.target.value)
-                  }
+                  step="0.01"
+                  value={form.minBet}
+                  onChange={(event) => setField("minBet", event.target.value)}
                   className={inputClassName}
                 />
+              </Field>
+            </div>
+
+            <Field label="Reward">
+              <input
+                value={form.reward}
+                onChange={(event) => setField("reward", event.target.value)}
+                className={inputClassName}
+                placeholder="$100 balance / free buy / shoutout"
+              />
+            </Field>
+
+            <Field label="Rules">
+              <textarea
+                value={form.rules}
+                onChange={(event) => setField("rules", event.target.value)}
+                className={textareaClassName}
+                placeholder="Proof must show slot name, bet size, and result clearly."
+              />
+            </Field>
+
+            <div className="grid grid-cols-2 gap-4">
+              <Field label="Slot Name">
+                <input
+                  value={form.slotName}
+                  onChange={(event) => setField("slotName", event.target.value)}
+                  className={inputClassName}
+                  placeholder="Gates of Olympus"
+                />
+              </Field>
+
+              <Field label="Provider">
+                <input
+                  value={form.provider}
+                  onChange={(event) => setField("provider", event.target.value)}
+                  className={inputClassName}
+                  placeholder="Pragmatic Play"
+                />
+              </Field>
+            </div>
+
+            <Field label="Manual Image URL (optional)">
+              <input
+                value={form.imageUrl}
+                onChange={(event) => setField("imageUrl", event.target.value)}
+                className={inputClassName}
+                placeholder="Leave blank to auto-lookup from slot name"
+              />
+            </Field>
+
+            <div className="grid grid-cols-2 gap-4">
+              <Field label="Claim Limit">
+                <input
+                  type="number"
+                  min="1"
+                  value={form.claimLimit}
+                  onChange={(event) => setField("claimLimit", event.target.value)}
+                  className={inputClassName}
+                />
+              </Field>
+
+              <Field label="Requires Proof">
+                <select
+                  value={form.requiresProof ? "yes" : "no"}
+                  onChange={(event) =>
+                    setField("requiresProof", event.target.value === "yes")
+                  }
+                  className={inputClassName}
+                >
+                  <option value="yes">yes</option>
+                  <option value="no">no</option>
+                </select>
               </Field>
             </div>
 
@@ -574,7 +786,6 @@ export default function AdminChallengesPage() {
                 ) : (
                   <Plus className="h-4 w-4" />
                 )}
-
                 {isSaving
                   ? "Saving..."
                   : editingId
@@ -593,7 +804,7 @@ export default function AdminChallengesPage() {
           </form>
         </section>
 
-        <section className="space-y-4">
+        <section className="space-y-8">
           <div className="flex items-center justify-between gap-3">
             <div>
               <div className="text-xs font-semibold uppercase tracking-[0.26em] text-white/42">
@@ -606,7 +817,10 @@ export default function AdminChallengesPage() {
 
             <button
               type="button"
-              onClick={() => void loadChallenges()}
+              onClick={() => {
+                void loadChallenges();
+                void loadClaims();
+              }}
               className="inline-flex h-11 items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.03] px-4 text-sm font-semibold text-white transition-all duration-200 hover:bg-white/[0.05]"
             >
               <RefreshCw className="h-4 w-4" />
@@ -621,109 +835,217 @@ export default function AdminChallengesPage() {
                 Loading challenges...
               </div>
             </div>
-          ) : challenges.length === 0 ? (
-            <div className="rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(12,18,34,0.96),rgba(7,12,24,0.98))] px-6 py-10 text-center text-white/65">
-              No challenges yet.
-            </div>
           ) : (
             <div className="grid gap-4">
-              {challenges.map((challenge) => {
-                const percent = progressPercent(challenge);
+              {challenges.map((challenge) => (
+                <article
+                  key={challenge.id}
+                  className="rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(12,18,34,0.96),rgba(7,12,24,0.98))] p-5 shadow-[0_18px_70px_rgba(0,0,0,0.26)]"
+                >
+                  <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="inline-flex rounded-full border border-white/8 bg-white/[0.03] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/60">
+                          {challenge.challengeType === "win_amount" ? "Win Amount" : "Multiplier"}
+                        </span>
+                        <span className="inline-flex rounded-full border border-white/8 bg-white/[0.03] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/60">
+                          {challenge.status}
+                        </span>
+                        <span className="inline-flex rounded-full border border-white/8 bg-white/[0.03] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/60">
+                          {challenge.approvedClaims}/{challenge.claimLimit} claimed
+                        </span>
+                      </div>
 
-                return (
+                      <h3 className="mt-3 text-xl font-bold text-white">
+                        {challenge.title}
+                      </h3>
+
+                      {challenge.description ? (
+                        <p className="mt-2 max-w-3xl text-sm leading-6 text-white/65">
+                          {challenge.description}
+                        </p>
+                      ) : null}
+
+                      <div className="mt-4 grid gap-3 sm:grid-cols-4">
+                        <MiniStat
+                          icon={<Target className="h-4 w-4" />}
+                          label="Target"
+                          value={formatTarget(
+                            challenge.challengeType,
+                            challenge.targetValue,
+                          )}
+                        />
+                        <MiniStat
+                          icon={<Flag className="h-4 w-4" />}
+                          label="Min Bet"
+                          value={challenge.minBet.toFixed(2)}
+                        />
+                        <MiniStat
+                          icon={<ImageIcon className="h-4 w-4" />}
+                          label="Image"
+                          value={challenge.imageSource || "none"}
+                        />
+                        <MiniStat
+                          icon={<Clock3 className="h-4 w-4" />}
+                          label="Ends"
+                          value={new Date(challenge.endDate).toLocaleDateString()}
+                        />
+                      </div>
+
+                      {challenge.imageUrl ? (
+                        <a
+                          href={challenge.imageUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="mt-4 inline-flex text-sm font-medium text-white/70 underline-offset-4 hover:text-white hover:underline"
+                        >
+                          Open current challenge image
+                        </a>
+                      ) : null}
+                    </div>
+
+                    <div className="flex shrink-0 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => startEdit(challenge)}
+                        className="inline-flex h-11 items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.03] px-4 text-sm font-semibold text-white transition-all duration-200 hover:bg-white/[0.05]"
+                      >
+                        <Pencil className="h-4 w-4" />
+                        Edit
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => void handleDelete(challenge.id)}
+                        disabled={actionChallengeId === challenge.id}
+                        className="inline-flex h-11 items-center gap-2 rounded-2xl border border-red-400/20 bg-red-500/10 px-4 text-sm font-semibold text-red-100 transition-all duration-200 hover:bg-red-500/15 disabled:cursor-not-allowed disabled:opacity-60"
+                      >
+                        {actionChallengeId === challenge.id ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <Trash2 className="h-4 w-4" />
+                        )}
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
+
+          <div className="space-y-4">
+            <div>
+              <div className="text-xs font-semibold uppercase tracking-[0.26em] text-white/42">
+                Review Queue
+              </div>
+              <h2 className="mt-2 text-2xl font-bold text-white">
+                Challenge Claims
+              </h2>
+            </div>
+
+            {loadingClaims ? (
+              <div className="rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(12,18,34,0.96),rgba(7,12,24,0.98))] px-6 py-10 text-center text-white/65">
+                <div className="inline-flex items-center gap-3">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Loading claims...
+                </div>
+              </div>
+            ) : claims.length === 0 ? (
+              <div className="rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(12,18,34,0.96),rgba(7,12,24,0.98))] px-6 py-10 text-center text-white/65">
+                No claims yet.
+              </div>
+            ) : (
+              <div className="grid gap-4">
+                {claims.map((claim) => (
                   <article
-                    key={challenge.id}
+                    key={claim.id}
                     className="rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(12,18,34,0.96),rgba(7,12,24,0.98))] p-5 shadow-[0_18px_70px_rgba(0,0,0,0.26)]"
                   >
-                    <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+                    <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-2">
-                          <span
-                            className={`inline-flex rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] ${
-                              challenge.status === "completed"
-                                ? "border-emerald-400/25 bg-emerald-400/10 text-emerald-200"
-                                : "border-amber-400/25 bg-amber-400/10 text-amber-200"
-                            }`}
-                          >
-                            {challenge.status}
+                          <span className="inline-flex rounded-full border border-white/8 bg-white/[0.03] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/60">
+                            {claim.status}
                           </span>
-
-                          <span className="rounded-full border border-white/8 bg-white/[0.03] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/52">
-                            {percent}% complete
+                          <span className="inline-flex rounded-full border border-white/8 bg-white/[0.03] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/60">
+                            {claim.userLabel}
                           </span>
                         </div>
 
                         <h3 className="mt-3 text-xl font-bold text-white">
-                          {challenge.title}
+                          {claim.challengeTitle}
                         </h3>
 
-                        {challenge.description ? (
-                          <p className="mt-2 max-w-3xl text-sm leading-6 text-white/65">
-                            {challenge.description}
+                        <div className="mt-2 text-sm text-white/65">
+                          Submitted {formatDate(claim.createdAt)}
+                        </div>
+
+                        {claim.note ? (
+                          <p className="mt-3 text-sm leading-6 text-white/65">
+                            {claim.note}
                           </p>
                         ) : null}
 
-                        <div className="mt-4 grid gap-3 sm:grid-cols-4">
-                          <MiniStat
-                            icon={<Target className="h-4 w-4" />}
-                            label="Goal"
-                            value={formatNumber(challenge.goal)}
-                          />
-                          <MiniStat
-                            icon={<Flag className="h-4 w-4" />}
-                            label="Progress"
-                            value={formatNumber(challenge.currentProgress)}
-                          />
-                          <MiniStat
-                            icon={<CheckCircle2 className="h-4 w-4" />}
-                            label="Reward"
-                            value={challenge.reward}
-                          />
-                          <MiniStat
-                            icon={<Clock3 className="h-4 w-4" />}
-                            label="Ends"
-                            value={new Date(challenge.endDate).toLocaleDateString()}
-                          />
-                        </div>
+                        {claim.rejectionReason ? (
+                          <div className="mt-3 rounded-2xl border border-red-400/20 bg-red-500/10 px-4 py-3 text-sm text-red-100">
+                            {claim.rejectionReason}
+                          </div>
+                        ) : null}
 
-                        <div className="mt-4 h-2.5 overflow-hidden rounded-full bg-white/8">
-                          <div
-                            className="h-full rounded-full bg-[linear-gradient(90deg,rgba(59,130,246,0.95),rgba(147,51,234,0.92))]"
-                            style={{ width: `${percent}%` }}
-                          />
-                        </div>
+                        <a
+                          href={claim.proofImageUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="mt-4 inline-flex text-sm font-medium text-white/80 underline-offset-4 hover:text-white hover:underline"
+                        >
+                          Open proof image
+                        </a>
                       </div>
 
-                      <div className="flex shrink-0 gap-2">
-                        <button
-                          type="button"
-                          onClick={() => startEdit(challenge)}
-                          className="inline-flex h-11 items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.03] px-4 text-sm font-semibold text-white transition-all duration-200 hover:bg-white/[0.05]"
-                        >
-                          <Pencil className="h-4 w-4" />
-                          Edit
-                        </button>
+                      {claim.status === "pending" ? (
+                        <div className="flex shrink-0 gap-2">
+                          <button
+                            type="button"
+                            disabled={reviewClaimId === claim.id}
+                            onClick={() => void handleReview(claim.id, "approve")}
+                            className="inline-flex h-11 items-center gap-2 rounded-2xl border border-emerald-400/20 bg-emerald-400/10 px-4 text-sm font-semibold text-emerald-100 transition-all duration-200 hover:bg-emerald-400/15 disabled:cursor-not-allowed disabled:opacity-60"
+                          >
+                            {reviewClaimId === claim.id ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              <CheckCircle2 className="h-4 w-4" />
+                            )}
+                            Approve
+                          </button>
 
-                        <button
-                          type="button"
-                          onClick={() => void handleDelete(challenge.id)}
-                          disabled={actionChallengeId === challenge.id}
-                          className="inline-flex h-11 items-center gap-2 rounded-2xl border border-red-400/20 bg-red-500/10 px-4 text-sm font-semibold text-red-100 transition-all duration-200 hover:bg-red-500/15 disabled:cursor-not-allowed disabled:opacity-60"
-                        >
-                          {actionChallengeId === challenge.id ? (
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                          ) : (
-                            <Trash2 className="h-4 w-4" />
-                          )}
-                          Delete
-                        </button>
-                      </div>
+                          <button
+                            type="button"
+                            disabled={reviewClaimId === claim.id}
+                            onClick={() => void handleReview(claim.id, "reject")}
+                            className="inline-flex h-11 items-center gap-2 rounded-2xl border border-red-400/20 bg-red-500/10 px-4 text-sm font-semibold text-red-100 transition-all duration-200 hover:bg-red-500/15 disabled:cursor-not-allowed disabled:opacity-60"
+                          >
+                            {reviewClaimId === claim.id ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              <XCircle className="h-4 w-4" />
+                            )}
+                            Reject
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="text-sm text-white/55">
+                          {claim.reviewedByLabel
+                            ? `Reviewed by ${claim.reviewedByLabel}`
+                            : "Reviewed"}
+                        </div>
+                      )}
                     </div>
                   </article>
-                );
-              })}
-            </div>
-          )}
+                ))}
+              </div>
+            )}
+          </div>
         </section>
       </div>
     </div>

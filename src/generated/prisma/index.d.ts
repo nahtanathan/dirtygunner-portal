@@ -53,6 +53,11 @@ export type RaffleEntry = $Result.DefaultSelection<Prisma.$RaffleEntryPayload>
  * 
  */
 export type Challenge = $Result.DefaultSelection<Prisma.$ChallengePayload>
+/**
+ * Model ChallengeClaim
+ * 
+ */
+export type ChallengeClaim = $Result.DefaultSelection<Prisma.$ChallengeClaimPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -254,6 +259,16 @@ export class PrismaClient<
     * ```
     */
   get challenge(): Prisma.ChallengeDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.challengeClaim`: Exposes CRUD operations for the **ChallengeClaim** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ChallengeClaims
+    * const challengeClaims = await prisma.challengeClaim.findMany()
+    * ```
+    */
+  get challengeClaim(): Prisma.ChallengeClaimDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -695,7 +710,8 @@ export namespace Prisma {
     LeaderboardPrizeTier: 'LeaderboardPrizeTier',
     Raffle: 'Raffle',
     RaffleEntry: 'RaffleEntry',
-    Challenge: 'Challenge'
+    Challenge: 'Challenge',
+    ChallengeClaim: 'ChallengeClaim'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -711,7 +727,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "kickReward" | "siteSettings" | "leaderboardSettings" | "leaderboardPrizeTier" | "raffle" | "raffleEntry" | "challenge"
+      modelProps: "user" | "kickReward" | "siteSettings" | "leaderboardSettings" | "leaderboardPrizeTier" | "raffle" | "raffleEntry" | "challenge" | "challengeClaim"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1307,6 +1323,80 @@ export namespace Prisma {
           }
         }
       }
+      ChallengeClaim: {
+        payload: Prisma.$ChallengeClaimPayload<ExtArgs>
+        fields: Prisma.ChallengeClaimFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ChallengeClaimFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChallengeClaimPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ChallengeClaimFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChallengeClaimPayload>
+          }
+          findFirst: {
+            args: Prisma.ChallengeClaimFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChallengeClaimPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ChallengeClaimFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChallengeClaimPayload>
+          }
+          findMany: {
+            args: Prisma.ChallengeClaimFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChallengeClaimPayload>[]
+          }
+          create: {
+            args: Prisma.ChallengeClaimCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChallengeClaimPayload>
+          }
+          createMany: {
+            args: Prisma.ChallengeClaimCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ChallengeClaimCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChallengeClaimPayload>[]
+          }
+          delete: {
+            args: Prisma.ChallengeClaimDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChallengeClaimPayload>
+          }
+          update: {
+            args: Prisma.ChallengeClaimUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChallengeClaimPayload>
+          }
+          deleteMany: {
+            args: Prisma.ChallengeClaimDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ChallengeClaimUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ChallengeClaimUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChallengeClaimPayload>[]
+          }
+          upsert: {
+            args: Prisma.ChallengeClaimUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChallengeClaimPayload>
+          }
+          aggregate: {
+            args: Prisma.ChallengeClaimAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateChallengeClaim>
+          }
+          groupBy: {
+            args: Prisma.ChallengeClaimGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ChallengeClaimGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ChallengeClaimCountArgs<ExtArgs>
+            result: $Utils.Optional<ChallengeClaimCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1423,6 +1513,7 @@ export namespace Prisma {
     raffle?: RaffleOmit
     raffleEntry?: RaffleEntryOmit
     challenge?: ChallengeOmit
+    challengeClaim?: ChallengeClaimOmit
   }
 
   /* Types for Logging */
@@ -1504,10 +1595,14 @@ export namespace Prisma {
 
   export type UserCountOutputType = {
     raffleEntries: number
+    challengeClaims: number
+    reviewedChallengeClaims: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     raffleEntries?: boolean | UserCountOutputTypeCountRaffleEntriesArgs
+    challengeClaims?: boolean | UserCountOutputTypeCountChallengeClaimsArgs
+    reviewedChallengeClaims?: boolean | UserCountOutputTypeCountReviewedChallengeClaimsArgs
   }
 
   // Custom InputTypes
@@ -1526,6 +1621,20 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountRaffleEntriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: RaffleEntryWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountChallengeClaimsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ChallengeClaimWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountReviewedChallengeClaimsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ChallengeClaimWhereInput
   }
 
 
@@ -1588,6 +1697,37 @@ export namespace Prisma {
    */
   export type RaffleCountOutputTypeCountEntriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: RaffleEntryWhereInput
+  }
+
+
+  /**
+   * Count Type ChallengeCountOutputType
+   */
+
+  export type ChallengeCountOutputType = {
+    claims: number
+  }
+
+  export type ChallengeCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    claims?: boolean | ChallengeCountOutputTypeCountClaimsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ChallengeCountOutputType without action
+   */
+  export type ChallengeCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChallengeCountOutputType
+     */
+    select?: ChallengeCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ChallengeCountOutputType without action
+   */
+  export type ChallengeCountOutputTypeCountClaimsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ChallengeClaimWhereInput
   }
 
 
@@ -1882,6 +2022,8 @@ export namespace Prisma {
     display_name?: boolean
     profile_accent?: boolean
     raffleEntries?: boolean | User$raffleEntriesArgs<ExtArgs>
+    challengeClaims?: boolean | User$challengeClaimsArgs<ExtArgs>
+    reviewedChallengeClaims?: boolean | User$reviewedChallengeClaimsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -1945,6 +2087,8 @@ export namespace Prisma {
   export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "kick_user_id" | "kick_username" | "email" | "avatar" | "access_token" | "refresh_token" | "kick_token_expires_at" | "points" | "isAdmin" | "isKickBroadcaster" | "createdAt" | "updatedAt" | "bio" | "display_name" | "profile_accent", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     raffleEntries?: boolean | User$raffleEntriesArgs<ExtArgs>
+    challengeClaims?: boolean | User$challengeClaimsArgs<ExtArgs>
+    reviewedChallengeClaims?: boolean | User$reviewedChallengeClaimsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -1954,6 +2098,8 @@ export namespace Prisma {
     name: "User"
     objects: {
       raffleEntries: Prisma.$RaffleEntryPayload<ExtArgs>[]
+      challengeClaims: Prisma.$ChallengeClaimPayload<ExtArgs>[]
+      reviewedChallengeClaims: Prisma.$ChallengeClaimPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2367,6 +2513,8 @@ export namespace Prisma {
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     raffleEntries<T extends User$raffleEntriesArgs<ExtArgs> = {}>(args?: Subset<T, User$raffleEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RaffleEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    challengeClaims<T extends User$challengeClaimsArgs<ExtArgs> = {}>(args?: Subset<T, User$challengeClaimsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChallengeClaimPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    reviewedChallengeClaims<T extends User$reviewedChallengeClaimsArgs<ExtArgs> = {}>(args?: Subset<T, User$reviewedChallengeClaimsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChallengeClaimPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2826,6 +2974,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: RaffleEntryScalarFieldEnum | RaffleEntryScalarFieldEnum[]
+  }
+
+  /**
+   * User.challengeClaims
+   */
+  export type User$challengeClaimsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChallengeClaim
+     */
+    select?: ChallengeClaimSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChallengeClaim
+     */
+    omit?: ChallengeClaimOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChallengeClaimInclude<ExtArgs> | null
+    where?: ChallengeClaimWhereInput
+    orderBy?: ChallengeClaimOrderByWithRelationInput | ChallengeClaimOrderByWithRelationInput[]
+    cursor?: ChallengeClaimWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ChallengeClaimScalarFieldEnum | ChallengeClaimScalarFieldEnum[]
+  }
+
+  /**
+   * User.reviewedChallengeClaims
+   */
+  export type User$reviewedChallengeClaimsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChallengeClaim
+     */
+    select?: ChallengeClaimSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChallengeClaim
+     */
+    omit?: ChallengeClaimOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChallengeClaimInclude<ExtArgs> | null
+    where?: ChallengeClaimWhereInput
+    orderBy?: ChallengeClaimOrderByWithRelationInput | ChallengeClaimOrderByWithRelationInput[]
+    cursor?: ChallengeClaimWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ChallengeClaimScalarFieldEnum | ChallengeClaimScalarFieldEnum[]
   }
 
   /**
@@ -9587,13 +9783,15 @@ export namespace Prisma {
   }
 
   export type ChallengeAvgAggregateOutputType = {
-    goal: number | null
-    currentProgress: number | null
+    targetValue: number | null
+    minBet: number | null
+    claimLimit: number | null
   }
 
   export type ChallengeSumAggregateOutputType = {
-    goal: number | null
-    currentProgress: number | null
+    targetValue: number | null
+    minBet: number | null
+    claimLimit: number | null
   }
 
   export type ChallengeMinAggregateOutputType = {
@@ -9601,9 +9799,17 @@ export namespace Prisma {
     title: string | null
     description: string | null
     status: string | null
-    goal: number | null
-    currentProgress: number | null
+    challengeType: string | null
+    targetValue: number | null
+    minBet: number | null
     reward: string | null
+    rules: string | null
+    slotName: string | null
+    provider: string | null
+    imageUrl: string | null
+    imageSource: string | null
+    claimLimit: number | null
+    requiresProof: boolean | null
     startDate: Date | null
     endDate: Date | null
     createdAt: Date | null
@@ -9615,9 +9821,17 @@ export namespace Prisma {
     title: string | null
     description: string | null
     status: string | null
-    goal: number | null
-    currentProgress: number | null
+    challengeType: string | null
+    targetValue: number | null
+    minBet: number | null
     reward: string | null
+    rules: string | null
+    slotName: string | null
+    provider: string | null
+    imageUrl: string | null
+    imageSource: string | null
+    claimLimit: number | null
+    requiresProof: boolean | null
     startDate: Date | null
     endDate: Date | null
     createdAt: Date | null
@@ -9629,9 +9843,17 @@ export namespace Prisma {
     title: number
     description: number
     status: number
-    goal: number
-    currentProgress: number
+    challengeType: number
+    targetValue: number
+    minBet: number
     reward: number
+    rules: number
+    slotName: number
+    provider: number
+    imageUrl: number
+    imageSource: number
+    claimLimit: number
+    requiresProof: number
     startDate: number
     endDate: number
     createdAt: number
@@ -9641,13 +9863,15 @@ export namespace Prisma {
 
 
   export type ChallengeAvgAggregateInputType = {
-    goal?: true
-    currentProgress?: true
+    targetValue?: true
+    minBet?: true
+    claimLimit?: true
   }
 
   export type ChallengeSumAggregateInputType = {
-    goal?: true
-    currentProgress?: true
+    targetValue?: true
+    minBet?: true
+    claimLimit?: true
   }
 
   export type ChallengeMinAggregateInputType = {
@@ -9655,9 +9879,17 @@ export namespace Prisma {
     title?: true
     description?: true
     status?: true
-    goal?: true
-    currentProgress?: true
+    challengeType?: true
+    targetValue?: true
+    minBet?: true
     reward?: true
+    rules?: true
+    slotName?: true
+    provider?: true
+    imageUrl?: true
+    imageSource?: true
+    claimLimit?: true
+    requiresProof?: true
     startDate?: true
     endDate?: true
     createdAt?: true
@@ -9669,9 +9901,17 @@ export namespace Prisma {
     title?: true
     description?: true
     status?: true
-    goal?: true
-    currentProgress?: true
+    challengeType?: true
+    targetValue?: true
+    minBet?: true
     reward?: true
+    rules?: true
+    slotName?: true
+    provider?: true
+    imageUrl?: true
+    imageSource?: true
+    claimLimit?: true
+    requiresProof?: true
     startDate?: true
     endDate?: true
     createdAt?: true
@@ -9683,9 +9923,17 @@ export namespace Prisma {
     title?: true
     description?: true
     status?: true
-    goal?: true
-    currentProgress?: true
+    challengeType?: true
+    targetValue?: true
+    minBet?: true
     reward?: true
+    rules?: true
+    slotName?: true
+    provider?: true
+    imageUrl?: true
+    imageSource?: true
+    claimLimit?: true
+    requiresProof?: true
     startDate?: true
     endDate?: true
     createdAt?: true
@@ -9784,9 +10032,17 @@ export namespace Prisma {
     title: string
     description: string | null
     status: string
-    goal: number
-    currentProgress: number
+    challengeType: string
+    targetValue: number
+    minBet: number
     reward: string
+    rules: string | null
+    slotName: string | null
+    provider: string | null
+    imageUrl: string | null
+    imageSource: string | null
+    claimLimit: number
+    requiresProof: boolean
     startDate: Date
     endDate: Date
     createdAt: Date
@@ -9817,13 +10073,23 @@ export namespace Prisma {
     title?: boolean
     description?: boolean
     status?: boolean
-    goal?: boolean
-    currentProgress?: boolean
+    challengeType?: boolean
+    targetValue?: boolean
+    minBet?: boolean
     reward?: boolean
+    rules?: boolean
+    slotName?: boolean
+    provider?: boolean
+    imageUrl?: boolean
+    imageSource?: boolean
+    claimLimit?: boolean
+    requiresProof?: boolean
     startDate?: boolean
     endDate?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    claims?: boolean | Challenge$claimsArgs<ExtArgs>
+    _count?: boolean | ChallengeCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["challenge"]>
 
   export type ChallengeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -9831,9 +10097,17 @@ export namespace Prisma {
     title?: boolean
     description?: boolean
     status?: boolean
-    goal?: boolean
-    currentProgress?: boolean
+    challengeType?: boolean
+    targetValue?: boolean
+    minBet?: boolean
     reward?: boolean
+    rules?: boolean
+    slotName?: boolean
+    provider?: boolean
+    imageUrl?: boolean
+    imageSource?: boolean
+    claimLimit?: boolean
+    requiresProof?: boolean
     startDate?: boolean
     endDate?: boolean
     createdAt?: boolean
@@ -9845,9 +10119,17 @@ export namespace Prisma {
     title?: boolean
     description?: boolean
     status?: boolean
-    goal?: boolean
-    currentProgress?: boolean
+    challengeType?: boolean
+    targetValue?: boolean
+    minBet?: boolean
     reward?: boolean
+    rules?: boolean
+    slotName?: boolean
+    provider?: boolean
+    imageUrl?: boolean
+    imageSource?: boolean
+    claimLimit?: boolean
+    requiresProof?: boolean
     startDate?: boolean
     endDate?: boolean
     createdAt?: boolean
@@ -9859,28 +10141,52 @@ export namespace Prisma {
     title?: boolean
     description?: boolean
     status?: boolean
-    goal?: boolean
-    currentProgress?: boolean
+    challengeType?: boolean
+    targetValue?: boolean
+    minBet?: boolean
     reward?: boolean
+    rules?: boolean
+    slotName?: boolean
+    provider?: boolean
+    imageUrl?: boolean
+    imageSource?: boolean
+    claimLimit?: boolean
+    requiresProof?: boolean
     startDate?: boolean
     endDate?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ChallengeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "status" | "goal" | "currentProgress" | "reward" | "startDate" | "endDate" | "createdAt" | "updatedAt", ExtArgs["result"]["challenge"]>
+  export type ChallengeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "status" | "challengeType" | "targetValue" | "minBet" | "reward" | "rules" | "slotName" | "provider" | "imageUrl" | "imageSource" | "claimLimit" | "requiresProof" | "startDate" | "endDate" | "createdAt" | "updatedAt", ExtArgs["result"]["challenge"]>
+  export type ChallengeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    claims?: boolean | Challenge$claimsArgs<ExtArgs>
+    _count?: boolean | ChallengeCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type ChallengeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type ChallengeIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
 
   export type $ChallengePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Challenge"
-    objects: {}
+    objects: {
+      claims: Prisma.$ChallengeClaimPayload<ExtArgs>[]
+    }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       title: string
       description: string | null
       status: string
-      goal: number
-      currentProgress: number
+      challengeType: string
+      targetValue: number
+      minBet: number
       reward: string
+      rules: string | null
+      slotName: string | null
+      provider: string | null
+      imageUrl: string | null
+      imageSource: string | null
+      claimLimit: number
+      requiresProof: boolean
       startDate: Date
       endDate: Date
       createdAt: Date
@@ -10279,6 +10585,7 @@ export namespace Prisma {
    */
   export interface Prisma__ChallengeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    claims<T extends Challenge$claimsArgs<ExtArgs> = {}>(args?: Subset<T, Challenge$claimsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChallengeClaimPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -10312,9 +10619,17 @@ export namespace Prisma {
     readonly title: FieldRef<"Challenge", 'String'>
     readonly description: FieldRef<"Challenge", 'String'>
     readonly status: FieldRef<"Challenge", 'String'>
-    readonly goal: FieldRef<"Challenge", 'Int'>
-    readonly currentProgress: FieldRef<"Challenge", 'Int'>
+    readonly challengeType: FieldRef<"Challenge", 'String'>
+    readonly targetValue: FieldRef<"Challenge", 'Float'>
+    readonly minBet: FieldRef<"Challenge", 'Float'>
     readonly reward: FieldRef<"Challenge", 'String'>
+    readonly rules: FieldRef<"Challenge", 'String'>
+    readonly slotName: FieldRef<"Challenge", 'String'>
+    readonly provider: FieldRef<"Challenge", 'String'>
+    readonly imageUrl: FieldRef<"Challenge", 'String'>
+    readonly imageSource: FieldRef<"Challenge", 'String'>
+    readonly claimLimit: FieldRef<"Challenge", 'Int'>
+    readonly requiresProof: FieldRef<"Challenge", 'Boolean'>
     readonly startDate: FieldRef<"Challenge", 'DateTime'>
     readonly endDate: FieldRef<"Challenge", 'DateTime'>
     readonly createdAt: FieldRef<"Challenge", 'DateTime'>
@@ -10336,6 +10651,10 @@ export namespace Prisma {
      */
     omit?: ChallengeOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChallengeInclude<ExtArgs> | null
+    /**
      * Filter, which Challenge to fetch.
      */
     where: ChallengeWhereUniqueInput
@@ -10354,6 +10673,10 @@ export namespace Prisma {
      */
     omit?: ChallengeOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChallengeInclude<ExtArgs> | null
+    /**
      * Filter, which Challenge to fetch.
      */
     where: ChallengeWhereUniqueInput
@@ -10371,6 +10694,10 @@ export namespace Prisma {
      * Omit specific fields from the Challenge
      */
     omit?: ChallengeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChallengeInclude<ExtArgs> | null
     /**
      * Filter, which Challenge to fetch.
      */
@@ -10420,6 +10747,10 @@ export namespace Prisma {
      */
     omit?: ChallengeOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChallengeInclude<ExtArgs> | null
+    /**
      * Filter, which Challenge to fetch.
      */
     where?: ChallengeWhereInput
@@ -10467,6 +10798,10 @@ export namespace Prisma {
      * Omit specific fields from the Challenge
      */
     omit?: ChallengeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChallengeInclude<ExtArgs> | null
     /**
      * Filter, which Challenges to fetch.
      */
@@ -10516,6 +10851,10 @@ export namespace Prisma {
      */
     omit?: ChallengeOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChallengeInclude<ExtArgs> | null
+    /**
      * The data needed to create a Challenge.
      */
     data: XOR<ChallengeCreateInput, ChallengeUncheckedCreateInput>
@@ -10563,6 +10902,10 @@ export namespace Prisma {
      * Omit specific fields from the Challenge
      */
     omit?: ChallengeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChallengeInclude<ExtArgs> | null
     /**
      * The data needed to update a Challenge.
      */
@@ -10630,6 +10973,10 @@ export namespace Prisma {
      */
     omit?: ChallengeOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChallengeInclude<ExtArgs> | null
+    /**
      * The filter to search for the Challenge to update in case it exists.
      */
     where: ChallengeWhereUniqueInput
@@ -10656,6 +11003,10 @@ export namespace Prisma {
      */
     omit?: ChallengeOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChallengeInclude<ExtArgs> | null
+    /**
      * Filter which Challenge to delete.
      */
     where: ChallengeWhereUniqueInput
@@ -10676,6 +11027,30 @@ export namespace Prisma {
   }
 
   /**
+   * Challenge.claims
+   */
+  export type Challenge$claimsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChallengeClaim
+     */
+    select?: ChallengeClaimSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChallengeClaim
+     */
+    omit?: ChallengeClaimOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChallengeClaimInclude<ExtArgs> | null
+    where?: ChallengeClaimWhereInput
+    orderBy?: ChallengeClaimOrderByWithRelationInput | ChallengeClaimOrderByWithRelationInput[]
+    cursor?: ChallengeClaimWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ChallengeClaimScalarFieldEnum | ChallengeClaimScalarFieldEnum[]
+  }
+
+  /**
    * Challenge without action
    */
   export type ChallengeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -10687,6 +11062,1186 @@ export namespace Prisma {
      * Omit specific fields from the Challenge
      */
     omit?: ChallengeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChallengeInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ChallengeClaim
+   */
+
+  export type AggregateChallengeClaim = {
+    _count: ChallengeClaimCountAggregateOutputType | null
+    _min: ChallengeClaimMinAggregateOutputType | null
+    _max: ChallengeClaimMaxAggregateOutputType | null
+  }
+
+  export type ChallengeClaimMinAggregateOutputType = {
+    id: string | null
+    challengeId: string | null
+    userId: string | null
+    proofImageUrl: string | null
+    note: string | null
+    status: string | null
+    rejectionReason: string | null
+    reviewedAt: Date | null
+    reviewedById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ChallengeClaimMaxAggregateOutputType = {
+    id: string | null
+    challengeId: string | null
+    userId: string | null
+    proofImageUrl: string | null
+    note: string | null
+    status: string | null
+    rejectionReason: string | null
+    reviewedAt: Date | null
+    reviewedById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ChallengeClaimCountAggregateOutputType = {
+    id: number
+    challengeId: number
+    userId: number
+    proofImageUrl: number
+    note: number
+    status: number
+    rejectionReason: number
+    reviewedAt: number
+    reviewedById: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ChallengeClaimMinAggregateInputType = {
+    id?: true
+    challengeId?: true
+    userId?: true
+    proofImageUrl?: true
+    note?: true
+    status?: true
+    rejectionReason?: true
+    reviewedAt?: true
+    reviewedById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ChallengeClaimMaxAggregateInputType = {
+    id?: true
+    challengeId?: true
+    userId?: true
+    proofImageUrl?: true
+    note?: true
+    status?: true
+    rejectionReason?: true
+    reviewedAt?: true
+    reviewedById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ChallengeClaimCountAggregateInputType = {
+    id?: true
+    challengeId?: true
+    userId?: true
+    proofImageUrl?: true
+    note?: true
+    status?: true
+    rejectionReason?: true
+    reviewedAt?: true
+    reviewedById?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ChallengeClaimAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ChallengeClaim to aggregate.
+     */
+    where?: ChallengeClaimWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ChallengeClaims to fetch.
+     */
+    orderBy?: ChallengeClaimOrderByWithRelationInput | ChallengeClaimOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ChallengeClaimWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ChallengeClaims from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ChallengeClaims.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ChallengeClaims
+    **/
+    _count?: true | ChallengeClaimCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ChallengeClaimMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ChallengeClaimMaxAggregateInputType
+  }
+
+  export type GetChallengeClaimAggregateType<T extends ChallengeClaimAggregateArgs> = {
+        [P in keyof T & keyof AggregateChallengeClaim]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateChallengeClaim[P]>
+      : GetScalarType<T[P], AggregateChallengeClaim[P]>
+  }
+
+
+
+
+  export type ChallengeClaimGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ChallengeClaimWhereInput
+    orderBy?: ChallengeClaimOrderByWithAggregationInput | ChallengeClaimOrderByWithAggregationInput[]
+    by: ChallengeClaimScalarFieldEnum[] | ChallengeClaimScalarFieldEnum
+    having?: ChallengeClaimScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ChallengeClaimCountAggregateInputType | true
+    _min?: ChallengeClaimMinAggregateInputType
+    _max?: ChallengeClaimMaxAggregateInputType
+  }
+
+  export type ChallengeClaimGroupByOutputType = {
+    id: string
+    challengeId: string
+    userId: string
+    proofImageUrl: string
+    note: string | null
+    status: string
+    rejectionReason: string | null
+    reviewedAt: Date | null
+    reviewedById: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: ChallengeClaimCountAggregateOutputType | null
+    _min: ChallengeClaimMinAggregateOutputType | null
+    _max: ChallengeClaimMaxAggregateOutputType | null
+  }
+
+  type GetChallengeClaimGroupByPayload<T extends ChallengeClaimGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ChallengeClaimGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ChallengeClaimGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ChallengeClaimGroupByOutputType[P]>
+            : GetScalarType<T[P], ChallengeClaimGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ChallengeClaimSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    challengeId?: boolean
+    userId?: boolean
+    proofImageUrl?: boolean
+    note?: boolean
+    status?: boolean
+    rejectionReason?: boolean
+    reviewedAt?: boolean
+    reviewedById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    challenge?: boolean | ChallengeDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    reviewedBy?: boolean | ChallengeClaim$reviewedByArgs<ExtArgs>
+  }, ExtArgs["result"]["challengeClaim"]>
+
+  export type ChallengeClaimSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    challengeId?: boolean
+    userId?: boolean
+    proofImageUrl?: boolean
+    note?: boolean
+    status?: boolean
+    rejectionReason?: boolean
+    reviewedAt?: boolean
+    reviewedById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    challenge?: boolean | ChallengeDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    reviewedBy?: boolean | ChallengeClaim$reviewedByArgs<ExtArgs>
+  }, ExtArgs["result"]["challengeClaim"]>
+
+  export type ChallengeClaimSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    challengeId?: boolean
+    userId?: boolean
+    proofImageUrl?: boolean
+    note?: boolean
+    status?: boolean
+    rejectionReason?: boolean
+    reviewedAt?: boolean
+    reviewedById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    challenge?: boolean | ChallengeDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    reviewedBy?: boolean | ChallengeClaim$reviewedByArgs<ExtArgs>
+  }, ExtArgs["result"]["challengeClaim"]>
+
+  export type ChallengeClaimSelectScalar = {
+    id?: boolean
+    challengeId?: boolean
+    userId?: boolean
+    proofImageUrl?: boolean
+    note?: boolean
+    status?: boolean
+    rejectionReason?: boolean
+    reviewedAt?: boolean
+    reviewedById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ChallengeClaimOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "challengeId" | "userId" | "proofImageUrl" | "note" | "status" | "rejectionReason" | "reviewedAt" | "reviewedById" | "createdAt" | "updatedAt", ExtArgs["result"]["challengeClaim"]>
+  export type ChallengeClaimInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    challenge?: boolean | ChallengeDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    reviewedBy?: boolean | ChallengeClaim$reviewedByArgs<ExtArgs>
+  }
+  export type ChallengeClaimIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    challenge?: boolean | ChallengeDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    reviewedBy?: boolean | ChallengeClaim$reviewedByArgs<ExtArgs>
+  }
+  export type ChallengeClaimIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    challenge?: boolean | ChallengeDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    reviewedBy?: boolean | ChallengeClaim$reviewedByArgs<ExtArgs>
+  }
+
+  export type $ChallengeClaimPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ChallengeClaim"
+    objects: {
+      challenge: Prisma.$ChallengePayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs>
+      reviewedBy: Prisma.$UserPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      challengeId: string
+      userId: string
+      proofImageUrl: string
+      note: string | null
+      status: string
+      rejectionReason: string | null
+      reviewedAt: Date | null
+      reviewedById: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["challengeClaim"]>
+    composites: {}
+  }
+
+  type ChallengeClaimGetPayload<S extends boolean | null | undefined | ChallengeClaimDefaultArgs> = $Result.GetResult<Prisma.$ChallengeClaimPayload, S>
+
+  type ChallengeClaimCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ChallengeClaimFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ChallengeClaimCountAggregateInputType | true
+    }
+
+  export interface ChallengeClaimDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ChallengeClaim'], meta: { name: 'ChallengeClaim' } }
+    /**
+     * Find zero or one ChallengeClaim that matches the filter.
+     * @param {ChallengeClaimFindUniqueArgs} args - Arguments to find a ChallengeClaim
+     * @example
+     * // Get one ChallengeClaim
+     * const challengeClaim = await prisma.challengeClaim.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ChallengeClaimFindUniqueArgs>(args: SelectSubset<T, ChallengeClaimFindUniqueArgs<ExtArgs>>): Prisma__ChallengeClaimClient<$Result.GetResult<Prisma.$ChallengeClaimPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ChallengeClaim that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ChallengeClaimFindUniqueOrThrowArgs} args - Arguments to find a ChallengeClaim
+     * @example
+     * // Get one ChallengeClaim
+     * const challengeClaim = await prisma.challengeClaim.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ChallengeClaimFindUniqueOrThrowArgs>(args: SelectSubset<T, ChallengeClaimFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ChallengeClaimClient<$Result.GetResult<Prisma.$ChallengeClaimPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ChallengeClaim that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChallengeClaimFindFirstArgs} args - Arguments to find a ChallengeClaim
+     * @example
+     * // Get one ChallengeClaim
+     * const challengeClaim = await prisma.challengeClaim.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ChallengeClaimFindFirstArgs>(args?: SelectSubset<T, ChallengeClaimFindFirstArgs<ExtArgs>>): Prisma__ChallengeClaimClient<$Result.GetResult<Prisma.$ChallengeClaimPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ChallengeClaim that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChallengeClaimFindFirstOrThrowArgs} args - Arguments to find a ChallengeClaim
+     * @example
+     * // Get one ChallengeClaim
+     * const challengeClaim = await prisma.challengeClaim.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ChallengeClaimFindFirstOrThrowArgs>(args?: SelectSubset<T, ChallengeClaimFindFirstOrThrowArgs<ExtArgs>>): Prisma__ChallengeClaimClient<$Result.GetResult<Prisma.$ChallengeClaimPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ChallengeClaims that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChallengeClaimFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ChallengeClaims
+     * const challengeClaims = await prisma.challengeClaim.findMany()
+     * 
+     * // Get first 10 ChallengeClaims
+     * const challengeClaims = await prisma.challengeClaim.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const challengeClaimWithIdOnly = await prisma.challengeClaim.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ChallengeClaimFindManyArgs>(args?: SelectSubset<T, ChallengeClaimFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChallengeClaimPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ChallengeClaim.
+     * @param {ChallengeClaimCreateArgs} args - Arguments to create a ChallengeClaim.
+     * @example
+     * // Create one ChallengeClaim
+     * const ChallengeClaim = await prisma.challengeClaim.create({
+     *   data: {
+     *     // ... data to create a ChallengeClaim
+     *   }
+     * })
+     * 
+     */
+    create<T extends ChallengeClaimCreateArgs>(args: SelectSubset<T, ChallengeClaimCreateArgs<ExtArgs>>): Prisma__ChallengeClaimClient<$Result.GetResult<Prisma.$ChallengeClaimPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ChallengeClaims.
+     * @param {ChallengeClaimCreateManyArgs} args - Arguments to create many ChallengeClaims.
+     * @example
+     * // Create many ChallengeClaims
+     * const challengeClaim = await prisma.challengeClaim.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ChallengeClaimCreateManyArgs>(args?: SelectSubset<T, ChallengeClaimCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ChallengeClaims and returns the data saved in the database.
+     * @param {ChallengeClaimCreateManyAndReturnArgs} args - Arguments to create many ChallengeClaims.
+     * @example
+     * // Create many ChallengeClaims
+     * const challengeClaim = await prisma.challengeClaim.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ChallengeClaims and only return the `id`
+     * const challengeClaimWithIdOnly = await prisma.challengeClaim.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ChallengeClaimCreateManyAndReturnArgs>(args?: SelectSubset<T, ChallengeClaimCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChallengeClaimPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ChallengeClaim.
+     * @param {ChallengeClaimDeleteArgs} args - Arguments to delete one ChallengeClaim.
+     * @example
+     * // Delete one ChallengeClaim
+     * const ChallengeClaim = await prisma.challengeClaim.delete({
+     *   where: {
+     *     // ... filter to delete one ChallengeClaim
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ChallengeClaimDeleteArgs>(args: SelectSubset<T, ChallengeClaimDeleteArgs<ExtArgs>>): Prisma__ChallengeClaimClient<$Result.GetResult<Prisma.$ChallengeClaimPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ChallengeClaim.
+     * @param {ChallengeClaimUpdateArgs} args - Arguments to update one ChallengeClaim.
+     * @example
+     * // Update one ChallengeClaim
+     * const challengeClaim = await prisma.challengeClaim.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ChallengeClaimUpdateArgs>(args: SelectSubset<T, ChallengeClaimUpdateArgs<ExtArgs>>): Prisma__ChallengeClaimClient<$Result.GetResult<Prisma.$ChallengeClaimPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ChallengeClaims.
+     * @param {ChallengeClaimDeleteManyArgs} args - Arguments to filter ChallengeClaims to delete.
+     * @example
+     * // Delete a few ChallengeClaims
+     * const { count } = await prisma.challengeClaim.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ChallengeClaimDeleteManyArgs>(args?: SelectSubset<T, ChallengeClaimDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ChallengeClaims.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChallengeClaimUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ChallengeClaims
+     * const challengeClaim = await prisma.challengeClaim.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ChallengeClaimUpdateManyArgs>(args: SelectSubset<T, ChallengeClaimUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ChallengeClaims and returns the data updated in the database.
+     * @param {ChallengeClaimUpdateManyAndReturnArgs} args - Arguments to update many ChallengeClaims.
+     * @example
+     * // Update many ChallengeClaims
+     * const challengeClaim = await prisma.challengeClaim.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ChallengeClaims and only return the `id`
+     * const challengeClaimWithIdOnly = await prisma.challengeClaim.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ChallengeClaimUpdateManyAndReturnArgs>(args: SelectSubset<T, ChallengeClaimUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChallengeClaimPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ChallengeClaim.
+     * @param {ChallengeClaimUpsertArgs} args - Arguments to update or create a ChallengeClaim.
+     * @example
+     * // Update or create a ChallengeClaim
+     * const challengeClaim = await prisma.challengeClaim.upsert({
+     *   create: {
+     *     // ... data to create a ChallengeClaim
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ChallengeClaim we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ChallengeClaimUpsertArgs>(args: SelectSubset<T, ChallengeClaimUpsertArgs<ExtArgs>>): Prisma__ChallengeClaimClient<$Result.GetResult<Prisma.$ChallengeClaimPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ChallengeClaims.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChallengeClaimCountArgs} args - Arguments to filter ChallengeClaims to count.
+     * @example
+     * // Count the number of ChallengeClaims
+     * const count = await prisma.challengeClaim.count({
+     *   where: {
+     *     // ... the filter for the ChallengeClaims we want to count
+     *   }
+     * })
+    **/
+    count<T extends ChallengeClaimCountArgs>(
+      args?: Subset<T, ChallengeClaimCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ChallengeClaimCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ChallengeClaim.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChallengeClaimAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ChallengeClaimAggregateArgs>(args: Subset<T, ChallengeClaimAggregateArgs>): Prisma.PrismaPromise<GetChallengeClaimAggregateType<T>>
+
+    /**
+     * Group by ChallengeClaim.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChallengeClaimGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ChallengeClaimGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ChallengeClaimGroupByArgs['orderBy'] }
+        : { orderBy?: ChallengeClaimGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ChallengeClaimGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetChallengeClaimGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ChallengeClaim model
+   */
+  readonly fields: ChallengeClaimFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ChallengeClaim.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ChallengeClaimClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    challenge<T extends ChallengeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ChallengeDefaultArgs<ExtArgs>>): Prisma__ChallengeClient<$Result.GetResult<Prisma.$ChallengePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    reviewedBy<T extends ChallengeClaim$reviewedByArgs<ExtArgs> = {}>(args?: Subset<T, ChallengeClaim$reviewedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ChallengeClaim model
+   */
+  interface ChallengeClaimFieldRefs {
+    readonly id: FieldRef<"ChallengeClaim", 'String'>
+    readonly challengeId: FieldRef<"ChallengeClaim", 'String'>
+    readonly userId: FieldRef<"ChallengeClaim", 'String'>
+    readonly proofImageUrl: FieldRef<"ChallengeClaim", 'String'>
+    readonly note: FieldRef<"ChallengeClaim", 'String'>
+    readonly status: FieldRef<"ChallengeClaim", 'String'>
+    readonly rejectionReason: FieldRef<"ChallengeClaim", 'String'>
+    readonly reviewedAt: FieldRef<"ChallengeClaim", 'DateTime'>
+    readonly reviewedById: FieldRef<"ChallengeClaim", 'String'>
+    readonly createdAt: FieldRef<"ChallengeClaim", 'DateTime'>
+    readonly updatedAt: FieldRef<"ChallengeClaim", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ChallengeClaim findUnique
+   */
+  export type ChallengeClaimFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChallengeClaim
+     */
+    select?: ChallengeClaimSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChallengeClaim
+     */
+    omit?: ChallengeClaimOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChallengeClaimInclude<ExtArgs> | null
+    /**
+     * Filter, which ChallengeClaim to fetch.
+     */
+    where: ChallengeClaimWhereUniqueInput
+  }
+
+  /**
+   * ChallengeClaim findUniqueOrThrow
+   */
+  export type ChallengeClaimFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChallengeClaim
+     */
+    select?: ChallengeClaimSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChallengeClaim
+     */
+    omit?: ChallengeClaimOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChallengeClaimInclude<ExtArgs> | null
+    /**
+     * Filter, which ChallengeClaim to fetch.
+     */
+    where: ChallengeClaimWhereUniqueInput
+  }
+
+  /**
+   * ChallengeClaim findFirst
+   */
+  export type ChallengeClaimFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChallengeClaim
+     */
+    select?: ChallengeClaimSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChallengeClaim
+     */
+    omit?: ChallengeClaimOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChallengeClaimInclude<ExtArgs> | null
+    /**
+     * Filter, which ChallengeClaim to fetch.
+     */
+    where?: ChallengeClaimWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ChallengeClaims to fetch.
+     */
+    orderBy?: ChallengeClaimOrderByWithRelationInput | ChallengeClaimOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ChallengeClaims.
+     */
+    cursor?: ChallengeClaimWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ChallengeClaims from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ChallengeClaims.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ChallengeClaims.
+     */
+    distinct?: ChallengeClaimScalarFieldEnum | ChallengeClaimScalarFieldEnum[]
+  }
+
+  /**
+   * ChallengeClaim findFirstOrThrow
+   */
+  export type ChallengeClaimFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChallengeClaim
+     */
+    select?: ChallengeClaimSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChallengeClaim
+     */
+    omit?: ChallengeClaimOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChallengeClaimInclude<ExtArgs> | null
+    /**
+     * Filter, which ChallengeClaim to fetch.
+     */
+    where?: ChallengeClaimWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ChallengeClaims to fetch.
+     */
+    orderBy?: ChallengeClaimOrderByWithRelationInput | ChallengeClaimOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ChallengeClaims.
+     */
+    cursor?: ChallengeClaimWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ChallengeClaims from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ChallengeClaims.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ChallengeClaims.
+     */
+    distinct?: ChallengeClaimScalarFieldEnum | ChallengeClaimScalarFieldEnum[]
+  }
+
+  /**
+   * ChallengeClaim findMany
+   */
+  export type ChallengeClaimFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChallengeClaim
+     */
+    select?: ChallengeClaimSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChallengeClaim
+     */
+    omit?: ChallengeClaimOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChallengeClaimInclude<ExtArgs> | null
+    /**
+     * Filter, which ChallengeClaims to fetch.
+     */
+    where?: ChallengeClaimWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ChallengeClaims to fetch.
+     */
+    orderBy?: ChallengeClaimOrderByWithRelationInput | ChallengeClaimOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ChallengeClaims.
+     */
+    cursor?: ChallengeClaimWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ChallengeClaims from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ChallengeClaims.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ChallengeClaims.
+     */
+    distinct?: ChallengeClaimScalarFieldEnum | ChallengeClaimScalarFieldEnum[]
+  }
+
+  /**
+   * ChallengeClaim create
+   */
+  export type ChallengeClaimCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChallengeClaim
+     */
+    select?: ChallengeClaimSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChallengeClaim
+     */
+    omit?: ChallengeClaimOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChallengeClaimInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ChallengeClaim.
+     */
+    data: XOR<ChallengeClaimCreateInput, ChallengeClaimUncheckedCreateInput>
+  }
+
+  /**
+   * ChallengeClaim createMany
+   */
+  export type ChallengeClaimCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ChallengeClaims.
+     */
+    data: ChallengeClaimCreateManyInput | ChallengeClaimCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ChallengeClaim createManyAndReturn
+   */
+  export type ChallengeClaimCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChallengeClaim
+     */
+    select?: ChallengeClaimSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChallengeClaim
+     */
+    omit?: ChallengeClaimOmit<ExtArgs> | null
+    /**
+     * The data used to create many ChallengeClaims.
+     */
+    data: ChallengeClaimCreateManyInput | ChallengeClaimCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChallengeClaimIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ChallengeClaim update
+   */
+  export type ChallengeClaimUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChallengeClaim
+     */
+    select?: ChallengeClaimSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChallengeClaim
+     */
+    omit?: ChallengeClaimOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChallengeClaimInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ChallengeClaim.
+     */
+    data: XOR<ChallengeClaimUpdateInput, ChallengeClaimUncheckedUpdateInput>
+    /**
+     * Choose, which ChallengeClaim to update.
+     */
+    where: ChallengeClaimWhereUniqueInput
+  }
+
+  /**
+   * ChallengeClaim updateMany
+   */
+  export type ChallengeClaimUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ChallengeClaims.
+     */
+    data: XOR<ChallengeClaimUpdateManyMutationInput, ChallengeClaimUncheckedUpdateManyInput>
+    /**
+     * Filter which ChallengeClaims to update
+     */
+    where?: ChallengeClaimWhereInput
+    /**
+     * Limit how many ChallengeClaims to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ChallengeClaim updateManyAndReturn
+   */
+  export type ChallengeClaimUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChallengeClaim
+     */
+    select?: ChallengeClaimSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChallengeClaim
+     */
+    omit?: ChallengeClaimOmit<ExtArgs> | null
+    /**
+     * The data used to update ChallengeClaims.
+     */
+    data: XOR<ChallengeClaimUpdateManyMutationInput, ChallengeClaimUncheckedUpdateManyInput>
+    /**
+     * Filter which ChallengeClaims to update
+     */
+    where?: ChallengeClaimWhereInput
+    /**
+     * Limit how many ChallengeClaims to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChallengeClaimIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ChallengeClaim upsert
+   */
+  export type ChallengeClaimUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChallengeClaim
+     */
+    select?: ChallengeClaimSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChallengeClaim
+     */
+    omit?: ChallengeClaimOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChallengeClaimInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ChallengeClaim to update in case it exists.
+     */
+    where: ChallengeClaimWhereUniqueInput
+    /**
+     * In case the ChallengeClaim found by the `where` argument doesn't exist, create a new ChallengeClaim with this data.
+     */
+    create: XOR<ChallengeClaimCreateInput, ChallengeClaimUncheckedCreateInput>
+    /**
+     * In case the ChallengeClaim was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ChallengeClaimUpdateInput, ChallengeClaimUncheckedUpdateInput>
+  }
+
+  /**
+   * ChallengeClaim delete
+   */
+  export type ChallengeClaimDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChallengeClaim
+     */
+    select?: ChallengeClaimSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChallengeClaim
+     */
+    omit?: ChallengeClaimOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChallengeClaimInclude<ExtArgs> | null
+    /**
+     * Filter which ChallengeClaim to delete.
+     */
+    where: ChallengeClaimWhereUniqueInput
+  }
+
+  /**
+   * ChallengeClaim deleteMany
+   */
+  export type ChallengeClaimDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ChallengeClaims to delete
+     */
+    where?: ChallengeClaimWhereInput
+    /**
+     * Limit how many ChallengeClaims to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ChallengeClaim.reviewedBy
+   */
+  export type ChallengeClaim$reviewedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * ChallengeClaim without action
+   */
+  export type ChallengeClaimDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChallengeClaim
+     */
+    select?: ChallengeClaimSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChallengeClaim
+     */
+    omit?: ChallengeClaimOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChallengeClaimInclude<ExtArgs> | null
   }
 
 
@@ -10820,9 +12375,17 @@ export namespace Prisma {
     title: 'title',
     description: 'description',
     status: 'status',
-    goal: 'goal',
-    currentProgress: 'currentProgress',
+    challengeType: 'challengeType',
+    targetValue: 'targetValue',
+    minBet: 'minBet',
     reward: 'reward',
+    rules: 'rules',
+    slotName: 'slotName',
+    provider: 'provider',
+    imageUrl: 'imageUrl',
+    imageSource: 'imageSource',
+    claimLimit: 'claimLimit',
+    requiresProof: 'requiresProof',
     startDate: 'startDate',
     endDate: 'endDate',
     createdAt: 'createdAt',
@@ -10830,6 +12393,23 @@ export namespace Prisma {
   };
 
   export type ChallengeScalarFieldEnum = (typeof ChallengeScalarFieldEnum)[keyof typeof ChallengeScalarFieldEnum]
+
+
+  export const ChallengeClaimScalarFieldEnum: {
+    id: 'id',
+    challengeId: 'challengeId',
+    userId: 'userId',
+    proofImageUrl: 'proofImageUrl',
+    note: 'note',
+    status: 'status',
+    rejectionReason: 'rejectionReason',
+    reviewedAt: 'reviewedAt',
+    reviewedById: 'reviewedById',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ChallengeClaimScalarFieldEnum = (typeof ChallengeClaimScalarFieldEnum)[keyof typeof ChallengeClaimScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -10979,6 +12559,8 @@ export namespace Prisma {
     display_name?: StringNullableFilter<"User"> | string | null
     profile_accent?: StringNullableFilter<"User"> | string | null
     raffleEntries?: RaffleEntryListRelationFilter
+    challengeClaims?: ChallengeClaimListRelationFilter
+    reviewedChallengeClaims?: ChallengeClaimListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -10999,6 +12581,8 @@ export namespace Prisma {
     display_name?: SortOrderInput | SortOrder
     profile_accent?: SortOrderInput | SortOrder
     raffleEntries?: RaffleEntryOrderByRelationAggregateInput
+    challengeClaims?: ChallengeClaimOrderByRelationAggregateInput
+    reviewedChallengeClaims?: ChallengeClaimOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -11022,6 +12606,8 @@ export namespace Prisma {
     display_name?: StringNullableFilter<"User"> | string | null
     profile_accent?: StringNullableFilter<"User"> | string | null
     raffleEntries?: RaffleEntryListRelationFilter
+    challengeClaims?: ChallengeClaimListRelationFilter
+    reviewedChallengeClaims?: ChallengeClaimListRelationFilter
   }, "id" | "kick_user_id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -11529,13 +13115,22 @@ export namespace Prisma {
     title?: StringFilter<"Challenge"> | string
     description?: StringNullableFilter<"Challenge"> | string | null
     status?: StringFilter<"Challenge"> | string
-    goal?: IntFilter<"Challenge"> | number
-    currentProgress?: IntFilter<"Challenge"> | number
+    challengeType?: StringFilter<"Challenge"> | string
+    targetValue?: FloatFilter<"Challenge"> | number
+    minBet?: FloatFilter<"Challenge"> | number
     reward?: StringFilter<"Challenge"> | string
+    rules?: StringNullableFilter<"Challenge"> | string | null
+    slotName?: StringNullableFilter<"Challenge"> | string | null
+    provider?: StringNullableFilter<"Challenge"> | string | null
+    imageUrl?: StringNullableFilter<"Challenge"> | string | null
+    imageSource?: StringNullableFilter<"Challenge"> | string | null
+    claimLimit?: IntFilter<"Challenge"> | number
+    requiresProof?: BoolFilter<"Challenge"> | boolean
     startDate?: DateTimeFilter<"Challenge"> | Date | string
     endDate?: DateTimeFilter<"Challenge"> | Date | string
     createdAt?: DateTimeFilter<"Challenge"> | Date | string
     updatedAt?: DateTimeFilter<"Challenge"> | Date | string
+    claims?: ChallengeClaimListRelationFilter
   }
 
   export type ChallengeOrderByWithRelationInput = {
@@ -11543,13 +13138,22 @@ export namespace Prisma {
     title?: SortOrder
     description?: SortOrderInput | SortOrder
     status?: SortOrder
-    goal?: SortOrder
-    currentProgress?: SortOrder
+    challengeType?: SortOrder
+    targetValue?: SortOrder
+    minBet?: SortOrder
     reward?: SortOrder
+    rules?: SortOrderInput | SortOrder
+    slotName?: SortOrderInput | SortOrder
+    provider?: SortOrderInput | SortOrder
+    imageUrl?: SortOrderInput | SortOrder
+    imageSource?: SortOrderInput | SortOrder
+    claimLimit?: SortOrder
+    requiresProof?: SortOrder
     startDate?: SortOrder
     endDate?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    claims?: ChallengeClaimOrderByRelationAggregateInput
   }
 
   export type ChallengeWhereUniqueInput = Prisma.AtLeast<{
@@ -11560,13 +13164,22 @@ export namespace Prisma {
     title?: StringFilter<"Challenge"> | string
     description?: StringNullableFilter<"Challenge"> | string | null
     status?: StringFilter<"Challenge"> | string
-    goal?: IntFilter<"Challenge"> | number
-    currentProgress?: IntFilter<"Challenge"> | number
+    challengeType?: StringFilter<"Challenge"> | string
+    targetValue?: FloatFilter<"Challenge"> | number
+    minBet?: FloatFilter<"Challenge"> | number
     reward?: StringFilter<"Challenge"> | string
+    rules?: StringNullableFilter<"Challenge"> | string | null
+    slotName?: StringNullableFilter<"Challenge"> | string | null
+    provider?: StringNullableFilter<"Challenge"> | string | null
+    imageUrl?: StringNullableFilter<"Challenge"> | string | null
+    imageSource?: StringNullableFilter<"Challenge"> | string | null
+    claimLimit?: IntFilter<"Challenge"> | number
+    requiresProof?: BoolFilter<"Challenge"> | boolean
     startDate?: DateTimeFilter<"Challenge"> | Date | string
     endDate?: DateTimeFilter<"Challenge"> | Date | string
     createdAt?: DateTimeFilter<"Challenge"> | Date | string
     updatedAt?: DateTimeFilter<"Challenge"> | Date | string
+    claims?: ChallengeClaimListRelationFilter
   }, "id">
 
   export type ChallengeOrderByWithAggregationInput = {
@@ -11574,9 +13187,17 @@ export namespace Prisma {
     title?: SortOrder
     description?: SortOrderInput | SortOrder
     status?: SortOrder
-    goal?: SortOrder
-    currentProgress?: SortOrder
+    challengeType?: SortOrder
+    targetValue?: SortOrder
+    minBet?: SortOrder
     reward?: SortOrder
+    rules?: SortOrderInput | SortOrder
+    slotName?: SortOrderInput | SortOrder
+    provider?: SortOrderInput | SortOrder
+    imageUrl?: SortOrderInput | SortOrder
+    imageSource?: SortOrderInput | SortOrder
+    claimLimit?: SortOrder
+    requiresProof?: SortOrder
     startDate?: SortOrder
     endDate?: SortOrder
     createdAt?: SortOrder
@@ -11596,13 +13217,112 @@ export namespace Prisma {
     title?: StringWithAggregatesFilter<"Challenge"> | string
     description?: StringNullableWithAggregatesFilter<"Challenge"> | string | null
     status?: StringWithAggregatesFilter<"Challenge"> | string
-    goal?: IntWithAggregatesFilter<"Challenge"> | number
-    currentProgress?: IntWithAggregatesFilter<"Challenge"> | number
+    challengeType?: StringWithAggregatesFilter<"Challenge"> | string
+    targetValue?: FloatWithAggregatesFilter<"Challenge"> | number
+    minBet?: FloatWithAggregatesFilter<"Challenge"> | number
     reward?: StringWithAggregatesFilter<"Challenge"> | string
+    rules?: StringNullableWithAggregatesFilter<"Challenge"> | string | null
+    slotName?: StringNullableWithAggregatesFilter<"Challenge"> | string | null
+    provider?: StringNullableWithAggregatesFilter<"Challenge"> | string | null
+    imageUrl?: StringNullableWithAggregatesFilter<"Challenge"> | string | null
+    imageSource?: StringNullableWithAggregatesFilter<"Challenge"> | string | null
+    claimLimit?: IntWithAggregatesFilter<"Challenge"> | number
+    requiresProof?: BoolWithAggregatesFilter<"Challenge"> | boolean
     startDate?: DateTimeWithAggregatesFilter<"Challenge"> | Date | string
     endDate?: DateTimeWithAggregatesFilter<"Challenge"> | Date | string
     createdAt?: DateTimeWithAggregatesFilter<"Challenge"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Challenge"> | Date | string
+  }
+
+  export type ChallengeClaimWhereInput = {
+    AND?: ChallengeClaimWhereInput | ChallengeClaimWhereInput[]
+    OR?: ChallengeClaimWhereInput[]
+    NOT?: ChallengeClaimWhereInput | ChallengeClaimWhereInput[]
+    id?: StringFilter<"ChallengeClaim"> | string
+    challengeId?: StringFilter<"ChallengeClaim"> | string
+    userId?: StringFilter<"ChallengeClaim"> | string
+    proofImageUrl?: StringFilter<"ChallengeClaim"> | string
+    note?: StringNullableFilter<"ChallengeClaim"> | string | null
+    status?: StringFilter<"ChallengeClaim"> | string
+    rejectionReason?: StringNullableFilter<"ChallengeClaim"> | string | null
+    reviewedAt?: DateTimeNullableFilter<"ChallengeClaim"> | Date | string | null
+    reviewedById?: StringNullableFilter<"ChallengeClaim"> | string | null
+    createdAt?: DateTimeFilter<"ChallengeClaim"> | Date | string
+    updatedAt?: DateTimeFilter<"ChallengeClaim"> | Date | string
+    challenge?: XOR<ChallengeScalarRelationFilter, ChallengeWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    reviewedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }
+
+  export type ChallengeClaimOrderByWithRelationInput = {
+    id?: SortOrder
+    challengeId?: SortOrder
+    userId?: SortOrder
+    proofImageUrl?: SortOrder
+    note?: SortOrderInput | SortOrder
+    status?: SortOrder
+    rejectionReason?: SortOrderInput | SortOrder
+    reviewedAt?: SortOrderInput | SortOrder
+    reviewedById?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    challenge?: ChallengeOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
+    reviewedBy?: UserOrderByWithRelationInput
+  }
+
+  export type ChallengeClaimWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ChallengeClaimWhereInput | ChallengeClaimWhereInput[]
+    OR?: ChallengeClaimWhereInput[]
+    NOT?: ChallengeClaimWhereInput | ChallengeClaimWhereInput[]
+    challengeId?: StringFilter<"ChallengeClaim"> | string
+    userId?: StringFilter<"ChallengeClaim"> | string
+    proofImageUrl?: StringFilter<"ChallengeClaim"> | string
+    note?: StringNullableFilter<"ChallengeClaim"> | string | null
+    status?: StringFilter<"ChallengeClaim"> | string
+    rejectionReason?: StringNullableFilter<"ChallengeClaim"> | string | null
+    reviewedAt?: DateTimeNullableFilter<"ChallengeClaim"> | Date | string | null
+    reviewedById?: StringNullableFilter<"ChallengeClaim"> | string | null
+    createdAt?: DateTimeFilter<"ChallengeClaim"> | Date | string
+    updatedAt?: DateTimeFilter<"ChallengeClaim"> | Date | string
+    challenge?: XOR<ChallengeScalarRelationFilter, ChallengeWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    reviewedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }, "id">
+
+  export type ChallengeClaimOrderByWithAggregationInput = {
+    id?: SortOrder
+    challengeId?: SortOrder
+    userId?: SortOrder
+    proofImageUrl?: SortOrder
+    note?: SortOrderInput | SortOrder
+    status?: SortOrder
+    rejectionReason?: SortOrderInput | SortOrder
+    reviewedAt?: SortOrderInput | SortOrder
+    reviewedById?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ChallengeClaimCountOrderByAggregateInput
+    _max?: ChallengeClaimMaxOrderByAggregateInput
+    _min?: ChallengeClaimMinOrderByAggregateInput
+  }
+
+  export type ChallengeClaimScalarWhereWithAggregatesInput = {
+    AND?: ChallengeClaimScalarWhereWithAggregatesInput | ChallengeClaimScalarWhereWithAggregatesInput[]
+    OR?: ChallengeClaimScalarWhereWithAggregatesInput[]
+    NOT?: ChallengeClaimScalarWhereWithAggregatesInput | ChallengeClaimScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ChallengeClaim"> | string
+    challengeId?: StringWithAggregatesFilter<"ChallengeClaim"> | string
+    userId?: StringWithAggregatesFilter<"ChallengeClaim"> | string
+    proofImageUrl?: StringWithAggregatesFilter<"ChallengeClaim"> | string
+    note?: StringNullableWithAggregatesFilter<"ChallengeClaim"> | string | null
+    status?: StringWithAggregatesFilter<"ChallengeClaim"> | string
+    rejectionReason?: StringNullableWithAggregatesFilter<"ChallengeClaim"> | string | null
+    reviewedAt?: DateTimeNullableWithAggregatesFilter<"ChallengeClaim"> | Date | string | null
+    reviewedById?: StringNullableWithAggregatesFilter<"ChallengeClaim"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"ChallengeClaim"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ChallengeClaim"> | Date | string
   }
 
   export type UserCreateInput = {
@@ -11623,6 +13343,8 @@ export namespace Prisma {
     display_name?: string | null
     profile_accent?: string | null
     raffleEntries?: RaffleEntryCreateNestedManyWithoutUserInput
+    challengeClaims?: ChallengeClaimCreateNestedManyWithoutUserInput
+    reviewedChallengeClaims?: ChallengeClaimCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -11643,6 +13365,8 @@ export namespace Prisma {
     display_name?: string | null
     profile_accent?: string | null
     raffleEntries?: RaffleEntryUncheckedCreateNestedManyWithoutUserInput
+    challengeClaims?: ChallengeClaimUncheckedCreateNestedManyWithoutUserInput
+    reviewedChallengeClaims?: ChallengeClaimUncheckedCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserUpdateInput = {
@@ -11663,6 +13387,8 @@ export namespace Prisma {
     display_name?: NullableStringFieldUpdateOperationsInput | string | null
     profile_accent?: NullableStringFieldUpdateOperationsInput | string | null
     raffleEntries?: RaffleEntryUpdateManyWithoutUserNestedInput
+    challengeClaims?: ChallengeClaimUpdateManyWithoutUserNestedInput
+    reviewedChallengeClaims?: ChallengeClaimUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -11683,6 +13409,8 @@ export namespace Prisma {
     display_name?: NullableStringFieldUpdateOperationsInput | string | null
     profile_accent?: NullableStringFieldUpdateOperationsInput | string | null
     raffleEntries?: RaffleEntryUncheckedUpdateManyWithoutUserNestedInput
+    challengeClaims?: ChallengeClaimUncheckedUpdateManyWithoutUserNestedInput
+    reviewedChallengeClaims?: ChallengeClaimUncheckedUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -12249,13 +13977,22 @@ export namespace Prisma {
     title: string
     description?: string | null
     status?: string
-    goal: number
-    currentProgress?: number
+    challengeType?: string
+    targetValue: number
+    minBet?: number
     reward: string
+    rules?: string | null
+    slotName?: string | null
+    provider?: string | null
+    imageUrl?: string | null
+    imageSource?: string | null
+    claimLimit?: number
+    requiresProof?: boolean
     startDate: Date | string
     endDate: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
+    claims?: ChallengeClaimCreateNestedManyWithoutChallengeInput
   }
 
   export type ChallengeUncheckedCreateInput = {
@@ -12263,13 +14000,22 @@ export namespace Prisma {
     title: string
     description?: string | null
     status?: string
-    goal: number
-    currentProgress?: number
+    challengeType?: string
+    targetValue: number
+    minBet?: number
     reward: string
+    rules?: string | null
+    slotName?: string | null
+    provider?: string | null
+    imageUrl?: string | null
+    imageSource?: string | null
+    claimLimit?: number
+    requiresProof?: boolean
     startDate: Date | string
     endDate: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
+    claims?: ChallengeClaimUncheckedCreateNestedManyWithoutChallengeInput
   }
 
   export type ChallengeUpdateInput = {
@@ -12277,13 +14023,22 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
-    goal?: IntFieldUpdateOperationsInput | number
-    currentProgress?: IntFieldUpdateOperationsInput | number
+    challengeType?: StringFieldUpdateOperationsInput | string
+    targetValue?: FloatFieldUpdateOperationsInput | number
+    minBet?: FloatFieldUpdateOperationsInput | number
     reward?: StringFieldUpdateOperationsInput | string
+    rules?: NullableStringFieldUpdateOperationsInput | string | null
+    slotName?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    imageSource?: NullableStringFieldUpdateOperationsInput | string | null
+    claimLimit?: IntFieldUpdateOperationsInput | number
+    requiresProof?: BoolFieldUpdateOperationsInput | boolean
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    claims?: ChallengeClaimUpdateManyWithoutChallengeNestedInput
   }
 
   export type ChallengeUncheckedUpdateInput = {
@@ -12291,13 +14046,22 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
-    goal?: IntFieldUpdateOperationsInput | number
-    currentProgress?: IntFieldUpdateOperationsInput | number
+    challengeType?: StringFieldUpdateOperationsInput | string
+    targetValue?: FloatFieldUpdateOperationsInput | number
+    minBet?: FloatFieldUpdateOperationsInput | number
     reward?: StringFieldUpdateOperationsInput | string
+    rules?: NullableStringFieldUpdateOperationsInput | string | null
+    slotName?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    imageSource?: NullableStringFieldUpdateOperationsInput | string | null
+    claimLimit?: IntFieldUpdateOperationsInput | number
+    requiresProof?: BoolFieldUpdateOperationsInput | boolean
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    claims?: ChallengeClaimUncheckedUpdateManyWithoutChallengeNestedInput
   }
 
   export type ChallengeCreateManyInput = {
@@ -12305,9 +14069,17 @@ export namespace Prisma {
     title: string
     description?: string | null
     status?: string
-    goal: number
-    currentProgress?: number
+    challengeType?: string
+    targetValue: number
+    minBet?: number
     reward: string
+    rules?: string | null
+    slotName?: string | null
+    provider?: string | null
+    imageUrl?: string | null
+    imageSource?: string | null
+    claimLimit?: number
+    requiresProof?: boolean
     startDate: Date | string
     endDate: Date | string
     createdAt?: Date | string
@@ -12319,9 +14091,17 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
-    goal?: IntFieldUpdateOperationsInput | number
-    currentProgress?: IntFieldUpdateOperationsInput | number
+    challengeType?: StringFieldUpdateOperationsInput | string
+    targetValue?: FloatFieldUpdateOperationsInput | number
+    minBet?: FloatFieldUpdateOperationsInput | number
     reward?: StringFieldUpdateOperationsInput | string
+    rules?: NullableStringFieldUpdateOperationsInput | string | null
+    slotName?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    imageSource?: NullableStringFieldUpdateOperationsInput | string | null
+    claimLimit?: IntFieldUpdateOperationsInput | number
+    requiresProof?: BoolFieldUpdateOperationsInput | boolean
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12333,11 +14113,114 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
-    goal?: IntFieldUpdateOperationsInput | number
-    currentProgress?: IntFieldUpdateOperationsInput | number
+    challengeType?: StringFieldUpdateOperationsInput | string
+    targetValue?: FloatFieldUpdateOperationsInput | number
+    minBet?: FloatFieldUpdateOperationsInput | number
     reward?: StringFieldUpdateOperationsInput | string
+    rules?: NullableStringFieldUpdateOperationsInput | string | null
+    slotName?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    imageSource?: NullableStringFieldUpdateOperationsInput | string | null
+    claimLimit?: IntFieldUpdateOperationsInput | number
+    requiresProof?: BoolFieldUpdateOperationsInput | boolean
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChallengeClaimCreateInput = {
+    id?: string
+    proofImageUrl: string
+    note?: string | null
+    status?: string
+    rejectionReason?: string | null
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    challenge: ChallengeCreateNestedOneWithoutClaimsInput
+    user: UserCreateNestedOneWithoutChallengeClaimsInput
+    reviewedBy?: UserCreateNestedOneWithoutReviewedChallengeClaimsInput
+  }
+
+  export type ChallengeClaimUncheckedCreateInput = {
+    id?: string
+    challengeId: string
+    userId: string
+    proofImageUrl: string
+    note?: string | null
+    status?: string
+    rejectionReason?: string | null
+    reviewedAt?: Date | string | null
+    reviewedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ChallengeClaimUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    proofImageUrl?: StringFieldUpdateOperationsInput | string
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    challenge?: ChallengeUpdateOneRequiredWithoutClaimsNestedInput
+    user?: UserUpdateOneRequiredWithoutChallengeClaimsNestedInput
+    reviewedBy?: UserUpdateOneWithoutReviewedChallengeClaimsNestedInput
+  }
+
+  export type ChallengeClaimUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    challengeId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    proofImageUrl?: StringFieldUpdateOperationsInput | string
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChallengeClaimCreateManyInput = {
+    id?: string
+    challengeId: string
+    userId: string
+    proofImageUrl: string
+    note?: string | null
+    status?: string
+    rejectionReason?: string | null
+    reviewedAt?: Date | string | null
+    reviewedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ChallengeClaimUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    proofImageUrl?: StringFieldUpdateOperationsInput | string
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChallengeClaimUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    challengeId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    proofImageUrl?: StringFieldUpdateOperationsInput | string
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewedById?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -12416,12 +14299,22 @@ export namespace Prisma {
     none?: RaffleEntryWhereInput
   }
 
+  export type ChallengeClaimListRelationFilter = {
+    every?: ChallengeClaimWhereInput
+    some?: ChallengeClaimWhereInput
+    none?: ChallengeClaimWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
   }
 
   export type RaffleEntryOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ChallengeClaimOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -12933,14 +14826,33 @@ export namespace Prisma {
     cost?: SortOrder
   }
 
+  export type FloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
   export type ChallengeCountOrderByAggregateInput = {
     id?: SortOrder
     title?: SortOrder
     description?: SortOrder
     status?: SortOrder
-    goal?: SortOrder
-    currentProgress?: SortOrder
+    challengeType?: SortOrder
+    targetValue?: SortOrder
+    minBet?: SortOrder
     reward?: SortOrder
+    rules?: SortOrder
+    slotName?: SortOrder
+    provider?: SortOrder
+    imageUrl?: SortOrder
+    imageSource?: SortOrder
+    claimLimit?: SortOrder
+    requiresProof?: SortOrder
     startDate?: SortOrder
     endDate?: SortOrder
     createdAt?: SortOrder
@@ -12948,8 +14860,9 @@ export namespace Prisma {
   }
 
   export type ChallengeAvgOrderByAggregateInput = {
-    goal?: SortOrder
-    currentProgress?: SortOrder
+    targetValue?: SortOrder
+    minBet?: SortOrder
+    claimLimit?: SortOrder
   }
 
   export type ChallengeMaxOrderByAggregateInput = {
@@ -12957,9 +14870,17 @@ export namespace Prisma {
     title?: SortOrder
     description?: SortOrder
     status?: SortOrder
-    goal?: SortOrder
-    currentProgress?: SortOrder
+    challengeType?: SortOrder
+    targetValue?: SortOrder
+    minBet?: SortOrder
     reward?: SortOrder
+    rules?: SortOrder
+    slotName?: SortOrder
+    provider?: SortOrder
+    imageUrl?: SortOrder
+    imageSource?: SortOrder
+    claimLimit?: SortOrder
+    requiresProof?: SortOrder
     startDate?: SortOrder
     endDate?: SortOrder
     createdAt?: SortOrder
@@ -12971,9 +14892,17 @@ export namespace Prisma {
     title?: SortOrder
     description?: SortOrder
     status?: SortOrder
-    goal?: SortOrder
-    currentProgress?: SortOrder
+    challengeType?: SortOrder
+    targetValue?: SortOrder
+    minBet?: SortOrder
     reward?: SortOrder
+    rules?: SortOrder
+    slotName?: SortOrder
+    provider?: SortOrder
+    imageUrl?: SortOrder
+    imageSource?: SortOrder
+    claimLimit?: SortOrder
+    requiresProof?: SortOrder
     startDate?: SortOrder
     endDate?: SortOrder
     createdAt?: SortOrder
@@ -12981,8 +14910,77 @@ export namespace Prisma {
   }
 
   export type ChallengeSumOrderByAggregateInput = {
-    goal?: SortOrder
-    currentProgress?: SortOrder
+    targetValue?: SortOrder
+    minBet?: SortOrder
+    claimLimit?: SortOrder
+  }
+
+  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
+  export type ChallengeScalarRelationFilter = {
+    is?: ChallengeWhereInput
+    isNot?: ChallengeWhereInput
+  }
+
+  export type UserNullableScalarRelationFilter = {
+    is?: UserWhereInput | null
+    isNot?: UserWhereInput | null
+  }
+
+  export type ChallengeClaimCountOrderByAggregateInput = {
+    id?: SortOrder
+    challengeId?: SortOrder
+    userId?: SortOrder
+    proofImageUrl?: SortOrder
+    note?: SortOrder
+    status?: SortOrder
+    rejectionReason?: SortOrder
+    reviewedAt?: SortOrder
+    reviewedById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ChallengeClaimMaxOrderByAggregateInput = {
+    id?: SortOrder
+    challengeId?: SortOrder
+    userId?: SortOrder
+    proofImageUrl?: SortOrder
+    note?: SortOrder
+    status?: SortOrder
+    rejectionReason?: SortOrder
+    reviewedAt?: SortOrder
+    reviewedById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ChallengeClaimMinOrderByAggregateInput = {
+    id?: SortOrder
+    challengeId?: SortOrder
+    userId?: SortOrder
+    proofImageUrl?: SortOrder
+    note?: SortOrder
+    status?: SortOrder
+    rejectionReason?: SortOrder
+    reviewedAt?: SortOrder
+    reviewedById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type RaffleEntryCreateNestedManyWithoutUserInput = {
@@ -12992,11 +14990,39 @@ export namespace Prisma {
     connect?: RaffleEntryWhereUniqueInput | RaffleEntryWhereUniqueInput[]
   }
 
+  export type ChallengeClaimCreateNestedManyWithoutUserInput = {
+    create?: XOR<ChallengeClaimCreateWithoutUserInput, ChallengeClaimUncheckedCreateWithoutUserInput> | ChallengeClaimCreateWithoutUserInput[] | ChallengeClaimUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ChallengeClaimCreateOrConnectWithoutUserInput | ChallengeClaimCreateOrConnectWithoutUserInput[]
+    createMany?: ChallengeClaimCreateManyUserInputEnvelope
+    connect?: ChallengeClaimWhereUniqueInput | ChallengeClaimWhereUniqueInput[]
+  }
+
+  export type ChallengeClaimCreateNestedManyWithoutReviewedByInput = {
+    create?: XOR<ChallengeClaimCreateWithoutReviewedByInput, ChallengeClaimUncheckedCreateWithoutReviewedByInput> | ChallengeClaimCreateWithoutReviewedByInput[] | ChallengeClaimUncheckedCreateWithoutReviewedByInput[]
+    connectOrCreate?: ChallengeClaimCreateOrConnectWithoutReviewedByInput | ChallengeClaimCreateOrConnectWithoutReviewedByInput[]
+    createMany?: ChallengeClaimCreateManyReviewedByInputEnvelope
+    connect?: ChallengeClaimWhereUniqueInput | ChallengeClaimWhereUniqueInput[]
+  }
+
   export type RaffleEntryUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<RaffleEntryCreateWithoutUserInput, RaffleEntryUncheckedCreateWithoutUserInput> | RaffleEntryCreateWithoutUserInput[] | RaffleEntryUncheckedCreateWithoutUserInput[]
     connectOrCreate?: RaffleEntryCreateOrConnectWithoutUserInput | RaffleEntryCreateOrConnectWithoutUserInput[]
     createMany?: RaffleEntryCreateManyUserInputEnvelope
     connect?: RaffleEntryWhereUniqueInput | RaffleEntryWhereUniqueInput[]
+  }
+
+  export type ChallengeClaimUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<ChallengeClaimCreateWithoutUserInput, ChallengeClaimUncheckedCreateWithoutUserInput> | ChallengeClaimCreateWithoutUserInput[] | ChallengeClaimUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ChallengeClaimCreateOrConnectWithoutUserInput | ChallengeClaimCreateOrConnectWithoutUserInput[]
+    createMany?: ChallengeClaimCreateManyUserInputEnvelope
+    connect?: ChallengeClaimWhereUniqueInput | ChallengeClaimWhereUniqueInput[]
+  }
+
+  export type ChallengeClaimUncheckedCreateNestedManyWithoutReviewedByInput = {
+    create?: XOR<ChallengeClaimCreateWithoutReviewedByInput, ChallengeClaimUncheckedCreateWithoutReviewedByInput> | ChallengeClaimCreateWithoutReviewedByInput[] | ChallengeClaimUncheckedCreateWithoutReviewedByInput[]
+    connectOrCreate?: ChallengeClaimCreateOrConnectWithoutReviewedByInput | ChallengeClaimCreateOrConnectWithoutReviewedByInput[]
+    createMany?: ChallengeClaimCreateManyReviewedByInputEnvelope
+    connect?: ChallengeClaimWhereUniqueInput | ChallengeClaimWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -13041,6 +15067,34 @@ export namespace Prisma {
     deleteMany?: RaffleEntryScalarWhereInput | RaffleEntryScalarWhereInput[]
   }
 
+  export type ChallengeClaimUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ChallengeClaimCreateWithoutUserInput, ChallengeClaimUncheckedCreateWithoutUserInput> | ChallengeClaimCreateWithoutUserInput[] | ChallengeClaimUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ChallengeClaimCreateOrConnectWithoutUserInput | ChallengeClaimCreateOrConnectWithoutUserInput[]
+    upsert?: ChallengeClaimUpsertWithWhereUniqueWithoutUserInput | ChallengeClaimUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ChallengeClaimCreateManyUserInputEnvelope
+    set?: ChallengeClaimWhereUniqueInput | ChallengeClaimWhereUniqueInput[]
+    disconnect?: ChallengeClaimWhereUniqueInput | ChallengeClaimWhereUniqueInput[]
+    delete?: ChallengeClaimWhereUniqueInput | ChallengeClaimWhereUniqueInput[]
+    connect?: ChallengeClaimWhereUniqueInput | ChallengeClaimWhereUniqueInput[]
+    update?: ChallengeClaimUpdateWithWhereUniqueWithoutUserInput | ChallengeClaimUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ChallengeClaimUpdateManyWithWhereWithoutUserInput | ChallengeClaimUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ChallengeClaimScalarWhereInput | ChallengeClaimScalarWhereInput[]
+  }
+
+  export type ChallengeClaimUpdateManyWithoutReviewedByNestedInput = {
+    create?: XOR<ChallengeClaimCreateWithoutReviewedByInput, ChallengeClaimUncheckedCreateWithoutReviewedByInput> | ChallengeClaimCreateWithoutReviewedByInput[] | ChallengeClaimUncheckedCreateWithoutReviewedByInput[]
+    connectOrCreate?: ChallengeClaimCreateOrConnectWithoutReviewedByInput | ChallengeClaimCreateOrConnectWithoutReviewedByInput[]
+    upsert?: ChallengeClaimUpsertWithWhereUniqueWithoutReviewedByInput | ChallengeClaimUpsertWithWhereUniqueWithoutReviewedByInput[]
+    createMany?: ChallengeClaimCreateManyReviewedByInputEnvelope
+    set?: ChallengeClaimWhereUniqueInput | ChallengeClaimWhereUniqueInput[]
+    disconnect?: ChallengeClaimWhereUniqueInput | ChallengeClaimWhereUniqueInput[]
+    delete?: ChallengeClaimWhereUniqueInput | ChallengeClaimWhereUniqueInput[]
+    connect?: ChallengeClaimWhereUniqueInput | ChallengeClaimWhereUniqueInput[]
+    update?: ChallengeClaimUpdateWithWhereUniqueWithoutReviewedByInput | ChallengeClaimUpdateWithWhereUniqueWithoutReviewedByInput[]
+    updateMany?: ChallengeClaimUpdateManyWithWhereWithoutReviewedByInput | ChallengeClaimUpdateManyWithWhereWithoutReviewedByInput[]
+    deleteMany?: ChallengeClaimScalarWhereInput | ChallengeClaimScalarWhereInput[]
+  }
+
   export type RaffleEntryUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<RaffleEntryCreateWithoutUserInput, RaffleEntryUncheckedCreateWithoutUserInput> | RaffleEntryCreateWithoutUserInput[] | RaffleEntryUncheckedCreateWithoutUserInput[]
     connectOrCreate?: RaffleEntryCreateOrConnectWithoutUserInput | RaffleEntryCreateOrConnectWithoutUserInput[]
@@ -13053,6 +15107,34 @@ export namespace Prisma {
     update?: RaffleEntryUpdateWithWhereUniqueWithoutUserInput | RaffleEntryUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: RaffleEntryUpdateManyWithWhereWithoutUserInput | RaffleEntryUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: RaffleEntryScalarWhereInput | RaffleEntryScalarWhereInput[]
+  }
+
+  export type ChallengeClaimUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ChallengeClaimCreateWithoutUserInput, ChallengeClaimUncheckedCreateWithoutUserInput> | ChallengeClaimCreateWithoutUserInput[] | ChallengeClaimUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ChallengeClaimCreateOrConnectWithoutUserInput | ChallengeClaimCreateOrConnectWithoutUserInput[]
+    upsert?: ChallengeClaimUpsertWithWhereUniqueWithoutUserInput | ChallengeClaimUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ChallengeClaimCreateManyUserInputEnvelope
+    set?: ChallengeClaimWhereUniqueInput | ChallengeClaimWhereUniqueInput[]
+    disconnect?: ChallengeClaimWhereUniqueInput | ChallengeClaimWhereUniqueInput[]
+    delete?: ChallengeClaimWhereUniqueInput | ChallengeClaimWhereUniqueInput[]
+    connect?: ChallengeClaimWhereUniqueInput | ChallengeClaimWhereUniqueInput[]
+    update?: ChallengeClaimUpdateWithWhereUniqueWithoutUserInput | ChallengeClaimUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ChallengeClaimUpdateManyWithWhereWithoutUserInput | ChallengeClaimUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ChallengeClaimScalarWhereInput | ChallengeClaimScalarWhereInput[]
+  }
+
+  export type ChallengeClaimUncheckedUpdateManyWithoutReviewedByNestedInput = {
+    create?: XOR<ChallengeClaimCreateWithoutReviewedByInput, ChallengeClaimUncheckedCreateWithoutReviewedByInput> | ChallengeClaimCreateWithoutReviewedByInput[] | ChallengeClaimUncheckedCreateWithoutReviewedByInput[]
+    connectOrCreate?: ChallengeClaimCreateOrConnectWithoutReviewedByInput | ChallengeClaimCreateOrConnectWithoutReviewedByInput[]
+    upsert?: ChallengeClaimUpsertWithWhereUniqueWithoutReviewedByInput | ChallengeClaimUpsertWithWhereUniqueWithoutReviewedByInput[]
+    createMany?: ChallengeClaimCreateManyReviewedByInputEnvelope
+    set?: ChallengeClaimWhereUniqueInput | ChallengeClaimWhereUniqueInput[]
+    disconnect?: ChallengeClaimWhereUniqueInput | ChallengeClaimWhereUniqueInput[]
+    delete?: ChallengeClaimWhereUniqueInput | ChallengeClaimWhereUniqueInput[]
+    connect?: ChallengeClaimWhereUniqueInput | ChallengeClaimWhereUniqueInput[]
+    update?: ChallengeClaimUpdateWithWhereUniqueWithoutReviewedByInput | ChallengeClaimUpdateWithWhereUniqueWithoutReviewedByInput[]
+    updateMany?: ChallengeClaimUpdateManyWithWhereWithoutReviewedByInput | ChallengeClaimUpdateManyWithWhereWithoutReviewedByInput[]
+    deleteMany?: ChallengeClaimScalarWhereInput | ChallengeClaimScalarWhereInput[]
   }
 
   export type LeaderboardPrizeTierCreateNestedManyWithoutLeaderboardInput = {
@@ -13187,6 +15269,100 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutRaffleEntriesInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutRaffleEntriesInput, UserUpdateWithoutRaffleEntriesInput>, UserUncheckedUpdateWithoutRaffleEntriesInput>
+  }
+
+  export type ChallengeClaimCreateNestedManyWithoutChallengeInput = {
+    create?: XOR<ChallengeClaimCreateWithoutChallengeInput, ChallengeClaimUncheckedCreateWithoutChallengeInput> | ChallengeClaimCreateWithoutChallengeInput[] | ChallengeClaimUncheckedCreateWithoutChallengeInput[]
+    connectOrCreate?: ChallengeClaimCreateOrConnectWithoutChallengeInput | ChallengeClaimCreateOrConnectWithoutChallengeInput[]
+    createMany?: ChallengeClaimCreateManyChallengeInputEnvelope
+    connect?: ChallengeClaimWhereUniqueInput | ChallengeClaimWhereUniqueInput[]
+  }
+
+  export type ChallengeClaimUncheckedCreateNestedManyWithoutChallengeInput = {
+    create?: XOR<ChallengeClaimCreateWithoutChallengeInput, ChallengeClaimUncheckedCreateWithoutChallengeInput> | ChallengeClaimCreateWithoutChallengeInput[] | ChallengeClaimUncheckedCreateWithoutChallengeInput[]
+    connectOrCreate?: ChallengeClaimCreateOrConnectWithoutChallengeInput | ChallengeClaimCreateOrConnectWithoutChallengeInput[]
+    createMany?: ChallengeClaimCreateManyChallengeInputEnvelope
+    connect?: ChallengeClaimWhereUniqueInput | ChallengeClaimWhereUniqueInput[]
+  }
+
+  export type FloatFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type ChallengeClaimUpdateManyWithoutChallengeNestedInput = {
+    create?: XOR<ChallengeClaimCreateWithoutChallengeInput, ChallengeClaimUncheckedCreateWithoutChallengeInput> | ChallengeClaimCreateWithoutChallengeInput[] | ChallengeClaimUncheckedCreateWithoutChallengeInput[]
+    connectOrCreate?: ChallengeClaimCreateOrConnectWithoutChallengeInput | ChallengeClaimCreateOrConnectWithoutChallengeInput[]
+    upsert?: ChallengeClaimUpsertWithWhereUniqueWithoutChallengeInput | ChallengeClaimUpsertWithWhereUniqueWithoutChallengeInput[]
+    createMany?: ChallengeClaimCreateManyChallengeInputEnvelope
+    set?: ChallengeClaimWhereUniqueInput | ChallengeClaimWhereUniqueInput[]
+    disconnect?: ChallengeClaimWhereUniqueInput | ChallengeClaimWhereUniqueInput[]
+    delete?: ChallengeClaimWhereUniqueInput | ChallengeClaimWhereUniqueInput[]
+    connect?: ChallengeClaimWhereUniqueInput | ChallengeClaimWhereUniqueInput[]
+    update?: ChallengeClaimUpdateWithWhereUniqueWithoutChallengeInput | ChallengeClaimUpdateWithWhereUniqueWithoutChallengeInput[]
+    updateMany?: ChallengeClaimUpdateManyWithWhereWithoutChallengeInput | ChallengeClaimUpdateManyWithWhereWithoutChallengeInput[]
+    deleteMany?: ChallengeClaimScalarWhereInput | ChallengeClaimScalarWhereInput[]
+  }
+
+  export type ChallengeClaimUncheckedUpdateManyWithoutChallengeNestedInput = {
+    create?: XOR<ChallengeClaimCreateWithoutChallengeInput, ChallengeClaimUncheckedCreateWithoutChallengeInput> | ChallengeClaimCreateWithoutChallengeInput[] | ChallengeClaimUncheckedCreateWithoutChallengeInput[]
+    connectOrCreate?: ChallengeClaimCreateOrConnectWithoutChallengeInput | ChallengeClaimCreateOrConnectWithoutChallengeInput[]
+    upsert?: ChallengeClaimUpsertWithWhereUniqueWithoutChallengeInput | ChallengeClaimUpsertWithWhereUniqueWithoutChallengeInput[]
+    createMany?: ChallengeClaimCreateManyChallengeInputEnvelope
+    set?: ChallengeClaimWhereUniqueInput | ChallengeClaimWhereUniqueInput[]
+    disconnect?: ChallengeClaimWhereUniqueInput | ChallengeClaimWhereUniqueInput[]
+    delete?: ChallengeClaimWhereUniqueInput | ChallengeClaimWhereUniqueInput[]
+    connect?: ChallengeClaimWhereUniqueInput | ChallengeClaimWhereUniqueInput[]
+    update?: ChallengeClaimUpdateWithWhereUniqueWithoutChallengeInput | ChallengeClaimUpdateWithWhereUniqueWithoutChallengeInput[]
+    updateMany?: ChallengeClaimUpdateManyWithWhereWithoutChallengeInput | ChallengeClaimUpdateManyWithWhereWithoutChallengeInput[]
+    deleteMany?: ChallengeClaimScalarWhereInput | ChallengeClaimScalarWhereInput[]
+  }
+
+  export type ChallengeCreateNestedOneWithoutClaimsInput = {
+    create?: XOR<ChallengeCreateWithoutClaimsInput, ChallengeUncheckedCreateWithoutClaimsInput>
+    connectOrCreate?: ChallengeCreateOrConnectWithoutClaimsInput
+    connect?: ChallengeWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutChallengeClaimsInput = {
+    create?: XOR<UserCreateWithoutChallengeClaimsInput, UserUncheckedCreateWithoutChallengeClaimsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutChallengeClaimsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutReviewedChallengeClaimsInput = {
+    create?: XOR<UserCreateWithoutReviewedChallengeClaimsInput, UserUncheckedCreateWithoutReviewedChallengeClaimsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutReviewedChallengeClaimsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type ChallengeUpdateOneRequiredWithoutClaimsNestedInput = {
+    create?: XOR<ChallengeCreateWithoutClaimsInput, ChallengeUncheckedCreateWithoutClaimsInput>
+    connectOrCreate?: ChallengeCreateOrConnectWithoutClaimsInput
+    upsert?: ChallengeUpsertWithoutClaimsInput
+    connect?: ChallengeWhereUniqueInput
+    update?: XOR<XOR<ChallengeUpdateToOneWithWhereWithoutClaimsInput, ChallengeUpdateWithoutClaimsInput>, ChallengeUncheckedUpdateWithoutClaimsInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutChallengeClaimsNestedInput = {
+    create?: XOR<UserCreateWithoutChallengeClaimsInput, UserUncheckedCreateWithoutChallengeClaimsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutChallengeClaimsInput
+    upsert?: UserUpsertWithoutChallengeClaimsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutChallengeClaimsInput, UserUpdateWithoutChallengeClaimsInput>, UserUncheckedUpdateWithoutChallengeClaimsInput>
+  }
+
+  export type UserUpdateOneWithoutReviewedChallengeClaimsNestedInput = {
+    create?: XOR<UserCreateWithoutReviewedChallengeClaimsInput, UserUncheckedCreateWithoutReviewedChallengeClaimsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutReviewedChallengeClaimsInput
+    upsert?: UserUpsertWithoutReviewedChallengeClaimsInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutReviewedChallengeClaimsInput, UserUpdateWithoutReviewedChallengeClaimsInput>, UserUncheckedUpdateWithoutReviewedChallengeClaimsInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -13413,6 +15589,22 @@ export namespace Prisma {
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
+  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
   export type RaffleEntryCreateWithoutUserInput = {
     id?: string
     cost?: number
@@ -13436,6 +15628,78 @@ export namespace Prisma {
 
   export type RaffleEntryCreateManyUserInputEnvelope = {
     data: RaffleEntryCreateManyUserInput | RaffleEntryCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ChallengeClaimCreateWithoutUserInput = {
+    id?: string
+    proofImageUrl: string
+    note?: string | null
+    status?: string
+    rejectionReason?: string | null
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    challenge: ChallengeCreateNestedOneWithoutClaimsInput
+    reviewedBy?: UserCreateNestedOneWithoutReviewedChallengeClaimsInput
+  }
+
+  export type ChallengeClaimUncheckedCreateWithoutUserInput = {
+    id?: string
+    challengeId: string
+    proofImageUrl: string
+    note?: string | null
+    status?: string
+    rejectionReason?: string | null
+    reviewedAt?: Date | string | null
+    reviewedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ChallengeClaimCreateOrConnectWithoutUserInput = {
+    where: ChallengeClaimWhereUniqueInput
+    create: XOR<ChallengeClaimCreateWithoutUserInput, ChallengeClaimUncheckedCreateWithoutUserInput>
+  }
+
+  export type ChallengeClaimCreateManyUserInputEnvelope = {
+    data: ChallengeClaimCreateManyUserInput | ChallengeClaimCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ChallengeClaimCreateWithoutReviewedByInput = {
+    id?: string
+    proofImageUrl: string
+    note?: string | null
+    status?: string
+    rejectionReason?: string | null
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    challenge: ChallengeCreateNestedOneWithoutClaimsInput
+    user: UserCreateNestedOneWithoutChallengeClaimsInput
+  }
+
+  export type ChallengeClaimUncheckedCreateWithoutReviewedByInput = {
+    id?: string
+    challengeId: string
+    userId: string
+    proofImageUrl: string
+    note?: string | null
+    status?: string
+    rejectionReason?: string | null
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ChallengeClaimCreateOrConnectWithoutReviewedByInput = {
+    where: ChallengeClaimWhereUniqueInput
+    create: XOR<ChallengeClaimCreateWithoutReviewedByInput, ChallengeClaimUncheckedCreateWithoutReviewedByInput>
+  }
+
+  export type ChallengeClaimCreateManyReviewedByInputEnvelope = {
+    data: ChallengeClaimCreateManyReviewedByInput | ChallengeClaimCreateManyReviewedByInput[]
     skipDuplicates?: boolean
   }
 
@@ -13465,6 +15729,55 @@ export namespace Prisma {
     cost?: IntFilter<"RaffleEntry"> | number
     currency?: StringFilter<"RaffleEntry"> | string
     createdAt?: DateTimeFilter<"RaffleEntry"> | Date | string
+  }
+
+  export type ChallengeClaimUpsertWithWhereUniqueWithoutUserInput = {
+    where: ChallengeClaimWhereUniqueInput
+    update: XOR<ChallengeClaimUpdateWithoutUserInput, ChallengeClaimUncheckedUpdateWithoutUserInput>
+    create: XOR<ChallengeClaimCreateWithoutUserInput, ChallengeClaimUncheckedCreateWithoutUserInput>
+  }
+
+  export type ChallengeClaimUpdateWithWhereUniqueWithoutUserInput = {
+    where: ChallengeClaimWhereUniqueInput
+    data: XOR<ChallengeClaimUpdateWithoutUserInput, ChallengeClaimUncheckedUpdateWithoutUserInput>
+  }
+
+  export type ChallengeClaimUpdateManyWithWhereWithoutUserInput = {
+    where: ChallengeClaimScalarWhereInput
+    data: XOR<ChallengeClaimUpdateManyMutationInput, ChallengeClaimUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type ChallengeClaimScalarWhereInput = {
+    AND?: ChallengeClaimScalarWhereInput | ChallengeClaimScalarWhereInput[]
+    OR?: ChallengeClaimScalarWhereInput[]
+    NOT?: ChallengeClaimScalarWhereInput | ChallengeClaimScalarWhereInput[]
+    id?: StringFilter<"ChallengeClaim"> | string
+    challengeId?: StringFilter<"ChallengeClaim"> | string
+    userId?: StringFilter<"ChallengeClaim"> | string
+    proofImageUrl?: StringFilter<"ChallengeClaim"> | string
+    note?: StringNullableFilter<"ChallengeClaim"> | string | null
+    status?: StringFilter<"ChallengeClaim"> | string
+    rejectionReason?: StringNullableFilter<"ChallengeClaim"> | string | null
+    reviewedAt?: DateTimeNullableFilter<"ChallengeClaim"> | Date | string | null
+    reviewedById?: StringNullableFilter<"ChallengeClaim"> | string | null
+    createdAt?: DateTimeFilter<"ChallengeClaim"> | Date | string
+    updatedAt?: DateTimeFilter<"ChallengeClaim"> | Date | string
+  }
+
+  export type ChallengeClaimUpsertWithWhereUniqueWithoutReviewedByInput = {
+    where: ChallengeClaimWhereUniqueInput
+    update: XOR<ChallengeClaimUpdateWithoutReviewedByInput, ChallengeClaimUncheckedUpdateWithoutReviewedByInput>
+    create: XOR<ChallengeClaimCreateWithoutReviewedByInput, ChallengeClaimUncheckedCreateWithoutReviewedByInput>
+  }
+
+  export type ChallengeClaimUpdateWithWhereUniqueWithoutReviewedByInput = {
+    where: ChallengeClaimWhereUniqueInput
+    data: XOR<ChallengeClaimUpdateWithoutReviewedByInput, ChallengeClaimUncheckedUpdateWithoutReviewedByInput>
+  }
+
+  export type ChallengeClaimUpdateManyWithWhereWithoutReviewedByInput = {
+    where: ChallengeClaimScalarWhereInput
+    data: XOR<ChallengeClaimUpdateManyMutationInput, ChallengeClaimUncheckedUpdateManyWithoutReviewedByInput>
   }
 
   export type LeaderboardPrizeTierCreateWithoutLeaderboardInput = {
@@ -13677,6 +15990,8 @@ export namespace Prisma {
     bio?: string | null
     display_name?: string | null
     profile_accent?: string | null
+    challengeClaims?: ChallengeClaimCreateNestedManyWithoutUserInput
+    reviewedChallengeClaims?: ChallengeClaimCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserUncheckedCreateWithoutRaffleEntriesInput = {
@@ -13696,6 +16011,8 @@ export namespace Prisma {
     bio?: string | null
     display_name?: string | null
     profile_accent?: string | null
+    challengeClaims?: ChallengeClaimUncheckedCreateNestedManyWithoutUserInput
+    reviewedChallengeClaims?: ChallengeClaimUncheckedCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserCreateOrConnectWithoutRaffleEntriesInput = {
@@ -13780,6 +16097,8 @@ export namespace Prisma {
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     display_name?: NullableStringFieldUpdateOperationsInput | string | null
     profile_accent?: NullableStringFieldUpdateOperationsInput | string | null
+    challengeClaims?: ChallengeClaimUpdateManyWithoutUserNestedInput
+    reviewedChallengeClaims?: ChallengeClaimUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRaffleEntriesInput = {
@@ -13799,6 +16118,364 @@ export namespace Prisma {
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     display_name?: NullableStringFieldUpdateOperationsInput | string | null
     profile_accent?: NullableStringFieldUpdateOperationsInput | string | null
+    challengeClaims?: ChallengeClaimUncheckedUpdateManyWithoutUserNestedInput
+    reviewedChallengeClaims?: ChallengeClaimUncheckedUpdateManyWithoutReviewedByNestedInput
+  }
+
+  export type ChallengeClaimCreateWithoutChallengeInput = {
+    id?: string
+    proofImageUrl: string
+    note?: string | null
+    status?: string
+    rejectionReason?: string | null
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutChallengeClaimsInput
+    reviewedBy?: UserCreateNestedOneWithoutReviewedChallengeClaimsInput
+  }
+
+  export type ChallengeClaimUncheckedCreateWithoutChallengeInput = {
+    id?: string
+    userId: string
+    proofImageUrl: string
+    note?: string | null
+    status?: string
+    rejectionReason?: string | null
+    reviewedAt?: Date | string | null
+    reviewedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ChallengeClaimCreateOrConnectWithoutChallengeInput = {
+    where: ChallengeClaimWhereUniqueInput
+    create: XOR<ChallengeClaimCreateWithoutChallengeInput, ChallengeClaimUncheckedCreateWithoutChallengeInput>
+  }
+
+  export type ChallengeClaimCreateManyChallengeInputEnvelope = {
+    data: ChallengeClaimCreateManyChallengeInput | ChallengeClaimCreateManyChallengeInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ChallengeClaimUpsertWithWhereUniqueWithoutChallengeInput = {
+    where: ChallengeClaimWhereUniqueInput
+    update: XOR<ChallengeClaimUpdateWithoutChallengeInput, ChallengeClaimUncheckedUpdateWithoutChallengeInput>
+    create: XOR<ChallengeClaimCreateWithoutChallengeInput, ChallengeClaimUncheckedCreateWithoutChallengeInput>
+  }
+
+  export type ChallengeClaimUpdateWithWhereUniqueWithoutChallengeInput = {
+    where: ChallengeClaimWhereUniqueInput
+    data: XOR<ChallengeClaimUpdateWithoutChallengeInput, ChallengeClaimUncheckedUpdateWithoutChallengeInput>
+  }
+
+  export type ChallengeClaimUpdateManyWithWhereWithoutChallengeInput = {
+    where: ChallengeClaimScalarWhereInput
+    data: XOR<ChallengeClaimUpdateManyMutationInput, ChallengeClaimUncheckedUpdateManyWithoutChallengeInput>
+  }
+
+  export type ChallengeCreateWithoutClaimsInput = {
+    id: string
+    title: string
+    description?: string | null
+    status?: string
+    challengeType?: string
+    targetValue: number
+    minBet?: number
+    reward: string
+    rules?: string | null
+    slotName?: string | null
+    provider?: string | null
+    imageUrl?: string | null
+    imageSource?: string | null
+    claimLimit?: number
+    requiresProof?: boolean
+    startDate: Date | string
+    endDate: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ChallengeUncheckedCreateWithoutClaimsInput = {
+    id: string
+    title: string
+    description?: string | null
+    status?: string
+    challengeType?: string
+    targetValue: number
+    minBet?: number
+    reward: string
+    rules?: string | null
+    slotName?: string | null
+    provider?: string | null
+    imageUrl?: string | null
+    imageSource?: string | null
+    claimLimit?: number
+    requiresProof?: boolean
+    startDate: Date | string
+    endDate: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ChallengeCreateOrConnectWithoutClaimsInput = {
+    where: ChallengeWhereUniqueInput
+    create: XOR<ChallengeCreateWithoutClaimsInput, ChallengeUncheckedCreateWithoutClaimsInput>
+  }
+
+  export type UserCreateWithoutChallengeClaimsInput = {
+    id?: string
+    kick_user_id?: string | null
+    kick_username?: string | null
+    email?: string | null
+    avatar?: string | null
+    access_token?: string | null
+    refresh_token?: string | null
+    kick_token_expires_at?: Date | string | null
+    points?: number
+    isAdmin?: boolean
+    isKickBroadcaster?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    bio?: string | null
+    display_name?: string | null
+    profile_accent?: string | null
+    raffleEntries?: RaffleEntryCreateNestedManyWithoutUserInput
+    reviewedChallengeClaims?: ChallengeClaimCreateNestedManyWithoutReviewedByInput
+  }
+
+  export type UserUncheckedCreateWithoutChallengeClaimsInput = {
+    id?: string
+    kick_user_id?: string | null
+    kick_username?: string | null
+    email?: string | null
+    avatar?: string | null
+    access_token?: string | null
+    refresh_token?: string | null
+    kick_token_expires_at?: Date | string | null
+    points?: number
+    isAdmin?: boolean
+    isKickBroadcaster?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    bio?: string | null
+    display_name?: string | null
+    profile_accent?: string | null
+    raffleEntries?: RaffleEntryUncheckedCreateNestedManyWithoutUserInput
+    reviewedChallengeClaims?: ChallengeClaimUncheckedCreateNestedManyWithoutReviewedByInput
+  }
+
+  export type UserCreateOrConnectWithoutChallengeClaimsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutChallengeClaimsInput, UserUncheckedCreateWithoutChallengeClaimsInput>
+  }
+
+  export type UserCreateWithoutReviewedChallengeClaimsInput = {
+    id?: string
+    kick_user_id?: string | null
+    kick_username?: string | null
+    email?: string | null
+    avatar?: string | null
+    access_token?: string | null
+    refresh_token?: string | null
+    kick_token_expires_at?: Date | string | null
+    points?: number
+    isAdmin?: boolean
+    isKickBroadcaster?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    bio?: string | null
+    display_name?: string | null
+    profile_accent?: string | null
+    raffleEntries?: RaffleEntryCreateNestedManyWithoutUserInput
+    challengeClaims?: ChallengeClaimCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutReviewedChallengeClaimsInput = {
+    id?: string
+    kick_user_id?: string | null
+    kick_username?: string | null
+    email?: string | null
+    avatar?: string | null
+    access_token?: string | null
+    refresh_token?: string | null
+    kick_token_expires_at?: Date | string | null
+    points?: number
+    isAdmin?: boolean
+    isKickBroadcaster?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    bio?: string | null
+    display_name?: string | null
+    profile_accent?: string | null
+    raffleEntries?: RaffleEntryUncheckedCreateNestedManyWithoutUserInput
+    challengeClaims?: ChallengeClaimUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutReviewedChallengeClaimsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutReviewedChallengeClaimsInput, UserUncheckedCreateWithoutReviewedChallengeClaimsInput>
+  }
+
+  export type ChallengeUpsertWithoutClaimsInput = {
+    update: XOR<ChallengeUpdateWithoutClaimsInput, ChallengeUncheckedUpdateWithoutClaimsInput>
+    create: XOR<ChallengeCreateWithoutClaimsInput, ChallengeUncheckedCreateWithoutClaimsInput>
+    where?: ChallengeWhereInput
+  }
+
+  export type ChallengeUpdateToOneWithWhereWithoutClaimsInput = {
+    where?: ChallengeWhereInput
+    data: XOR<ChallengeUpdateWithoutClaimsInput, ChallengeUncheckedUpdateWithoutClaimsInput>
+  }
+
+  export type ChallengeUpdateWithoutClaimsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    challengeType?: StringFieldUpdateOperationsInput | string
+    targetValue?: FloatFieldUpdateOperationsInput | number
+    minBet?: FloatFieldUpdateOperationsInput | number
+    reward?: StringFieldUpdateOperationsInput | string
+    rules?: NullableStringFieldUpdateOperationsInput | string | null
+    slotName?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    imageSource?: NullableStringFieldUpdateOperationsInput | string | null
+    claimLimit?: IntFieldUpdateOperationsInput | number
+    requiresProof?: BoolFieldUpdateOperationsInput | boolean
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChallengeUncheckedUpdateWithoutClaimsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    challengeType?: StringFieldUpdateOperationsInput | string
+    targetValue?: FloatFieldUpdateOperationsInput | number
+    minBet?: FloatFieldUpdateOperationsInput | number
+    reward?: StringFieldUpdateOperationsInput | string
+    rules?: NullableStringFieldUpdateOperationsInput | string | null
+    slotName?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    imageSource?: NullableStringFieldUpdateOperationsInput | string | null
+    claimLimit?: IntFieldUpdateOperationsInput | number
+    requiresProof?: BoolFieldUpdateOperationsInput | boolean
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserUpsertWithoutChallengeClaimsInput = {
+    update: XOR<UserUpdateWithoutChallengeClaimsInput, UserUncheckedUpdateWithoutChallengeClaimsInput>
+    create: XOR<UserCreateWithoutChallengeClaimsInput, UserUncheckedCreateWithoutChallengeClaimsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutChallengeClaimsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutChallengeClaimsInput, UserUncheckedUpdateWithoutChallengeClaimsInput>
+  }
+
+  export type UserUpdateWithoutChallengeClaimsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kick_user_id?: NullableStringFieldUpdateOperationsInput | string | null
+    kick_username?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    access_token?: NullableStringFieldUpdateOperationsInput | string | null
+    refresh_token?: NullableStringFieldUpdateOperationsInput | string | null
+    kick_token_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    points?: IntFieldUpdateOperationsInput | number
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
+    isKickBroadcaster?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    display_name?: NullableStringFieldUpdateOperationsInput | string | null
+    profile_accent?: NullableStringFieldUpdateOperationsInput | string | null
+    raffleEntries?: RaffleEntryUpdateManyWithoutUserNestedInput
+    reviewedChallengeClaims?: ChallengeClaimUpdateManyWithoutReviewedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutChallengeClaimsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kick_user_id?: NullableStringFieldUpdateOperationsInput | string | null
+    kick_username?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    access_token?: NullableStringFieldUpdateOperationsInput | string | null
+    refresh_token?: NullableStringFieldUpdateOperationsInput | string | null
+    kick_token_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    points?: IntFieldUpdateOperationsInput | number
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
+    isKickBroadcaster?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    display_name?: NullableStringFieldUpdateOperationsInput | string | null
+    profile_accent?: NullableStringFieldUpdateOperationsInput | string | null
+    raffleEntries?: RaffleEntryUncheckedUpdateManyWithoutUserNestedInput
+    reviewedChallengeClaims?: ChallengeClaimUncheckedUpdateManyWithoutReviewedByNestedInput
+  }
+
+  export type UserUpsertWithoutReviewedChallengeClaimsInput = {
+    update: XOR<UserUpdateWithoutReviewedChallengeClaimsInput, UserUncheckedUpdateWithoutReviewedChallengeClaimsInput>
+    create: XOR<UserCreateWithoutReviewedChallengeClaimsInput, UserUncheckedCreateWithoutReviewedChallengeClaimsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutReviewedChallengeClaimsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutReviewedChallengeClaimsInput, UserUncheckedUpdateWithoutReviewedChallengeClaimsInput>
+  }
+
+  export type UserUpdateWithoutReviewedChallengeClaimsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kick_user_id?: NullableStringFieldUpdateOperationsInput | string | null
+    kick_username?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    access_token?: NullableStringFieldUpdateOperationsInput | string | null
+    refresh_token?: NullableStringFieldUpdateOperationsInput | string | null
+    kick_token_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    points?: IntFieldUpdateOperationsInput | number
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
+    isKickBroadcaster?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    display_name?: NullableStringFieldUpdateOperationsInput | string | null
+    profile_accent?: NullableStringFieldUpdateOperationsInput | string | null
+    raffleEntries?: RaffleEntryUpdateManyWithoutUserNestedInput
+    challengeClaims?: ChallengeClaimUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutReviewedChallengeClaimsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kick_user_id?: NullableStringFieldUpdateOperationsInput | string | null
+    kick_username?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    access_token?: NullableStringFieldUpdateOperationsInput | string | null
+    refresh_token?: NullableStringFieldUpdateOperationsInput | string | null
+    kick_token_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    points?: IntFieldUpdateOperationsInput | number
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
+    isKickBroadcaster?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    display_name?: NullableStringFieldUpdateOperationsInput | string | null
+    profile_accent?: NullableStringFieldUpdateOperationsInput | string | null
+    raffleEntries?: RaffleEntryUncheckedUpdateManyWithoutUserNestedInput
+    challengeClaims?: ChallengeClaimUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type RaffleEntryCreateManyUserInput = {
@@ -13807,6 +16484,32 @@ export namespace Prisma {
     cost?: number
     currency?: string
     createdAt?: Date | string
+  }
+
+  export type ChallengeClaimCreateManyUserInput = {
+    id?: string
+    challengeId: string
+    proofImageUrl: string
+    note?: string | null
+    status?: string
+    rejectionReason?: string | null
+    reviewedAt?: Date | string | null
+    reviewedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ChallengeClaimCreateManyReviewedByInput = {
+    id?: string
+    challengeId: string
+    userId: string
+    proofImageUrl: string
+    note?: string | null
+    status?: string
+    rejectionReason?: string | null
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type RaffleEntryUpdateWithoutUserInput = {
@@ -13831,6 +16534,84 @@ export namespace Prisma {
     cost?: IntFieldUpdateOperationsInput | number
     currency?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChallengeClaimUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    proofImageUrl?: StringFieldUpdateOperationsInput | string
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    challenge?: ChallengeUpdateOneRequiredWithoutClaimsNestedInput
+    reviewedBy?: UserUpdateOneWithoutReviewedChallengeClaimsNestedInput
+  }
+
+  export type ChallengeClaimUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    challengeId?: StringFieldUpdateOperationsInput | string
+    proofImageUrl?: StringFieldUpdateOperationsInput | string
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChallengeClaimUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    challengeId?: StringFieldUpdateOperationsInput | string
+    proofImageUrl?: StringFieldUpdateOperationsInput | string
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChallengeClaimUpdateWithoutReviewedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    proofImageUrl?: StringFieldUpdateOperationsInput | string
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    challenge?: ChallengeUpdateOneRequiredWithoutClaimsNestedInput
+    user?: UserUpdateOneRequiredWithoutChallengeClaimsNestedInput
+  }
+
+  export type ChallengeClaimUncheckedUpdateWithoutReviewedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    challengeId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    proofImageUrl?: StringFieldUpdateOperationsInput | string
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChallengeClaimUncheckedUpdateManyWithoutReviewedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    challengeId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    proofImageUrl?: StringFieldUpdateOperationsInput | string
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type LeaderboardPrizeTierCreateManyLeaderboardInput = {
@@ -13887,6 +16668,58 @@ export namespace Prisma {
     cost?: IntFieldUpdateOperationsInput | number
     currency?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChallengeClaimCreateManyChallengeInput = {
+    id?: string
+    userId: string
+    proofImageUrl: string
+    note?: string | null
+    status?: string
+    rejectionReason?: string | null
+    reviewedAt?: Date | string | null
+    reviewedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ChallengeClaimUpdateWithoutChallengeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    proofImageUrl?: StringFieldUpdateOperationsInput | string
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutChallengeClaimsNestedInput
+    reviewedBy?: UserUpdateOneWithoutReviewedChallengeClaimsNestedInput
+  }
+
+  export type ChallengeClaimUncheckedUpdateWithoutChallengeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    proofImageUrl?: StringFieldUpdateOperationsInput | string
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChallengeClaimUncheckedUpdateManyWithoutChallengeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    proofImageUrl?: StringFieldUpdateOperationsInput | string
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 
