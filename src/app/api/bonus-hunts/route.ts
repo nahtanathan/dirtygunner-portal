@@ -190,24 +190,29 @@ function deriveProvider(
   return `${providers.slice(0, 2).join(" / ")} +${providers.length - 2}`;
 }
 
-function normalizeBonusRows(bonuses?: BonusHuntApiBonus[] | null): NormalizedBonus[] {
-  return (bonuses ?? [])
-    .map((bonus, index) => {
-      const slotName = bonus.slotName?.trim();
-      if (!slotName) {
-        return null;
-      }
+function normalizeBonusRows(
+  bonuses?: BonusHuntApiBonus[] | null,
+): NormalizedBonus[] {
+  const normalized: NormalizedBonus[] = [];
 
-      return {
-        id: bonus.id?.trim() || `${slotName}-${index}`,
-        slotName,
-        provider: bonus.provider?.trim() || undefined,
-        betSize: toNumber(bonus.betSize),
-        payout: toNumber(bonus.payout),
-        multiplier: toNumber(bonus.multiplier),
-      };
-    })
-    .filter((bonus): bonus is NormalizedBonus => bonus !== null);
+  for (const [index, bonus] of (bonuses ?? []).entries()) {
+    const slotName = bonus.slotName?.trim();
+
+    if (!slotName) {
+      continue;
+    }
+
+    normalized.push({
+      id: bonus.id?.trim() || `${slotName}-${index}`,
+      slotName,
+      provider: bonus.provider?.trim() || undefined,
+      betSize: toNumber(bonus.betSize),
+      payout: toNumber(bonus.payout),
+      multiplier: toNumber(bonus.multiplier),
+    });
+  }
+
+  return normalized;
 }
 
 function normalizeHunt(
@@ -317,7 +322,9 @@ async function fetchBonusHuntJson<T>(path: string) {
   if (!response.ok) {
     const body = await response.text().catch(() => "");
     throw new Error(
-      `BonusHunt API request failed (${response.status} ${response.statusText})${body ? `: ${body}` : ""}`,
+      `BonusHunt API request failed (${response.status} ${response.statusText})${
+        body ? `: ${body}` : ""
+      }`,
     );
   }
 
