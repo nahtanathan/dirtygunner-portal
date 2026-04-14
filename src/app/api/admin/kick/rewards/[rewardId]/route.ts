@@ -42,6 +42,10 @@ async function requireAdmin() {
   return { user };
 }
 
+function toPrismaJson(value: unknown) {
+  return JSON.parse(JSON.stringify(value ?? null));
+}
+
 export async function PATCH(
   request: NextRequest,
   context: { params: Promise<{ rewardId: string }> },
@@ -138,7 +142,7 @@ export async function PATCH(
             typeof reward.should_redemptions_skip_request_queue === "boolean"
               ? reward.should_redemptions_skip_request_queue
               : false,
-          raw_json: reward,
+          raw_json: toPrismaJson(reward),
         },
         create: {
           kick_reward_id: rewardIdFromApi,
@@ -162,7 +166,7 @@ export async function PATCH(
             typeof reward.should_redemptions_skip_request_queue === "boolean"
               ? reward.should_redemptions_skip_request_queue
               : false,
-          raw_json: reward,
+          raw_json: toPrismaJson(reward),
         },
       });
     }

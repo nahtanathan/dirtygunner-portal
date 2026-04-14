@@ -42,6 +42,10 @@ async function requireAdmin() {
   return { user };
 }
 
+function toPrismaJson(value: unknown) {
+  return JSON.parse(JSON.stringify(value ?? null));
+}
+
 export async function POST(request: NextRequest) {
   try {
     const auth = await requireAdmin();
@@ -97,7 +101,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const reward = (data as { data?: Record<string, unknown> } | null)?.data ??
+    const reward =
+      (data as { data?: Record<string, unknown> } | null)?.data ??
       (data as Record<string, unknown> | null) ??
       null;
 
@@ -128,7 +133,7 @@ export async function POST(request: NextRequest) {
               typeof reward.should_redemptions_skip_request_queue === "boolean"
                 ? reward.should_redemptions_skip_request_queue
                 : false,
-            raw_json: reward,
+            raw_json: toPrismaJson(reward),
           },
           create: {
             kick_reward_id: rewardId,
@@ -152,7 +157,7 @@ export async function POST(request: NextRequest) {
               typeof reward.should_redemptions_skip_request_queue === "boolean"
                 ? reward.should_redemptions_skip_request_queue
                 : false,
-            raw_json: reward,
+            raw_json: toPrismaJson(reward),
           },
         });
       }
