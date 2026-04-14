@@ -189,6 +189,9 @@ exports.Prisma.RaffleScalarFieldEnum = {
   image: 'image',
   status: 'status',
   entryMethod: 'entryMethod',
+  entryCost: 'entryCost',
+  entryCurrency: 'entryCurrency',
+  maxEntriesPerUser: 'maxEntriesPerUser',
   totalEntries: 'totalEntries',
   startDate: 'startDate',
   endDate: 'endDate',
@@ -196,6 +199,15 @@ exports.Prisma.RaffleScalarFieldEnum = {
   prizeDetails: 'prizeDetails',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.RaffleEntryScalarFieldEnum = {
+  id: 'id',
+  raffleId: 'raffleId',
+  userId: 'userId',
+  cost: 'cost',
+  currency: 'currency',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -231,7 +243,8 @@ exports.Prisma.ModelName = {
   SiteSettings: 'SiteSettings',
   LeaderboardSettings: 'LeaderboardSettings',
   LeaderboardPrizeTier: 'LeaderboardPrizeTier',
-  Raffle: 'Raffle'
+  Raffle: 'Raffle',
+  RaffleEntry: 'RaffleEntry'
 };
 
 /**

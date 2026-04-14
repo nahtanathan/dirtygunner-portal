@@ -32,7 +32,14 @@ export type Raffle = {
   description?: string;
   status: "active" | "ended";
   entryMethod: string;
+  entryCost: number;
+  entryCurrency: "bullets" | "points";
+  maxEntriesPerUser?: number | null;
   totalEntries: number;
+  uniqueEntrants?: number;
+  totalSpent?: number;
+  currentUserEntries?: number;
+  currentUserPoints?: number;
   startDate: string;
   endDate: string;
   prizeDetails: string;

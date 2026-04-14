@@ -2,7 +2,7 @@
 
 "use client";
 
-import { ReactNode, useMemo, useState } from "react";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 import { FieldValues, Path, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ZodType } from "zod";
@@ -25,6 +25,7 @@ export function AdminResourceManager<
   items,
   schema,
   emptyValue,
+  resetToken,
   fields,
   onSave,
   onDelete,
@@ -35,6 +36,7 @@ export function AdminResourceManager<
   items: T[];
   schema: ZodType<T>;
   emptyValue: T;
+  resetToken?: number;
   fields: FieldConfig<T>[];
   onSave: (value: T) => Promise<void>;
   onDelete: (id: string) => Promise<void>;
@@ -47,28 +49,37 @@ export function AdminResourceManager<
 
   const form = useForm<T>({
     resolver: zodResolver(schema),
-    values: editing,
+    defaultValues: emptyValue,
   });
+
+  useEffect(() => {
+    setEditing(emptyValue);
+    form.reset(emptyValue);
+  }, [emptyValue, resetToken, form]);
 
   const isEditingExisting = useMemo(
     () => items.some((item) => item.id === editing.id),
     [items, editing.id],
   );
 
-  const submit = form.handleSubmit(async (values) => {
-    try {
-      setIsSaving(true);
-      await onSave(values);
-      showToast(isEditingExisting ? `${title} updated` : `${title} created`);
-      setEditing(emptyValue);
-      form.reset(emptyValue);
-    } catch (error) {
-      console.error(`Failed to save ${title}:`, error);
-      showToast(`Failed to save ${title}`);
-    } finally {
-      setIsSaving(false);
-    }
-  });
+  const submit = form.handleSubmit(
+    async (values) => {
+      try {
+        setIsSaving(true);
+        await onSave(values);
+        showToast(isEditingExisting ? `${title} updated` : `${title} created`);
+      } catch (error) {
+        console.error(`Failed to save ${title}:`, error);
+        showToast(`Failed to save ${title}`);
+      } finally {
+        setIsSaving(false);
+      }
+    },
+    (errors) => {
+      console.error(`Validation errors for ${title}:`, errors);
+      showToast(`Please fix the highlighted ${title.toLowerCase()} fields`);
+    },
+  );
 
   return (
     <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">

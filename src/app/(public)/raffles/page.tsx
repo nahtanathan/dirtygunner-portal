@@ -1,6 +1,7 @@
 // FILE: src/app/(public)/raffles/page.tsx
 
 import Link from "next/link";
+import { cookies } from "next/headers";
 import { unstable_noStore as noStore } from "next/cache";
 import {
   ChevronLeft,
@@ -14,23 +15,10 @@ import {
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { PageHero } from "@/components/ui/PageHero";
+import { RaffleEntryButton } from "@/components/raffles/RaffleEntryButton";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
-
-type PrismaRaffle = {
-  id: string;
-  title: string;
-  description: string | null;
-  image: string | null;
-  status: string;
-  entryMethod: string;
-  totalEntries: number;
-  startDate: Date;
-  endDate: Date;
-  winner: string | null;
-  prizeDetails: string;
-};
 
 type DisplayRaffle = {
   id: string;
@@ -39,7 +27,11 @@ type DisplayRaffle = {
   image: string | null;
   status: "active" | "ended";
   entryMethod: string;
+  entryCost: number;
+  entryCurrency: "bullets" | "points";
   totalEntries: number;
+  currentUserEntries: number;
+  currentUserPoints: number | null;
   startDate: string;
   endDate: string;
   winner: string | null;
@@ -50,28 +42,57 @@ type DisplayRaffle = {
 export default async function RafflesPage() {
   noStore();
 
-  let raffles: DisplayRaffle[] = [];
+  const cookieStore = await cookies();
+  const sessionUserId = cookieStore.get("session_user_id")?.value ?? null;
 
-  try {
-    const rows = await prisma.raffle.findMany({
+  const [viewer, rows] = await Promise.all([
+    sessionUserId
+      ? prisma.user.findUnique({
+          where: { id: sessionUserId },
+          select: {
+            id: true,
+            points: true,
+          },
+        })
+      : Promise.resolve(null),
+    prisma.raffle.findMany({
       orderBy: [{ status: "asc" }, { endDate: "asc" }, { createdAt: "desc" }],
-    });
+      include: {
+        entries: {
+          select: {
+            userId: true,
+          },
+        },
+      },
+    }),
+  ]);
 
-    console.log(
-      "Public raffles page rows:",
-      rows.map((row) => ({
-        id: row.id,
-        title: row.title,
-        status: row.status,
-        endDate: row.endDate,
-      })),
-    );
+  const raffles: DisplayRaffle[] = rows.map((item) => {
+    const totalEntries = item.entries.length;
+    const currentUserEntries = viewer
+      ? item.entries.filter((entry) => entry.userId === viewer.id).length
+      : 0;
 
-    raffles = rows.map(normalizeRaffle);
-  } catch (error) {
-    console.error("Failed to load raffles from Prisma:", error);
-    raffles = [];
-  }
+    return {
+      id: item.id,
+      title: item.title,
+      description: item.description ?? "",
+      image: item.image,
+      status: item.status === "active" ? "active" : "ended",
+      entryMethod: item.entryMethod,
+      entryCost: item.entryCost,
+      entryCurrency:
+        item.entryCurrency === "points" ? "points" : "bullets",
+      totalEntries,
+      currentUserEntries,
+      currentUserPoints: viewer?.points ?? null,
+      startDate: item.startDate.toISOString(),
+      endDate: item.endDate.toISOString(),
+      winner: item.winner,
+      prizeDetails: item.prizeDetails,
+      winners: item.winner ? 1 : inferWinnerCount(item.prizeDetails),
+    };
+  });
 
   const activeRaffles = raffles.filter((item) => item.status === "active");
   const endedRaffles = raffles.filter((item) => item.status === "ended");
@@ -169,7 +190,7 @@ export default async function RafflesPage() {
           )}
         </section>
 
-        {endedRaffles.length > 0 && (
+        {endedRaffles.length > 0 ? (
           <section className="space-y-4 pt-4">
             <div className="flex items-center gap-3">
               <Trophy className="h-5 w-5 text-white/75" />
@@ -182,29 +203,10 @@ export default async function RafflesPage() {
               ))}
             </div>
           </section>
-        )}
+        ) : null}
       </section>
     </div>
   );
-}
-
-function normalizeRaffle(item: PrismaRaffle): DisplayRaffle {
-  const normalizedStatus = item.status === "active" ? "active" : "ended";
-
-  return {
-    id: item.id,
-    title: item.title,
-    description: item.description ?? "",
-    image: item.image,
-    status: normalizedStatus,
-    entryMethod: item.entryMethod,
-    totalEntries: item.totalEntries,
-    startDate: item.startDate.toISOString(),
-    endDate: item.endDate.toISOString(),
-    winner: item.winner,
-    prizeDetails: item.prizeDetails,
-    winners: item.winner ? 1 : inferWinnerCount(item.prizeDetails),
-  };
 }
 
 function inferWinnerCount(prizeDetails: string) {
@@ -225,17 +227,14 @@ function RaffleShowcaseCard({
   const accentPresets = [
     {
       glow: "0 0 0 1px rgba(96,165,250,0.18), 0 16px 40px rgba(15,23,42,0.45)",
-      button: "linear-gradient(180deg, rgba(59,130,246,0.96), rgba(37,99,235,0.96))",
       badge: "rgba(56,189,248,0.16)",
     },
     {
       glow: "0 0 0 1px rgba(139,92,246,0.18), 0 16px 40px rgba(15,23,42,0.45)",
-      button: "linear-gradient(180deg, rgba(99,102,241,0.96), rgba(79,70,229,0.96))",
       badge: "rgba(139,92,246,0.16)",
     },
     {
       glow: "0 0 0 1px rgba(251,191,36,0.18), 0 16px 40px rgba(15,23,42,0.45)",
-      button: "linear-gradient(180deg, rgba(59,130,246,0.96), rgba(37,99,235,0.96))",
       badge: "rgba(245,158,11,0.16)",
     },
   ] as const;
@@ -334,16 +333,21 @@ function RaffleShowcaseCard({
           <span>{timeLeft}</span>
         </div>
 
-        <button
-          type="button"
-          className="mt-4 inline-flex h-12 w-full items-center justify-center rounded-xl text-sm font-extrabold uppercase tracking-[0.08em] text-white"
-          style={{
-            background: accent.button,
-            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.18)",
-          }}
-        >
-          {raffle.status === "active" ? raffle.entryMethod : "View Results"}
-        </button>
+        <RaffleEntryButton
+          raffleId={raffle.id}
+          raffleStatus={raffle.status}
+          entryMethod={
+            raffle.entryCost > 0
+              ? `Enter for ${raffle.entryCost.toLocaleString()} ${raffle.entryCurrency}`
+              : raffle.entryMethod
+          }
+          entryCost={raffle.entryCost}
+          entryCurrency={raffle.entryCurrency}
+          initialTotalEntries={raffle.totalEntries}
+          initialCurrentUserEntries={raffle.currentUserEntries}
+          initialCurrentUserPoints={raffle.currentUserPoints}
+          endDate={raffle.endDate}
+        />
       </div>
     </article>
   );

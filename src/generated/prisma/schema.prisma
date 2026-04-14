@@ -10,22 +10,23 @@ datasource db {
 }
 
 model User {
-  id                    String    @id @default(cuid())
-  kick_user_id          String?   @unique
+  id                    String        @id @default(cuid())
+  kick_user_id          String?       @unique
   kick_username         String?
-  email                 String?   @unique
+  email                 String?       @unique
   avatar                String?
   access_token          String?
   refresh_token         String?
   kick_token_expires_at DateTime?
-  points                Int       @default(0)
-  isAdmin               Boolean   @default(false)
-  isKickBroadcaster     Boolean   @default(false)
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
+  points                Int           @default(0)
+  isAdmin               Boolean       @default(false)
+  isKickBroadcaster     Boolean       @default(false)
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
   bio                   String?
   display_name          String?
   profile_accent        String?
+  raffleEntries         RaffleEntry[]
 }
 
 model KickReward {
@@ -76,21 +77,41 @@ model LeaderboardPrizeTier {
 }
 
 model Raffle {
-  id           String   @id
-  title        String
-  description  String?
-  image        String?
-  status       String   @default("active")
-  entryMethod  String
-  totalEntries Int      @default(0)
-  startDate    DateTime
-  endDate      DateTime
-  winner       String?
-  prizeDetails String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id                String        @id
+  title             String
+  description       String?
+  image             String?
+  status            String        @default("active")
+  entryMethod       String
+  entryCost         Int           @default(0)
+  entryCurrency     String        @default("bullets")
+  maxEntriesPerUser Int?
+  totalEntries      Int           @default(0)
+  startDate         DateTime
+  endDate           DateTime
+  winner            String?
+  prizeDetails      String
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  entries           RaffleEntry[]
 
   @@index([status])
   @@index([endDate])
+  @@index([createdAt])
+}
+
+model RaffleEntry {
+  id        String   @id @default(cuid())
+  raffleId  String
+  userId    String
+  cost      Int      @default(0)
+  currency  String   @default("bullets")
+  createdAt DateTime @default(now())
+
+  raffle Raffle @relation(fields: [raffleId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([raffleId])
+  @@index([userId])
   @@index([createdAt])
 }
