@@ -1,5 +1,9 @@
 // FILE: src/lib/data/repository.ts
 
+// FILE: src/lib/data/repository.ts
+
+import type { BonusHuntSnapshot } from "@/lib/types";
+
 type JsonValue =
   | Record<string, unknown>
   | unknown[]
@@ -91,6 +95,12 @@ export const dataRepository = {
   },
 
   getBonusHunts: async () => {
-    return fetchJson("/api/bonus-hunts", []);
+    return fetchJson("/api/bonus-hunts", {
+      liveHunts: [],
+      previousHunts: [],
+      source: "fallback",
+      fetchedAt: new Date().toISOString(),
+      message: "Bonus hunt data is currently unavailable.",
+    }) as Promise<BonusHuntSnapshot>;
   },
 };

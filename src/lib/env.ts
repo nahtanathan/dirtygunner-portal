@@ -1,3 +1,5 @@
+// FILE: src/lib/env.ts
+
 import { z } from "zod";
 
 const rawEnv = {
@@ -5,7 +7,10 @@ const rawEnv = {
 
   DATABASE_URL: process.env.DATABASE_URL,
 
-  APP_URL: process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
+  APP_URL:
+    process.env.APP_URL ??
+    process.env.NEXT_PUBLIC_APP_URL ??
+    "http://localhost:3000",
   APP_SESSION_SECRET:
     process.env.APP_SESSION_SECRET ?? process.env.SESSION_SECRET,
 
@@ -31,10 +36,22 @@ const rawEnv = {
   POINTS_CHAT_MESSAGE: process.env.POINTS_CHAT_MESSAGE ?? "2",
   POINTS_FOLLOW: process.env.POINTS_FOLLOW ?? "50",
   POINTS_SUB: process.env.POINTS_SUB ?? "250",
+
+  BONUSHUNT_API_BASE_URL:
+    process.env.BONUSHUNT_API_BASE_URL ??
+    process.env.BONUS_HUNT_API_BASE_URL ??
+    "https://bonushunt.gg/api/public",
+  BONUSHUNT_API_KEY:
+    process.env.BONUSHUNT_API_KEY ??
+    process.env.BONUS_HUNT_API_KEY ??
+    process.env.BONUSHUNTGG_API_KEY ??
+    "",
 };
 
 const envSchema = z.object({
-  NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
+  NODE_ENV: z
+    .enum(["development", "test", "production"])
+    .default("development"),
 
   DATABASE_URL: z.string().min(1),
 
@@ -54,6 +71,9 @@ const envSchema = z.object({
   POINTS_CHAT_MESSAGE: z.coerce.number().int().nonnegative().default(2),
   POINTS_FOLLOW: z.coerce.number().int().nonnegative().default(50),
   POINTS_SUB: z.coerce.number().int().nonnegative().default(250),
+
+  BONUSHUNT_API_BASE_URL: z.string().url().default("https://bonushunt.gg/api/public"),
+  BONUSHUNT_API_KEY: z.string().optional(),
 });
 
 const parsed = envSchema.parse(rawEnv);
@@ -62,4 +82,5 @@ export const env = {
   ...parsed,
   KICK_BROADCASTER_USER_ID: parsed.KICK_BROADCASTER_USER_ID || undefined,
   KICK_BROADCASTER_SLUG: parsed.KICK_BROADCASTER_SLUG || undefined,
+  BONUSHUNT_API_KEY: parsed.BONUSHUNT_API_KEY || undefined,
 };

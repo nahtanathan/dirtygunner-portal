@@ -1,5 +1,7 @@
 // FILE: src/lib/types.ts
 
+// FILE: src/lib/types.ts
+
 export type SiteSettings = {
   kickUrl: string;
   discordUrl?: string;
@@ -66,16 +68,53 @@ export type Challenge = {
   updatedAt?: string;
 };
 
+export type BonusHuntBonus = {
+  id: string;
+  slotName: string;
+  provider?: string;
+  betSize?: number;
+  payout?: number;
+  multiplier?: number;
+};
+
 export type BonusHunt = {
   id: string;
   title: string;
   date?: string;
-  status: "active" | "archived";
+  updatedAt?: string;
+  status: "active" | "archived" | "opening" | "completed";
   provider?: string;
+  casino?: string;
   buyCount?: number;
+  openedBonuses?: number;
+  unopenedBonuses?: number;
   totalCost?: number;
   totalReturn?: number;
   profitLoss?: number;
+  profitLossPercentage?: number;
+  currentOpeningSlot?: string;
   notes?: string;
   items?: string;
+  bonuses?: BonusHuntBonus[];
+};
+
+export type BonusHuntSnapshot = {
+  liveHunts: BonusHunt[];
+  previousHunts: BonusHunt[];
+  totalHunts?: number;
+  activeHunts?: number;
+  completedHunts?: number;
+  totalBonuses?: number;
+  totalInvested?: number;
+  totalWinnings?: number;
+  totalProfitLoss?: number;
+  totalProfitLossPercentage?: number;
+  source: "bonushunt" | "fallback";
+  fetchedAt: string;
+  message?: string;
+  rateLimit?: {
+    limit?: number;
+    remaining?: number;
+    reset?: number;
+  };
 };

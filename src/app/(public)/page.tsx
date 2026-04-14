@@ -1,6 +1,10 @@
+// FILE: src/app/(public)/page.tsx
+
 import Image from "next/image";
-import { CTAButton } from "@/components/ui/CTAButton";
+
 import { HomeClient } from "@/components/home/HomeClient";
+import { CTAButton } from "@/components/ui/CTAButton";
+import { dataRepository } from "@/lib/data/repository";
 import { prisma } from "@/lib/prisma";
 import { getRoobetLeaderboard } from "@/lib/roobet";
 
@@ -35,6 +39,8 @@ export default async function HomePage() {
     leaderboard = [];
   }
 
+  const bonusHunts = await dataRepository.getBonusHunts();
+
   return (
     <div className="space-y-6 md:space-y-8">
       <div className="mx-auto flex w-full max-w-[1200px] flex-col items-center px-4 pt-2 text-center md:px-6 md:pt-6">
@@ -55,13 +61,20 @@ export default async function HomePage() {
 
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
           <CTAButton href="/leaderboard">View Leaderboard</CTAButton>
+          <CTAButton href="/bonus-hunts" variant="secondary">
+            View Bonus Hunts
+          </CTAButton>
           <CTAButton href={kickUrl} variant="secondary">
             Watch Stream
           </CTAButton>
         </div>
       </div>
 
-      <HomeClient leaderboard={leaderboard} countdownTarget={countdownTarget} />
+      <HomeClient
+        leaderboard={leaderboard}
+        countdownTarget={countdownTarget}
+        bonusHunts={bonusHunts}
+      />
     </div>
   );
 }
