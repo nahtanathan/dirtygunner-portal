@@ -1,7 +1,9 @@
+// FILE: src/app/api/auth/kick/login/route.ts
+
 import crypto from "node:crypto";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { env } from "@/lib/env";
+import { requireKickAuthEnv } from "@/lib/env";
 
 const PKCE_COOKIE = "kick_pkce_verifier";
 const STATE_COOKIE = "kick_oauth_state";
@@ -15,14 +17,16 @@ function sha256Base64Url(input: string) {
 }
 
 export async function GET() {
+  const { KICK_CLIENT_ID, KICK_REDIRECT_URI } = requireKickAuthEnv();
+
   const state = randomString(32);
   const verifier = randomString(64);
   const challenge = sha256Base64Url(verifier);
 
   const url = new URL("https://id.kick.com/oauth/authorize");
-  url.searchParams.set("client_id", env.KICK_CLIENT_ID);
+  url.searchParams.set("client_id", KICK_CLIENT_ID);
   url.searchParams.set("response_type", "code");
-  url.searchParams.set("redirect_uri", env.KICK_REDIRECT_URI);
+  url.searchParams.set("redirect_uri", KICK_REDIRECT_URI);
   url.searchParams.set(
     "scope",
     [
@@ -31,7 +35,7 @@ export async function GET() {
       "channel:rewards:read",
       "channel:rewards:write",
       "events:subscribe",
-    ].join(" ")
+    ].join(" "),
   );
   url.searchParams.set("state", state);
   url.searchParams.set("code_challenge", challenge);
