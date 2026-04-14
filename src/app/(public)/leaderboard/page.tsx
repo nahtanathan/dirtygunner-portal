@@ -10,7 +10,7 @@ type LeaderboardEntry = {
   rank: number;
   username: string;
   wageredTotal: number;
-  prize?: number;
+  prize?: number | null;
 };
 
 export default async function LeaderboardPage() {
@@ -36,7 +36,7 @@ export default async function LeaderboardPage() {
             typeof item.wageredTotal === "number" ? item.wageredTotal : 0,
           prize:
             settings?.prizeTiers?.find((tier) => tier.place === item.rank)
-              ?.amount ??
+              ?.prize ??
             item.prize ??
             null,
         }))
