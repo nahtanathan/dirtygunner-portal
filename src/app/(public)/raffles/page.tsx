@@ -9,6 +9,26 @@ import { PublicRafflesClient } from "@/components/raffles/PublicRafflesClient";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
+type PublicRafflePageItem = {
+  id: string;
+  title: string;
+  description: string;
+  image: string | null;
+  status: "active" | "ended";
+  entryMethod: string;
+  entryCost: number;
+  entryCurrency: "bullets" | "points";
+  maxEntriesPerUser: number | null;
+  totalEntries: number;
+  currentUserEntries: number;
+  currentUserPoints: number | null;
+  startDate: string;
+  endDate: string;
+  winner: string | null;
+  prizeDetails: string;
+  winners: number;
+};
+
 export default async function RafflesPage() {
   noStore();
 
@@ -36,7 +56,7 @@ export default async function RafflesPage() {
     }),
   ]);
 
-  const raffles = rows.map((item) => {
+  const raffles: PublicRafflePageItem[] = rows.map((item) => {
     const totalEntries = item.entries.length;
     const currentUserEntries = viewer
       ? item.entries.filter((entry) => entry.userId === viewer.id).length
@@ -50,8 +70,7 @@ export default async function RafflesPage() {
       status: item.status === "active" ? "active" : "ended",
       entryMethod: item.entryMethod,
       entryCost: item.entryCost,
-      entryCurrency:
-        item.entryCurrency === "points" ? "points" : "bullets",
+      entryCurrency: item.entryCurrency === "points" ? "points" : "bullets",
       maxEntriesPerUser: item.maxEntriesPerUser,
       totalEntries,
       currentUserEntries,
