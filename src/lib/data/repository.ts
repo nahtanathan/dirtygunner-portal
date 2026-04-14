@@ -1,7 +1,5 @@
 // FILE: src/lib/data/repository.ts
 
-// FILE: src/lib/data/repository.ts
-
 import type { BonusHuntSnapshot } from "@/lib/types";
 
 type JsonValue =
@@ -43,13 +41,14 @@ async function getBaseUrl() {
 async function fetchJson(
   path: string,
   fallback: JsonValue = null,
+  revalidate = 60
 ): Promise<JsonValue> {
   try {
     const baseUrl = await getBaseUrl();
     const url = `${baseUrl}${path}`;
 
     const res = await fetch(url, {
-      cache: "no-store",
+      next: { revalidate },
     });
 
     if (!res.ok) {
@@ -59,7 +58,7 @@ async function fetchJson(
 
       const body = await res.text().catch(() => "");
       throw new Error(
-        `Request failed for ${path}: ${res.status} ${res.statusText} ${body}`,
+        `Request failed for ${path}: ${res.status} ${res.statusText} ${body}`
       );
     }
 
@@ -75,32 +74,36 @@ async function fetchJson(
 
 export const dataRepository = {
   getSiteSettings: async () => {
-    return fetchJson("/api/site-settings", {});
+    return fetchJson("/api/site-settings", {}, 300);
   },
 
   getLeaderboardSettings: async () => {
-    return fetchJson("/api/leaderboard-settings", {});
+    return fetchJson("/api/leaderboard-settings", {}, 300);
   },
 
   getLeaderboardEntries: async () => {
-    return fetchJson("/api/leaderboard", []);
+    return fetchJson("/api/leaderboard", [], 60);
   },
 
   getRaffles: async () => {
-    return fetchJson("/api/raffles", []);
+    return fetchJson("/api/raffles", [], 60);
   },
 
   getChallenges: async () => {
-    return fetchJson("/api/challenges", []);
+    return fetchJson("/api/challenges", [], 60);
   },
 
   getBonusHunts: async () => {
-    return fetchJson("/api/bonus-hunts", {
-      liveHunts: [],
-      previousHunts: [],
-      source: "fallback",
-      fetchedAt: new Date().toISOString(),
-      message: "Bonus hunt data is currently unavailable.",
-    }) as Promise<BonusHuntSnapshot>;
+    return fetchJson(
+      "/api/bonus-hunts",
+      {
+        liveHunts: [],
+        previousHunts: [],
+        source: "fallback",
+        fetchedAt: new Date().toISOString(),
+        message: "Bonus hunt data is currently unavailable.",
+      },
+      60
+    ) as Promise<BonusHuntSnapshot>;
   },
 };
