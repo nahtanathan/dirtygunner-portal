@@ -1,8 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { z } from 'zod';
-import { prisma } from '@/lib/prisma';
-import { getServerSessionUser } from '@/lib/auth/session';
-import { getKickBroadcasterUser, getValidKickAccessToken } from '@/lib/kick';
+// FILE: src/app/api/admin/kick/rewards/route.ts
+
+import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
+import { prisma } from "@/lib/prisma";
+import { getSession } from "@/lib/session";
+import { getKickBroadcasterUser, getValidKickAccessToken } from "@/lib/kick";
 
 const createRewardSchema = z.object({
   title: z.string().min(1).max(50),
@@ -18,16 +20,34 @@ const createRewardSchema = z.object({
   should_redemptions_skip_request_queue: z.boolean().optional(),
 });
 
+async function requireAdmin() {
+  const session = await getSession();
+
+  if (!session?.sub) {
+    return { error: NextResponse.json({ error: "Unauthorized" }, { status: 401 }) };
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { id: session.sub },
+    select: {
+      id: true,
+      isAdmin: true,
+    },
+  });
+
+  if (!user?.isAdmin) {
+    return { error: NextResponse.json({ error: "Forbidden" }, { status: 403 }) };
+  }
+
+  return { user };
+}
+
 export async function POST(request: NextRequest) {
   try {
-    const sessionUser = await getServerSessionUser();
+    const auth = await requireAdmin();
 
-    if (!sessionUser) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    if (!sessionUser.isAdmin) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    if ("error" in auth) {
+      return auth.error;
     }
 
     const json = await request.json();
@@ -36,29 +56,29 @@ export async function POST(request: NextRequest) {
     if (!parsed.success) {
       return NextResponse.json(
         {
-          error: 'Invalid payload',
+          error: "Invalid payload",
           issues: parsed.error.flatten(),
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     const broadcaster = await getKickBroadcasterUser();
     const accessToken = await getValidKickAccessToken(broadcaster.id);
 
-    const kickResponse = await fetch('https://api.kick.com/public/v1/channels/rewards', {
-      method: 'POST',
+    const kickResponse = await fetch("https://api.kick.com/public/v1/channels/rewards", {
+      method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
+        "Content-Type": "application/json",
+        Accept: "application/json",
       },
       body: JSON.stringify(parsed.data),
-      cache: 'no-store',
+      cache: "no-store",
     });
 
     const text = await kickResponse.text();
-    let data: any = null;
+    let data: unknown = null;
 
     try {
       data = text ? JSON.parse(text) : null;
@@ -69,45 +89,73 @@ export async function POST(request: NextRequest) {
     if (!kickResponse.ok) {
       return NextResponse.json(
         {
-          error: 'Kick API create failed',
+          error: "Kick API create failed",
           status: kickResponse.status,
           details: data,
         },
-        { status: kickResponse.status }
+        { status: kickResponse.status },
       );
     }
 
-    const reward = data?.data ?? data ?? null;
+    const reward = (data as { data?: Record<string, unknown> } | null)?.data ??
+      (data as Record<string, unknown> | null) ??
+      null;
 
     if (reward) {
-      await prisma.kickReward.upsert({
-        where: { kick_reward_id: String(reward.id) },
-        update: {
-          title: reward.title,
-          description: reward.description ?? null,
-          cost: reward.cost,
-          background_color: reward.background_color ?? '#00e701',
-          is_enabled: reward.is_enabled ?? true,
-          is_paused: reward.is_paused ?? false,
-          is_user_input_required: reward.is_user_input_required ?? false,
-          should_redemptions_skip_request_queue:
-            reward.should_redemptions_skip_request_queue ?? false,
-          raw_json: reward,
-        },
-        create: {
-          kick_reward_id: String(reward.id),
-          title: reward.title,
-          description: reward.description ?? null,
-          cost: reward.cost,
-          background_color: reward.background_color ?? '#00e701',
-          is_enabled: reward.is_enabled ?? true,
-          is_paused: reward.is_paused ?? false,
-          is_user_input_required: reward.is_user_input_required ?? false,
-          should_redemptions_skip_request_queue:
-            reward.should_redemptions_skip_request_queue ?? false,
-          raw_json: reward,
-        },
-      });
+      const rewardId = String(reward.id ?? "");
+
+      if (rewardId) {
+        await prisma.kickReward.upsert({
+          where: { kick_reward_id: rewardId },
+          update: {
+            title: String(reward.title ?? ""),
+            description:
+              typeof reward.description === "string" ? reward.description : null,
+            cost: Number(reward.cost ?? 0),
+            background_color:
+              typeof reward.background_color === "string"
+                ? reward.background_color
+                : "#00e701",
+            is_enabled:
+              typeof reward.is_enabled === "boolean" ? reward.is_enabled : true,
+            is_paused:
+              typeof reward.is_paused === "boolean" ? reward.is_paused : false,
+            is_user_input_required:
+              typeof reward.is_user_input_required === "boolean"
+                ? reward.is_user_input_required
+                : false,
+            should_redemptions_skip_request_queue:
+              typeof reward.should_redemptions_skip_request_queue === "boolean"
+                ? reward.should_redemptions_skip_request_queue
+                : false,
+            raw_json: reward,
+          },
+          create: {
+            kick_reward_id: rewardId,
+            title: String(reward.title ?? ""),
+            description:
+              typeof reward.description === "string" ? reward.description : null,
+            cost: Number(reward.cost ?? 0),
+            background_color:
+              typeof reward.background_color === "string"
+                ? reward.background_color
+                : "#00e701",
+            is_enabled:
+              typeof reward.is_enabled === "boolean" ? reward.is_enabled : true,
+            is_paused:
+              typeof reward.is_paused === "boolean" ? reward.is_paused : false,
+            is_user_input_required:
+              typeof reward.is_user_input_required === "boolean"
+                ? reward.is_user_input_required
+                : false,
+            should_redemptions_skip_request_queue:
+              typeof reward.should_redemptions_skip_request_queue === "boolean"
+                ? reward.should_redemptions_skip_request_queue
+                : false,
+            raw_json: reward,
+          },
+        });
+      }
     }
 
     return NextResponse.json({
@@ -115,13 +163,13 @@ export async function POST(request: NextRequest) {
       reward,
     });
   } catch (error) {
-    console.error('POST /api/admin/kick/rewards failed', error);
+    console.error("POST /api/admin/kick/rewards failed", error);
 
     return NextResponse.json(
       {
-        error: error instanceof Error ? error.message : 'Internal server error',
+        error: error instanceof Error ? error.message : "Internal server error",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
