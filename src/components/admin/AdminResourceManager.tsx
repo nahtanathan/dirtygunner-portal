@@ -3,7 +3,12 @@
 "use client";
 
 import { ReactNode, useEffect, useMemo, useState } from "react";
-import { FieldValues, Path, useForm } from "react-hook-form";
+import {
+  DefaultValues,
+  FieldValues,
+  Path,
+  useForm,
+} from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ZodType } from "zod";
 import { PremiumPanel } from "@/components/ui/PremiumPanel";
@@ -35,14 +40,16 @@ export function AdminResourceManager<
   description: string;
   items: T[];
   schema: ZodType<T>;
-  emptyValue: T;
+  emptyValue: DefaultValues<T>;
   resetToken?: number;
   fields: FieldConfig<T>[];
   onSave: (value: T) => Promise<void>;
   onDelete: (id: string) => Promise<void>;
   renderMeta?: (item: T) => ReactNode;
 }) {
-  const [editing, setEditing] = useState<T>(emptyValue);
+  const [editingId, setEditingId] = useState<string>(
+    typeof emptyValue.id === "string" ? emptyValue.id : "",
+  );
   const [isSaving, setIsSaving] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const { message, showToast } = useToast();
@@ -53,13 +60,13 @@ export function AdminResourceManager<
   });
 
   useEffect(() => {
-    setEditing(emptyValue);
+    setEditingId(typeof emptyValue.id === "string" ? emptyValue.id : "");
     form.reset(emptyValue);
   }, [emptyValue, resetToken, form]);
 
   const isEditingExisting = useMemo(
-    () => items.some((item) => item.id === editing.id),
-    [items, editing.id],
+    () => items.some((item) => item.id === editingId),
+    [items, editingId],
   );
 
   const submit = form.handleSubmit(
@@ -113,7 +120,7 @@ export function AdminResourceManager<
                   <button
                     type="button"
                     onClick={() => {
-                      setEditing(item);
+                      setEditingId(item.id);
                       form.reset(item);
                     }}
                     className="rounded-xl border border-white/10 px-3 py-2 text-sm text-white hover:bg-white/[0.05]"
@@ -163,7 +170,7 @@ export function AdminResourceManager<
             type="button"
             className="rounded-xl border border-white/10 px-3 py-2 text-sm text-silver/80"
             onClick={() => {
-              setEditing(emptyValue);
+              setEditingId(typeof emptyValue.id === "string" ? emptyValue.id : "");
               form.reset(emptyValue);
             }}
             disabled={isSaving}

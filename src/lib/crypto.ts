@@ -1,10 +1,13 @@
+// FILE: src/lib/crypto.ts
+
 import crypto from "node:crypto";
-import { env } from "@/lib/env";
+import { requireKickAuthEnv } from "@/lib/env";
 
 const ENC_ALGO = "aes-256-gcm";
 
 function getKey(): Buffer {
-  const key = Buffer.from(env.KICK_TOKEN_ENCRYPTION_KEY, "base64");
+  const { KICK_TOKEN_ENCRYPTION_KEY } = requireKickAuthEnv();
+  const key = Buffer.from(KICK_TOKEN_ENCRYPTION_KEY, "base64");
 
   if (key.length !== 32) {
     throw new Error("KICK_TOKEN_ENCRYPTION_KEY must decode to 32 bytes");

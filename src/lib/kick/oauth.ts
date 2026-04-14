@@ -1,5 +1,7 @@
+// FILE: src/lib/kick/oauth.ts
+
 import crypto from "node:crypto";
-import { env } from "@/lib/env";
+import { env, requireKickAuthEnv } from "@/lib/env";
 import { KICK_ID_BASE, KICK_SCOPES } from "./constants";
 
 export function randomString(bytes = 32) {
@@ -11,10 +13,12 @@ export function sha256Base64Url(input: string) {
 }
 
 export function buildKickAuthorizeUrl(state: string, codeChallenge: string) {
+  const { KICK_CLIENT_ID, KICK_REDIRECT_URI } = requireKickAuthEnv();
+
   const url = new URL(`${KICK_ID_BASE}/oauth/authorize`);
-  url.searchParams.set("client_id", env.KICK_CLIENT_ID);
+  url.searchParams.set("client_id", KICK_CLIENT_ID);
   url.searchParams.set("response_type", "code");
-  url.searchParams.set("redirect_uri", env.KICK_REDIRECT_URI);
+  url.searchParams.set("redirect_uri", KICK_REDIRECT_URI);
   url.searchParams.set("scope", KICK_SCOPES);
   url.searchParams.set("state", state);
   url.searchParams.set("code_challenge", codeChallenge);
@@ -34,11 +38,14 @@ export async function exchangeCodeForToken(params: {
   code: string;
   codeVerifier: string;
 }) {
+  const { KICK_CLIENT_ID, KICK_CLIENT_SECRET, KICK_REDIRECT_URI } =
+    requireKickAuthEnv();
+
   const body = new URLSearchParams({
     code: params.code,
-    client_id: env.KICK_CLIENT_ID,
-    client_secret: env.KICK_CLIENT_SECRET,
-    redirect_uri: env.KICK_REDIRECT_URI,
+    client_id: KICK_CLIENT_ID,
+    client_secret: KICK_CLIENT_SECRET,
+    redirect_uri: KICK_REDIRECT_URI,
     grant_type: "authorization_code",
     code_verifier: params.codeVerifier,
   });
@@ -58,10 +65,12 @@ export async function exchangeCodeForToken(params: {
 }
 
 export async function refreshKickToken(refreshToken: string) {
+  const { KICK_CLIENT_ID, KICK_CLIENT_SECRET } = requireKickAuthEnv();
+
   const body = new URLSearchParams({
     refresh_token: refreshToken,
-    client_id: env.KICK_CLIENT_ID,
-    client_secret: env.KICK_CLIENT_SECRET,
+    client_id: KICK_CLIENT_ID,
+    client_secret: KICK_CLIENT_SECRET,
     grant_type: "refresh_token",
   });
 

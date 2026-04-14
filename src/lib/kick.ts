@@ -1,6 +1,6 @@
 // FILE: src/lib/kick.ts
 
-import { env } from "@/lib/env";
+import { requireKickAuthEnv } from "@/lib/env";
 import { prisma } from "@/lib/prisma";
 import { decryptSecret, encryptSecret } from "@/lib/crypto";
 
@@ -27,13 +27,16 @@ type KickErrorResponse = {
 
 export async function exchangeCodeForToken(
   code: string,
-  codeVerifier: string,
+  codeVerifier: string
 ): Promise<KickTokenResponse> {
+  const { KICK_CLIENT_ID, KICK_CLIENT_SECRET, KICK_REDIRECT_URI } =
+    requireKickAuthEnv();
+
   const body = new URLSearchParams({
     code,
-    client_id: env.KICK_CLIENT_ID,
-    client_secret: env.KICK_CLIENT_SECRET,
-    redirect_uri: env.KICK_REDIRECT_URI,
+    client_id: KICK_CLIENT_ID,
+    client_secret: KICK_CLIENT_SECRET,
+    redirect_uri: KICK_REDIRECT_URI,
     grant_type: "authorization_code",
     code_verifier: codeVerifier,
   });
@@ -52,7 +55,7 @@ export async function exchangeCodeForToken(
 
   if (!response.ok || !("access_token" in data)) {
     throw new Error(
-      `Kick token exchange failed: ${response.status} ${JSON.stringify(data)}`,
+      `Kick token exchange failed: ${response.status} ${JSON.stringify(data)}`
     );
   }
 
@@ -60,7 +63,7 @@ export async function exchangeCodeForToken(
 }
 
 export async function fetchKickMe(
-  accessToken: string,
+  accessToken: string
 ): Promise<KickMeResponse> {
   const response = await fetch("https://api.kick.com/public/v1/users", {
     method: "GET",
@@ -81,8 +84,10 @@ export async function fetchKickMe(
 }
 
 export async function refreshKickAccessToken(
-  userId: string,
+  userId: string
 ): Promise<string> {
+  const { KICK_CLIENT_ID, KICK_CLIENT_SECRET } = requireKickAuthEnv();
+
   const user = await prisma.user.findUnique({
     where: { id: userId },
     select: {
@@ -100,8 +105,8 @@ export async function refreshKickAccessToken(
   const body = new URLSearchParams({
     grant_type: "refresh_token",
     refresh_token: refreshToken,
-    client_id: env.KICK_CLIENT_ID,
-    client_secret: env.KICK_CLIENT_SECRET,
+    client_id: KICK_CLIENT_ID,
+    client_secret: KICK_CLIENT_SECRET,
   });
 
   const response = await fetch("https://id.kick.com/oauth/token", {
@@ -118,7 +123,7 @@ export async function refreshKickAccessToken(
 
   if (!response.ok || !("access_token" in data)) {
     throw new Error(
-      `Kick token refresh failed: ${response.status} ${JSON.stringify(data)}`,
+      `Kick token refresh failed: ${response.status} ${JSON.stringify(data)}`
     );
   }
 
@@ -139,7 +144,7 @@ export async function refreshKickAccessToken(
 }
 
 export async function getValidKickAccessToken(
-  userId: string,
+  userId: string
 ): Promise<string> {
   const user = await prisma.user.findUnique({
     where: { id: userId },

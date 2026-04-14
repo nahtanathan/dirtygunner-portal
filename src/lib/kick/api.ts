@@ -1,5 +1,7 @@
+// FILE: src/lib/kick/api.ts
+
 import { prisma } from "@/lib/prisma";
-import { decryptSecret, encryptSecret } from "@/lib/security/crypto";
+import { decryptSecret, encryptSecret } from "@/lib/crypto";
 import { refreshKickToken } from "./oauth";
 import { KICK_API_BASE } from "./constants";
 import type {
@@ -12,44 +14,43 @@ import type {
 
 type AuthenticatedKickUser = {
   id: string;
-  accessTokenEnc: string | null;
-  refreshTokenEnc: string | null;
-  accessTokenExpiresAt: Date | null;
+  access_token: string | null;
+  refresh_token: string | null;
+  kick_token_expires_at: Date | null;
 };
 
 async function ensureFreshAccessToken(user: AuthenticatedKickUser) {
-  if (!user.accessTokenEnc || !user.refreshTokenEnc) {
+  if (!user.access_token || !user.refresh_token) {
     throw new Error("Missing stored Kick tokens");
   }
 
   const expiresSoon =
-    !user.accessTokenExpiresAt ||
-    user.accessTokenExpiresAt.getTime() - Date.now() < 60_000;
+    !user.kick_token_expires_at ||
+    user.kick_token_expires_at.getTime() - Date.now() < 60_000;
 
   if (!expiresSoon) {
-    return decryptSecret(user.accessTokenEnc);
+    return decryptSecret(user.access_token);
   }
 
-  const refreshed = await refreshKickToken(decryptSecret(user.refreshTokenEnc));
+  const refreshed = await refreshKickToken(decryptSecret(user.refresh_token));
 
   const updated = await prisma.user.update({
     where: { id: user.id },
     data: {
-      accessTokenEnc: encryptSecret(refreshed.access_token),
-      refreshTokenEnc: encryptSecret(refreshed.refresh_token),
-      accessTokenExpiresAt: new Date(Date.now() + refreshed.expires_in * 1000),
-      tokenScope: refreshed.scope ?? null,
+      access_token: encryptSecret(refreshed.access_token),
+      refresh_token: encryptSecret(refreshed.refresh_token),
+      kick_token_expires_at: new Date(Date.now() + refreshed.expires_in * 1000),
     },
     select: {
-      accessTokenEnc: true,
+      access_token: true,
     },
   });
 
-  if (!updated.accessTokenEnc) {
+  if (!updated.access_token) {
     throw new Error("Token refresh update failed");
   }
 
-  return decryptSecret(updated.accessTokenEnc);
+  return decryptSecret(updated.access_token);
 }
 
 async function kickFetch<T>(
@@ -81,13 +82,16 @@ export async function getKickUserRecord(userId: string) {
     where: { id: userId },
     select: {
       id: true,
-      accessTokenEnc: true,
-      refreshTokenEnc: true,
-      accessTokenExpiresAt: true,
+      access_token: true,
+      refresh_token: true,
+      kick_token_expires_at: true,
     },
   });
 
-  if (!user) throw new Error("User not found");
+  if (!user) {
+    throw new Error("User not found");
+  }
+
   return user;
 }
 
@@ -145,11 +149,15 @@ export async function updateKickReward(
   }>
 ) {
   const authUser = await getKickUserRecord(userId);
-  const res = await kickFetch<KickApiItemResponse<KickReward>>(authUser, `/channels/rewards/${rewardId}`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
+  const res = await kickFetch<KickApiItemResponse<KickReward>>(
+    authUser,
+    `/channels/rewards/${rewardId}`,
+    {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    }
+  );
   return res.data;
 }
 
