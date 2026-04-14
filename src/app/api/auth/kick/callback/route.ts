@@ -1,3 +1,5 @@
+// FILE: src/app/api/auth/kick/callback/route.ts
+
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
@@ -23,6 +25,51 @@ function isBroadcasterMatch(params: {
     : false;
 
   return byId || bySlug;
+}
+
+type KickUserProfile = {
+  user_id: number;
+  name: string;
+  email?: string;
+  profile_picture?: string;
+};
+
+function getKickUserFromMeResponse(payload: unknown): KickUserProfile | null {
+  if (!payload || typeof payload !== "object") {
+    return null;
+  }
+
+  if (!("data" in payload)) {
+    return null;
+  }
+
+  const data = (payload as { data?: unknown }).data;
+
+  if (!Array.isArray(data) || data.length === 0) {
+    return null;
+  }
+
+  const first = data[0];
+
+  if (!first || typeof first !== "object") {
+    return null;
+  }
+
+  const candidate = first as Partial<KickUserProfile>;
+
+  if (typeof candidate.user_id !== "number" || typeof candidate.name !== "string") {
+    return null;
+  }
+
+  return {
+    user_id: candidate.user_id,
+    name: candidate.name,
+    email: typeof candidate.email === "string" ? candidate.email : undefined,
+    profile_picture:
+      typeof candidate.profile_picture === "string"
+        ? candidate.profile_picture
+        : undefined,
+  };
 }
 
 export async function GET(request: NextRequest) {
@@ -52,7 +99,7 @@ export async function GET(request: NextRequest) {
 
   const token = await exchangeCodeForToken(code, verifier);
   const me = await fetchKickMe(token.access_token);
-  const kickUser = me.data?.[0];
+  const kickUser = getKickUserFromMeResponse(me);
 
   if (!kickUser) {
     return NextResponse.redirect(new URL("/?kick_auth=no_user", env.APP_URL));

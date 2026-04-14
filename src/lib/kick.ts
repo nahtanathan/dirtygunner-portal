@@ -1,3 +1,5 @@
+// FILE: src/lib/kick.ts
+
 import { env } from "@/lib/env";
 import { prisma } from "@/lib/prisma";
 import { decryptSecret, encryptSecret } from "@/lib/crypto";
@@ -19,7 +21,14 @@ export type KickMeResponse = {
   }>;
 };
 
-export async function exchangeCodeForToken(code: string, codeVerifier: string) {
+type KickErrorResponse = {
+  message?: string;
+};
+
+export async function exchangeCodeForToken(
+  code: string,
+  codeVerifier: string,
+): Promise<KickTokenResponse> {
   const body = new URLSearchParams({
     code,
     client_id: env.KICK_CLIENT_ID,
@@ -39,16 +48,20 @@ export async function exchangeCodeForToken(code: string, codeVerifier: string) {
     cache: "no-store",
   });
 
-  const data = (await response.json()) as KickTokenResponse | { message?: string };
+  const data = (await response.json()) as KickTokenResponse | KickErrorResponse;
 
   if (!response.ok || !("access_token" in data)) {
-    throw new Error(`Kick token exchange failed: ${response.status} ${JSON.stringify(data)}`);
+    throw new Error(
+      `Kick token exchange failed: ${response.status} ${JSON.stringify(data)}`,
+    );
   }
 
   return data;
 }
 
-export async function fetchKickMe(accessToken: string) {
+export async function fetchKickMe(
+  accessToken: string,
+): Promise<KickMeResponse> {
   const response = await fetch("https://api.kick.com/public/v1/users", {
     method: "GET",
     headers: {
@@ -58,16 +71,18 @@ export async function fetchKickMe(accessToken: string) {
     cache: "no-store",
   });
 
-  const data = (await response.json()) as KickMeResponse | { message?: string };
+  const data = (await response.json()) as KickMeResponse | KickErrorResponse;
 
   if (!response.ok) {
     throw new Error(`Kick /users failed: ${response.status} ${JSON.stringify(data)}`);
   }
 
-  return data;
+  return data as KickMeResponse;
 }
 
-export async function refreshKickAccessToken(userId: string) {
+export async function refreshKickAccessToken(
+  userId: string,
+): Promise<string> {
   const user = await prisma.user.findUnique({
     where: { id: userId },
     select: {
@@ -99,10 +114,12 @@ export async function refreshKickAccessToken(userId: string) {
     cache: "no-store",
   });
 
-  const data = (await response.json()) as KickTokenResponse | { message?: string };
+  const data = (await response.json()) as KickTokenResponse | KickErrorResponse;
 
   if (!response.ok || !("access_token" in data)) {
-    throw new Error(`Kick token refresh failed: ${response.status} ${JSON.stringify(data)}`);
+    throw new Error(
+      `Kick token refresh failed: ${response.status} ${JSON.stringify(data)}`,
+    );
   }
 
   const expiresAt = new Date(Date.now() + data.expires_in * 1000);
@@ -121,7 +138,9 @@ export async function refreshKickAccessToken(userId: string) {
   return data.access_token;
 }
 
-export async function getValidKickAccessToken(userId: string) {
+export async function getValidKickAccessToken(
+  userId: string,
+): Promise<string> {
   const user = await prisma.user.findUnique({
     where: { id: userId },
     select: {
