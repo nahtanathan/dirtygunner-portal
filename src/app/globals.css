@@ -1,117 +1,124 @@
-/* FILE: src/app/globals.css */
 
-/* =========================
-   BASE RESET / EXISTING
-   ========================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* =========================
-   DIRTYGUNNER COLOR SYSTEM
-   ========================= */
-
 :root {
-  /* ---------- SIDEBAR (NEUTRAL GREY) ---------- */
-  --sidebar-bg: #0f1115;
-  --sidebar-bg-soft: #14171c;
-  --sidebar-border: rgba(255, 255, 255, 0.06);
+  color-scheme: dark;
 
-  /* ---------- MAIN BACKGROUND (GREY-BLUE) ---------- */
-  --bg-primary: #0b1220;         /* main page */
-  --bg-secondary: #0f172a;       /* cards/panels */
-  --bg-tertiary: #131c31;        /* elevated panels */
+  /* main surfaces */
+  --bg-main: #11161d;
+  --bg-secondary: #161d27;
+  --bg-tertiary: #1b2430;
 
-  /* ---------- ACCENTS (GREY-BLUE THEME) ---------- */
-  --accent-primary: #3b82f6;     /* blue */
-  --accent-secondary: #1d4ed8;   /* deeper blue */
-  --accent-glow: rgba(59, 130, 246, 0.35);
+  /* sidebar */
+  --bg-sidebar: #0f1318;
+  --bg-sidebar-soft: #151a20;
 
-  /* ---------- TEXT ---------- */
-  --text-primary: #e5e7eb;
-  --text-secondary: #9ca3af;
-  --text-muted: #6b7280;
-
-  /* ---------- BORDERS ---------- */
-  --border-subtle: rgba(255, 255, 255, 0.06);
+  /* borders */
+  --border-subtle: rgba(255, 255, 255, 0.07);
   --border-strong: rgba(255, 255, 255, 0.12);
 
-  /* ---------- STATUS ---------- */
-  --success: #22c55e;
-  --danger: #ef4444;
-  --warning: #f59e0b;
+  /* accents */
+  --accent-primary: #5b7fa6;
+  --accent-primary-glow: #6d8fb3;
+  --accent-primary-soft: rgba(109, 143, 179, 0.16);
 
-  /* ---------- GLOW / FX ---------- */
-  --panel-glow: rgba(2, 6, 23, 0.6);
+  --accent-secondary: #7f93ab;
+  --accent-secondary-soft: rgba(127, 147, 171, 0.12);
+
+  /* text */
+  --text-primary: #e7ebf0;
+  --text-secondary: #a7b1bf;
+  --text-muted: #737d8b;
 }
 
-/* =========================
-   GLOBAL BACKGROUND
-   ========================= */
+html {
+  scroll-behavior: smooth;
+}
 
 body {
-  background: radial-gradient(
-      circle at 20% 0%,
-      rgba(59, 130, 246, 0.08),
-      transparent 40%
-    ),
-    linear-gradient(
-      180deg,
-      var(--bg-primary) 0%,
-      #070d18 100%
-    );
-
+  @apply antialiased;
   color: var(--text-primary);
+  background:
+    radial-gradient(circle at top left, rgba(109, 143, 179, 0.08), transparent 24%),
+    radial-gradient(circle at top right, rgba(82, 102, 125, 0.07), transparent 22%),
+    radial-gradient(circle at bottom center, rgba(130, 144, 161, 0.05), transparent 28%),
+    linear-gradient(180deg, #11161d 0%, #0e1319 42%, #0b0f14 100%);
+  background-attachment: fixed;
 }
 
-/* =========================
-   SCROLLBAR (MATCH THEME)
-   ========================= */
-
-::-webkit-scrollbar {
-  width: 10px;
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(circle at center, black 28%, transparent 85%);
+  opacity: 0.2;
 }
 
-::-webkit-scrollbar-track {
-  background: var(--bg-primary);
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 18% 8%, rgba(109,143,179,0.05), transparent 18%),
+    radial-gradient(circle at 82% 22%, rgba(127,147,171,0.04), transparent 16%);
+  mix-blend-mode: screen;
+  opacity: 0.38;
 }
 
-::-webkit-scrollbar-thumb {
-  background: rgba(59, 130, 246, 0.25);
-  border-radius: 999px;
-}
+@layer utilities {
+  .panel-shell {
+    background:
+      linear-gradient(180deg, rgba(27, 36, 48, 0.96), rgba(22, 29, 39, 0.94));
+    border: 1px solid var(--border-subtle);
+    box-shadow:
+      0 24px 80px rgba(0, 0, 0, 0.45),
+      inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(18px);
+  }
 
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(59, 130, 246, 0.4);
-}
+  .metal-border {
+    background:
+      linear-gradient(180deg, rgba(22, 29, 39, 0.96), rgba(17, 22, 29, 0.96)) padding-box,
+      linear-gradient(
+        135deg,
+        rgba(109, 143, 179, 0.24),
+        rgba(127, 147, 171, 0.16),
+        rgba(255, 255, 255, 0.08)
+      ) border-box;
+    border: 1px solid transparent;
+  }
 
-/* =========================
-   GLOBAL PANEL STYLE BASE
-   ========================= */
+  .section-wrap {
+    @apply mx-auto w-full max-w-[1600px] px-4 py-6 md:px-6 xl:px-10;
+  }
 
-.panel {
-  border: 1px solid var(--border-subtle);
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.02),
-    rgba(255, 255, 255, 0.01)
-  );
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.02),
-    0 20px 60px var(--panel-glow);
-}
+  .premium-scrollbar::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
 
-/* =========================
-   HOVER POLISH (GLOBAL)
-   ========================= */
+  .premium-scrollbar::-webkit-scrollbar-track {
+    background: rgba(15, 19, 24, 0.82);
+  }
 
-.hover-lift {
-  transition: all 0.25s ease;
-}
-
-.hover-lift:hover {
-  transform: translateY(-2px);
-  box-shadow:
-    0 0 0 1px rgba(59, 130, 246, 0.15),
-    0 25px 70px rgba(2, 6, 23, 0.7);
+  .premium-scrollbar::-webkit-scrollbar-thumb {
+    background: linear-gradient(
+      180deg,
+      rgba(109, 143, 179, 0.42),
+      rgba(127, 147, 171, 0.28)
+    );
+    border-radius: 999px;
+    border: 2px solid rgba(15, 19, 24, 0.85);
+  }
 }

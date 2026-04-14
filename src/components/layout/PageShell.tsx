@@ -1,5 +1,7 @@
 // FILE: src/components/layout/PageShell.tsx
 
+// FILE: src/components/layout/PageShell.tsx
+
 import type { ReactNode } from "react";
 import AppSidebar from "@/components/navigation/AppSidebar";
 import MobileNav from "@/components/navigation/MobileNav";
@@ -11,7 +13,10 @@ type PageShellProps = {
 
 export default function PageShell({ children }: PageShellProps) {
   return (
-    <div className="min-h-screen bg-[#020817] text-white">
+    <div
+      className="min-h-screen text-white"
+      style={{ background: "var(--bg-main)" }}
+    >
       <aside className="fixed inset-y-0 left-0 z-40 hidden w-[300px] lg:block">
         <AppSidebar />
       </aside>
@@ -27,7 +32,10 @@ export default function PageShell({ children }: PageShellProps) {
           </div>
         </div>
 
-        <main className="min-h-screen flex-1 overflow-x-hidden bg-[#020817] px-4 pb-6 pt-20 sm:px-6 lg:px-8 lg:pb-8 lg:pt-24">
+        <main
+          className="min-h-screen flex-1 overflow-x-hidden px-4 pb-6 pt-20 sm:px-6 lg:px-8 lg:pb-8 lg:pt-24"
+          style={{ background: "transparent" }}
+        >
           {children}
         </main>
       </div>

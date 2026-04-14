@@ -1,14 +1,12 @@
-// FILE: src/components/layout/SiteFooter.tsx
-
 import Image from "next/image";
 import Link from "next/link";
 import {
+  Archive,
+  Crosshair,
   Disc3,
+  Gift,
   Radio,
   Trophy,
-  Gift,
-  Crosshair,
-  Archive,
   Youtube,
 } from "lucide-react";
 
@@ -20,7 +18,7 @@ export default function SiteFooter() {
         style={{
           borderColor: "rgba(255,255,255,0.08)",
           background:
-            "linear-gradient(180deg, rgba(11,16,32,0.96) 0%, rgba(8,12,24,0.98) 100%)",
+            "linear-gradient(180deg, rgba(18,22,28,0.96) 0%, rgba(12,15,20,0.98) 100%)",
           boxShadow: "0 20px 50px rgba(0,0,0,0.28)",
         }}
       >
@@ -32,7 +30,7 @@ export default function SiteFooter() {
                   src="/brand/logo-mark.png"
                   alt="DirtyGunner"
                   fill
-                  className="object-contain drop-shadow-[0_0_12px_rgba(139,92,246,0.6)]"
+                  className="object-contain drop-shadow-[0_0_12px_rgba(139,92,246,0.35)]"
                 />
               </div>
 
@@ -40,7 +38,7 @@ export default function SiteFooter() {
                 <div className="text-lg font-semibold tracking-wide text-white">
                   DirtyGunner
                 </div>
-                <div className="text-sm font-medium tracking-[0.22em] text-sky-300/80 uppercase">
+                <div className="text-sm font-medium uppercase tracking-[0.22em] text-white/58">
                   Portal
                 </div>
               </div>
@@ -51,7 +49,7 @@ export default function SiteFooter() {
                 href="https://www.gambleaware.org/"
                 target="_blank"
                 rel="noreferrer"
-                className="font-semibold text-white transition hover:text-sky-300"
+                className="font-semibold text-white transition hover:text-white/80"
               >
                 GambleAware
               </Link>{" "}
@@ -140,16 +138,10 @@ export default function SiteFooter() {
           <div>© 2026 DirtyGunner. All Rights Reserved.</div>
 
           <div className="flex flex-wrap items-center gap-5">
-            <Link
-              href="/terms"
-              className="transition hover:text-white"
-            >
+            <Link href="/terms" className="transition hover:text-white">
               Terms of Service
             </Link>
-            <Link
-              href="/privacy"
-              className="transition hover:text-white"
-            >
+            <Link href="/privacy" className="transition hover:text-white">
               Privacy
             </Link>
           </div>
@@ -175,7 +167,7 @@ function FooterColumn({
 }) {
   return (
     <div className="min-w-[170px]">
-      <div className="mb-3 text-sm font-black uppercase tracking-[0.16em] text-sky-400">
+      <div className="mb-3 text-sm font-black uppercase tracking-[0.16em] text-white/68">
         {title}
       </div>
 
@@ -183,7 +175,7 @@ function FooterColumn({
         {links.map((link) => {
           const content = (
             <>
-              <span className="text-white/78">{link.icon}</span>
+              <span className="text-white/62">{link.icon}</span>
               <span>{link.label}</span>
             </>
           );
@@ -195,7 +187,7 @@ function FooterColumn({
                 href={link.href}
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center gap-2.5 text-[1rem] font-semibold text-white transition hover:text-sky-300"
+                className="flex items-center gap-2.5 text-[1rem] font-semibold text-white transition hover:text-white/78"
               >
                 {content}
               </Link>
@@ -206,7 +198,7 @@ function FooterColumn({
             <Link
               key={`${title}-${link.href}`}
               href={link.href}
-              className="flex items-center gap-2.5 text-[1rem] font-semibold text-white transition hover:text-sky-300"
+              className="flex items-center gap-2.5 text-[1rem] font-semibold text-white transition hover:text-white/78"
             >
               {content}
             </Link>
@@ -231,13 +223,13 @@ function SocialLink({
       href={href}
       target="_blank"
       rel="noreferrer"
-      className="inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-semibold text-white/80 transition hover:border-sky-400/30 hover:bg-white/[0.03] hover:text-white"
+      className="inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-semibold text-white/80 transition hover:bg-white/[0.03] hover:text-white"
       style={{
         borderColor: "rgba(255,255,255,0.08)",
         background: "rgba(255,255,255,0.02)",
       }}
     >
-      <span className="text-white/72">{icon}</span>
+      <span className="text-white/68">{icon}</span>
       <span>{label}</span>
     </Link>
   );

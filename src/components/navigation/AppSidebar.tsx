@@ -1,5 +1,7 @@
 // FILE: src/components/navigation/AppSidebar.tsx
 
+// FILE: src/components/navigation/AppSidebar.tsx
+
 "use client";
 
 import Image from "next/image";
@@ -107,9 +109,10 @@ export default function AppSidebar() {
 
   return (
     <div
-      className="flex h-screen w-[300px] flex-col border-r bg-[#041225]"
+      className="flex h-screen w-[300px] flex-col border-r"
       style={{
-        borderColor: "rgba(255,255,255,0.08)",
+        background: "linear-gradient(180deg, var(--bg-sidebar) 0%, #0b0f14 100%)",
+        borderColor: "var(--border-subtle)",
       }}
     >
       <div className="flex-shrink-0 px-5 pb-5 pt-6">
@@ -117,7 +120,7 @@ export default function AppSidebar() {
           href="/"
           className="group flex items-center rounded-2xl border px-3 py-3 transition-all duration-200"
           style={{
-            borderColor: "rgba(255,255,255,0.08)",
+            borderColor: "var(--border-subtle)",
             background: "rgba(255,255,255,0.02)",
           }}
         >
@@ -125,7 +128,7 @@ export default function AppSidebar() {
         </Link>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto px-5">
+      <div className="min-h-0 flex-1 overflow-y-auto px-5 premium-scrollbar">
         <div className="pb-6">
           <div className="mb-3 px-1 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-white/40">
             Navigation
@@ -142,14 +145,14 @@ export default function AppSidebar() {
                   href={item.href}
                   className={clsx(
                     "group relative flex items-center gap-3 overflow-hidden rounded-2xl border px-3 py-3 text-sm font-medium transition-all duration-200",
-                    isActive && "shadow-[0_0_24px_rgba(56,189,248,0.12)]",
+                    isActive && "shadow-[0_0_20px_rgba(109,143,179,0.08)]",
                   )}
                   style={{
                     borderColor: isActive
-                      ? "rgba(56,189,248,0.24)"
+                      ? "rgba(167,177,191,0.18)"
                       : "transparent",
                     background: isActive
-                      ? "linear-gradient(90deg, rgba(56,189,248,0.13), rgba(59,130,246,0.05))"
+                      ? "linear-gradient(90deg, rgba(255,255,255,0.055), rgba(109,143,179,0.06))"
                       : "transparent",
                     color: isActive
                       ? "rgba(255,255,255,0.96)"
@@ -157,13 +160,16 @@ export default function AppSidebar() {
                   }}
                 >
                   {isActive && (
-                    <span className="absolute inset-y-2 left-0 w-[3px] rounded-full bg-sky-400" />
+                    <span
+                      className="absolute inset-y-2 left-0 w-[3px] rounded-full"
+                      style={{ background: "var(--accent-primary)" }}
+                    />
                   )}
 
                   <Icon
                     className={clsx(
                       "h-4 w-4 transition-transform duration-200",
-                      isActive ? "text-sky-300" : "text-white/55",
+                      isActive ? "text-white/85" : "text-white/55",
                     )}
                   />
 
@@ -177,7 +183,7 @@ export default function AppSidebar() {
         {showAdminTree && (
           <div className="pb-6">
             <div className="mb-3 flex items-center gap-2 px-1 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-white/40">
-              <Shield className="h-3.5 w-3.5 text-sky-300/70" />
+              <Shield className="h-3.5 w-3.5 text-white/60" />
               Admin
             </div>
 
@@ -185,10 +191,10 @@ export default function AppSidebar() {
               className="overflow-hidden rounded-2xl border p-2"
               style={{
                 borderColor: adminSectionActive
-                  ? "rgba(56,189,248,0.20)"
+                  ? "rgba(167,177,191,0.14)"
                   : "rgba(255,255,255,0.06)",
                 background: adminSectionActive
-                  ? "linear-gradient(180deg, rgba(56,189,248,0.08), rgba(255,255,255,0.02))"
+                  ? "linear-gradient(180deg, rgba(255,255,255,0.035), rgba(109,143,179,0.03))"
                   : "rgba(255,255,255,0.02)",
               }}
             >
@@ -204,7 +210,7 @@ export default function AppSidebar() {
                       className="group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200"
                       style={{
                         background: isActive
-                          ? "rgba(56,189,248,0.12)"
+                          ? "rgba(255,255,255,0.06)"
                           : "transparent",
                         color: isActive
                           ? "rgba(255,255,255,0.96)"
@@ -214,13 +220,13 @@ export default function AppSidebar() {
                       <ChevronRight
                         className={clsx(
                           "h-3.5 w-3.5 transition-transform duration-200",
-                          isActive ? "translate-x-0 text-sky-300" : "text-white/30",
+                          isActive ? "translate-x-0 text-white/70" : "text-white/30",
                         )}
                       />
                       <Icon
                         className={clsx(
                           "h-4 w-4",
-                          isActive ? "text-sky-300" : "text-white/45",
+                          isActive ? "text-white/82" : "text-white/45",
                         )}
                       />
                       <span className="flex-1">{item.name}</span>
@@ -243,9 +249,9 @@ export default function AppSidebar() {
             href={kickUrl}
             target={kickUrl === "#" ? undefined : "_blank"}
             rel={kickUrl === "#" ? undefined : "noreferrer"}
-            className="flex items-center justify-between rounded-2xl border px-4 py-3 text-sm font-medium transition-all duration-200 hover:border-sky-400/20 hover:bg-white/5"
+            className="flex items-center justify-between rounded-2xl border px-4 py-3 text-sm font-medium transition-all duration-200 hover:bg-white/5"
             style={{
-              borderColor: "rgba(255,255,255,0.08)",
+              borderColor: "var(--border-subtle)",
               background: "rgba(255,255,255,0.02)",
               color: "rgba(255,255,255,0.9)",
             }}
@@ -259,9 +265,9 @@ export default function AppSidebar() {
               href={discordUrl}
               target={discordUrl === "#" ? undefined : "_blank"}
               rel={discordUrl === "#" ? undefined : "noreferrer"}
-              className="flex items-center justify-center gap-2 rounded-2xl border px-3 py-3 text-sm font-medium transition-all duration-200 hover:border-sky-400/20 hover:bg-white/5"
+              className="flex items-center justify-center gap-2 rounded-2xl border px-3 py-3 text-sm font-medium transition-all duration-200 hover:bg-white/5"
               style={{
-                borderColor: "rgba(255,255,255,0.08)",
+                borderColor: "var(--border-subtle)",
                 background: "rgba(255,255,255,0.02)",
                 color: "rgba(255,255,255,0.82)",
               }}
@@ -274,9 +280,9 @@ export default function AppSidebar() {
               href={youtubeUrl}
               target={youtubeUrl === "#" ? undefined : "_blank"}
               rel={youtubeUrl === "#" ? undefined : "noreferrer"}
-              className="flex items-center justify-center gap-2 rounded-2xl border px-3 py-3 text-sm font-medium transition-all duration-200 hover:border-sky-400/20 hover:bg-white/5"
+              className="flex items-center justify-center gap-2 rounded-2xl border px-3 py-3 text-sm font-medium transition-all duration-200 hover:bg-white/5"
               style={{
-                borderColor: "rgba(255,255,255,0.08)",
+                borderColor: "var(--border-subtle)",
                 background: "rgba(255,255,255,0.02)",
                 color: "rgba(255,255,255,0.82)",
               }}
@@ -303,7 +309,7 @@ function SidebarBrandMark() {
           src="/brand/logo-mark.png"
           alt="DirtyGunner"
           fill
-          className="object-contain drop-shadow-[0_0_12px_rgba(139,92,246,0.6)]"
+          className="object-contain drop-shadow-[0_0_12px_rgba(139,92,246,0.45)]"
         />
       </div>
 

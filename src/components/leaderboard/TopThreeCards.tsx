@@ -96,20 +96,19 @@ function PlaceCard({
         onMouseLeave={handleLeave}
         className={clsx(
           "relative flex overflow-hidden rounded-[28px] border",
-          featured ? "min-h-[420px] p-7 md:min-h-[460px]" : "min-h-[380px] p-6"
+          featured ? "min-h-[420px] p-7 md:min-h-[460px]" : "min-h-[380px] p-6",
         )}
         style={{
           borderColor: "var(--border-subtle)",
           background:
-            "linear-gradient(180deg, rgba(18,26,48,0.98), rgba(10,15,28,0.98))",
+            "linear-gradient(180deg, rgba(25,31,40,0.98), rgba(14,18,24,0.98))",
           boxShadow: featured
-            ? "0 0 60px rgba(59,130,246,0.25)"
+            ? "0 0 42px rgba(109,143,179,0.14)"
             : "0 12px 40px rgba(0,0,0,0.5)",
           transform: `rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)`,
           transition: "transform 0.15s ease",
         }}
       >
-        {/* TOP ART */}
         <div className="absolute inset-x-0 top-0 h-[46%] overflow-hidden">
           <div
             className="absolute inset-0"
@@ -117,7 +116,8 @@ function PlaceCard({
               backgroundImage: `url(${getCardArt(place)})`,
               backgroundSize: "cover",
               backgroundPosition: "center",
-              opacity: place === 1 ? 0.45 : 0.28,
+              opacity: place === 1 ? 0.34 : 0.24,
+              filter: "saturate(0.65) brightness(0.88)",
             }}
           />
 
@@ -126,8 +126,8 @@ function PlaceCard({
             style={{
               background:
                 place === 1
-                  ? "linear-gradient(180deg, rgba(59,130,246,0.30), rgba(10,15,28,0.82))"
-                  : "linear-gradient(180deg, rgba(59,130,246,0.16), rgba(10,15,28,0.90))",
+                  ? "linear-gradient(180deg, rgba(109,143,179,0.16), rgba(14,18,24,0.84))"
+                  : "linear-gradient(180deg, rgba(127,147,171,0.10), rgba(14,18,24,0.92))",
             }}
           />
 
@@ -135,13 +135,12 @@ function PlaceCard({
             className="absolute inset-0"
             style={{
               background:
-                "linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.08), transparent 70%)",
-              opacity: glow.on ? 0.5 : 0.2,
+                "linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.05), transparent 70%)",
+              opacity: glow.on ? 0.4 : 0.16,
             }}
           />
         </div>
 
-        {/* ICON + RANK */}
         <div className="pointer-events-none absolute left-5 top-5 z-20 text-white/90">
           {icon}
         </div>
@@ -150,14 +149,13 @@ function PlaceCard({
           #{place}
         </div>
 
-        {/* LOGO */}
         <div className="pointer-events-none absolute left-1/2 top-8 z-20 -translate-x-1/2">
           <div
             className={clsx("relative", featured ? "h-40 w-40" : "h-32 w-32")}
             style={{
               filter: featured
-                ? "drop-shadow(0 0 30px rgba(59,130,246,0.45))"
-                : "drop-shadow(0 0 18px rgba(59,130,246,0.25))",
+                ? "drop-shadow(0 0 22px rgba(109,143,179,0.20))"
+                : "drop-shadow(0 0 14px rgba(109,143,179,0.12))",
               transform: `translateZ(40px) scale(${glow.on ? 1.05 : 1})`,
               transition: "transform 0.2s ease",
             }}
@@ -172,7 +170,6 @@ function PlaceCard({
           </div>
         </div>
 
-        {/* PAYOUT */}
         <div
           className="pointer-events-none absolute left-1/2 z-20 -translate-x-1/2"
           style={{
@@ -186,12 +183,12 @@ function PlaceCard({
             <div
               className={clsx(
                 "mt-1 font-black leading-none",
-                featured ? "text-[24px]" : "text-[20px]"
+                featured ? "text-[24px]" : "text-[20px]",
               )}
               style={{
-                color: place === 1 ? "#7DD3FC" : "#E6EAF2",
+                color: place === 1 ? "#c7d3df" : "#e6eaf2",
                 textShadow:
-                  place === 1 ? "0 0 12px rgba(125,211,252,0.5)" : "none",
+                  place === 1 ? "0 0 10px rgba(199,211,223,0.18)" : "none",
               }}
             >
               ${prizeValue.toLocaleString()}
@@ -199,9 +196,7 @@ function PlaceCard({
           </div>
         </div>
 
-        {/* CONTENT */}
         <div className="relative z-10 flex w-full flex-col justify-end">
-          {/* 🔥 PERFECT BLEND GRADIENT */}
           <div
             className="pointer-events-none absolute inset-x-0 bottom-0 h-[60%]"
             style={{
@@ -221,7 +216,7 @@ function PlaceCard({
               <div
                 className={clsx(
                   "font-black uppercase text-white",
-                  featured ? "text-[36px]" : "text-[30px]"
+                  featured ? "text-[36px]" : "text-[30px]",
                 )}
               >
                 {player.username}
@@ -233,9 +228,13 @@ function PlaceCard({
 
               <div
                 className={clsx(
-                  "mt-1 font-black text-[#60A5FA]",
-                  featured ? "text-[36px]" : "text-[30px]"
+                  "mt-1 font-black",
+                  featured ? "text-[36px]" : "text-[30px]",
                 )}
+                style={{
+                  color: "#aebdcb",
+                  textShadow: "0 0 12px rgba(174,189,203,0.10)",
+                }}
               >
                 ${wagerValue.toLocaleString()}
               </div>
