@@ -1,8 +1,8 @@
 // FILE: src/app/api/raffles/route.ts
 
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getSession } from "@/lib/session";
 
 type UpsertRafflePayload = {
   id: string;
@@ -203,13 +203,12 @@ export async function GET() {
   try {
     await syncExpiredRaffles();
 
-    const cookieStore = await cookies();
-    const sessionUserId = cookieStore.get("session_user_id")?.value ?? null;
+    const session = await getSession();
 
     const [viewer, raffles] = await Promise.all([
-      sessionUserId
+      session?.sub
         ? prisma.user.findUnique({
-            where: { id: sessionUserId },
+            where: { id: session.sub },
             select: {
               id: true,
               points: true,
@@ -343,10 +342,9 @@ export async function POST(req: Request) {
     const body = (await req.json()) as UpsertRafflePayload | RaffleActionPayload;
 
     if ("action" in body && body.action === "enter") {
-      const cookieStore = await cookies();
-      const sessionUserId = cookieStore.get("session_user_id")?.value ?? null;
+      const session = await getSession();
 
-      if (!sessionUserId) {
+      if (!session?.sub) {
         throw new HttpError("You must be logged in to enter this raffle", 401);
       }
 
@@ -355,12 +353,13 @@ export async function POST(req: Request) {
       const result = await prisma.$transaction(async (tx) => {
         const [user, raffle] = await Promise.all([
           tx.user.findUnique({
-            where: { id: sessionUserId },
+            where: { id: session.sub },
             select: {
               id: true,
               points: true,
               display_name: true,
               kick_username: true,
+              isAdmin: true,
             },
           }),
           tx.raffle.findUnique({
