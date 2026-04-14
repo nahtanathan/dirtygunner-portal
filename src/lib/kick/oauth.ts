@@ -15,6 +15,12 @@ export function sha256Base64Url(input: string) {
 export function buildKickAuthorizeUrl(state: string, codeChallenge: string) {
   const { KICK_CLIENT_ID, KICK_REDIRECT_URI } = requireKickAuthEnv();
 
+  // DEBUG LOGS — REMOVE AFTER FIXING
+  console.log("=== KICK AUTH DEBUG ===");
+  console.log("KICK_CLIENT_ID:", KICK_CLIENT_ID);
+  console.log("KICK_REDIRECT_URI:", KICK_REDIRECT_URI);
+  console.log("=======================");
+
   const url = new URL(`${KICK_ID_BASE}/oauth/authorize`);
   url.searchParams.set("client_id", KICK_CLIENT_ID);
   url.searchParams.set("response_type", "code");
@@ -23,6 +29,7 @@ export function buildKickAuthorizeUrl(state: string, codeChallenge: string) {
   url.searchParams.set("state", state);
   url.searchParams.set("code_challenge", codeChallenge);
   url.searchParams.set("code_challenge_method", "S256");
+
   return url.toString();
 }
 
