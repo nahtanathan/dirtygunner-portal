@@ -31,9 +31,11 @@ export default async function HomePage() {
     leaderboardSettings?.countdownTarget.toISOString().slice(0, 16) ||
     new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16);
 
-  let leaderboard = [];
+  let leaderboard: any[] = [];
+
   try {
-    leaderboard = await getRoobetLeaderboard();
+    const data = await getRoobetLeaderboard();
+    leaderboard = Array.isArray(data) ? data : [];
   } catch (error) {
     console.error("Roobet leaderboard failed on homepage:", error);
     leaderboard = [];
