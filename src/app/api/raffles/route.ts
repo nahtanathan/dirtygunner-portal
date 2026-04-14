@@ -127,6 +127,28 @@ function formatWinnerName(entry: {
   );
 }
 
+async function requireAdmin() {
+  const session = await getSession();
+
+  if (!session?.sub) {
+    throw new HttpError("Unauthorized", 401);
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { id: session.sub },
+    select: {
+      id: true,
+      isAdmin: true,
+    },
+  });
+
+  if (!user?.isAdmin) {
+    throw new HttpError("Forbidden", 403);
+  }
+
+  return user;
+}
+
 async function chooseWinnerForRaffle(
   raffleId: string,
   options?: { forceReroll?: boolean; endRaffle?: boolean },
@@ -485,6 +507,8 @@ export async function POST(req: Request) {
       return NextResponse.json(result);
     }
 
+    await requireAdmin();
+
     if ("action" in body && body.action === "pickWinner") {
       const raffle = await chooseWinnerForRaffle(body.raffleId, {
         forceReroll: false,
@@ -568,6 +592,8 @@ export async function POST(req: Request) {
 
 export async function DELETE(req: Request) {
   try {
+    await requireAdmin();
+
     const { id } = (await req.json()) as { id?: string };
 
     if (!id?.trim()) {
@@ -582,11 +608,13 @@ export async function DELETE(req: Request) {
   } catch (error) {
     console.error("Failed to delete raffle:", error);
 
+    const status = error instanceof HttpError ? error.status : 500;
+
     return NextResponse.json(
       {
         error: error instanceof Error ? error.message : "Failed to delete raffle",
       },
-      { status: 500 },
+      { status },
     );
   }
 }

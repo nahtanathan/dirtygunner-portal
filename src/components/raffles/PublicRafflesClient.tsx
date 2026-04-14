@@ -3,14 +3,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { ReactNode } from "react";
-import {
-  Clock3,
-  Coins,
-  Gift,
-  Trophy,
-  Users,
-} from "lucide-react";
+import { Clock3, Coins, Gift, Trophy, Users } from "lucide-react";
 import { RaffleEntryButton } from "@/components/raffles/RaffleEntryButton";
 
 type PublicRaffleItem = {
@@ -60,14 +53,11 @@ export function PublicRafflesClient({
   initialRaffles,
 }: PublicRafflesClientProps) {
   const [raffles, setRaffles] = useState<PublicRaffleItem[]>(initialRaffles);
-  const [isRefreshing, setIsRefreshing] = useState(false);
   const [now, setNow] = useState(Date.now());
   const pendingEndRefreshRef = useRef(false);
 
   const refreshRaffles = useCallback(async () => {
     try {
-      setIsRefreshing(true);
-
       const res = await fetch("/api/raffles", {
         method: "GET",
         cache: "no-store",
@@ -102,10 +92,12 @@ export function PublicRafflesClient({
       setRaffles(normalized);
     } catch (error) {
       console.error("Failed to refresh raffles", error);
-    } finally {
-      setIsRefreshing(false);
     }
   }, []);
+
+  useEffect(() => {
+    void refreshRaffles();
+  }, [refreshRaffles]);
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -157,25 +149,6 @@ export function PublicRafflesClient({
     [raffles, now],
   );
 
-  const nextToEnd = useMemo(() => {
-    return activeRaffles
-      .slice()
-      .sort(
-        (a, b) =>
-          new Date(a.endDate).getTime() - new Date(b.endDate).getTime(),
-      )[0];
-  }, [activeRaffles]);
-
-  const totalEntries = useMemo(
-    () => raffles.reduce((sum, item) => sum + item.totalEntries, 0),
-    [raffles],
-  );
-
-  const totalActiveEntries = useMemo(
-    () => activeRaffles.reduce((sum, item) => sum + item.totalEntries, 0),
-    [activeRaffles],
-  );
-
   function patchRaffleEntryState(
     raffleId: string,
     payload: {
@@ -199,104 +172,22 @@ export function PublicRafflesClient({
   }
 
   return (
-    <section className="mx-auto w-full max-w-[1280px] space-y-6">
-      <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
-        <div
-          className="rounded-[28px] border p-5 md:p-6"
-          style={{
-            borderColor: "rgba(255,255,255,0.08)",
-            background:
-              "linear-gradient(180deg, rgba(12,18,34,0.94) 0%, rgba(7,12,24,0.98) 100%)",
-            boxShadow:
-              "0 0 0 1px rgba(255,255,255,0.02), 0 24px 60px rgba(2,8,23,0.42)",
-          }}
-        >
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-            <div>
-              <div className="text-xs font-semibold uppercase tracking-[0.28em] text-sky-300/85">
-                Active Draws
-              </div>
-              <h2 className="mt-2 text-2xl font-bold text-white md:text-3xl">
-                Premium Raffles
-              </h2>
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-white/58">
-                Entries, balances, limits, and winner state refresh automatically.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-3 gap-3 md:min-w-[420px]">
-              <TopStat value={activeRaffles.length.toString()} label="Live" />
-              <TopStat
-                value={totalActiveEntries.toLocaleString()}
-                label="Active Entries"
-              />
-              <TopStat
-                value={isRefreshing ? "Syncing" : totalEntries.toLocaleString()}
-                label="Portal Sync"
-              />
-            </div>
-          </div>
-        </div>
-
-        <div
-          className="rounded-[28px] border p-5 md:p-6"
-          style={{
-            borderColor: "rgba(56,189,248,0.16)",
-            background:
-              "linear-gradient(180deg, rgba(8,16,32,0.98) 0%, rgba(4,10,22,1) 100%)",
-            boxShadow:
-              "0 0 0 1px rgba(56,189,248,0.08), 0 24px 70px rgba(2,8,23,0.5)",
-          }}
-        >
-          <div className="flex items-center gap-3">
-            <div
-              className="flex h-11 w-11 items-center justify-center rounded-2xl"
-              style={{
-                background:
-                  "linear-gradient(180deg, rgba(56,189,248,0.18), rgba(37,99,235,0.12))",
-              }}
-            >
-              <Clock3 className="h-5 w-5 text-sky-300" />
-            </div>
-
-            <div>
-              <div className="text-xs font-semibold uppercase tracking-[0.24em] text-white/45">
-                Closing Next
-              </div>
-              <div className="mt-1 text-lg font-bold text-white">
-                {nextToEnd ? nextToEnd.title : "No live raffles"}
-              </div>
-            </div>
-          </div>
-
-          <div
-            className="mt-5 rounded-2xl border px-4 py-4"
-            style={{
-              borderColor: "rgba(255,255,255,0.08)",
-              background: "rgba(255,255,255,0.03)",
-            }}
-          >
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/45">
-              Timer
-            </div>
-            <div className="mt-2 text-2xl font-black uppercase tracking-[0.06em] text-white">
-              {nextToEnd ? formatCountdown(nextToEnd.endDate, now) : "--"}
-            </div>
-            <div className="mt-2 text-sm text-white/55">
-              {nextToEnd
-                ? nextToEnd.prizeDetails
-                : "Create a raffle in admin to show it here."}
-            </div>
-          </div>
-        </div>
-      </div>
-
+    <section className="mx-auto w-full max-w-[1280px] space-y-8">
       <section className="space-y-4">
-        <SectionHeading
-          icon={<Gift className="h-5 w-5 text-sky-300" />}
-          title="Active Raffles"
-          subtitle="Live now and accepting entries"
-        />
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <div className="text-xs font-semibold uppercase tracking-[0.28em] text-sky-300/80">
+              Live Now
+            </div>
+            <h2 className="mt-2 text-2xl font-bold text-white">
+              Active Raffles
+            </h2>
+          </div>
+
+          <div className="text-sm text-white/45">
+            {activeRaffles.length} live
+          </div>
+        </div>
 
         {activeRaffles.length > 0 ? (
           <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
@@ -319,12 +210,15 @@ export function PublicRafflesClient({
         )}
       </section>
 
-      <section className="space-y-4 pt-2">
-        <SectionHeading
-          icon={<Trophy className="h-5 w-5 text-white/75" />}
-          title="Completed Raffles"
-          subtitle="Closed draws and winner results"
-        />
+      <section className="space-y-4">
+        <div>
+          <div className="text-xs font-semibold uppercase tracking-[0.28em] text-white/40">
+            Results
+          </div>
+          <h2 className="mt-2 text-2xl font-bold text-white">
+            Completed Raffles
+          </h2>
+        </div>
 
         {endedRaffles.length > 0 ? (
           <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
@@ -395,10 +289,10 @@ function RaffleCard({
   const live = isRaffleLive(raffle, now);
   const remaining = formatCountdown(raffle.endDate, now);
   const winnerLabel = raffle.winner?.trim() ? raffle.winner : "Winner pending";
-  const usageText =
+  const limitText =
     raffle.maxEntriesPerUser === null
-      ? `${raffle.currentUserEntries} entries used`
-      : `${raffle.currentUserEntries} / ${raffle.maxEntriesPerUser} used`;
+      ? "Unlimited"
+      : `${raffle.currentUserEntries} / ${raffle.maxEntriesPerUser}`;
 
   return (
     <article
@@ -423,10 +317,10 @@ function RaffleCard({
           <img
             src={raffle.image}
             alt={raffle.title}
-            className="h-[220px] w-full object-cover"
+            className="h-[210px] w-full object-cover"
           />
         ) : (
-          <div className="relative h-[220px] w-full overflow-hidden px-5 py-5">
+          <div className="relative h-[210px] w-full overflow-hidden px-5 py-5">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_20%,rgba(255,255,255,0.10),transparent_12%),radial-gradient(circle_at_80%_18%,rgba(255,255,255,0.08),transparent_10%),linear-gradient(180deg,rgba(255,255,255,0.03),transparent_45%)]" />
             <div
               className="absolute -right-10 top-8 h-32 w-32 rounded-full blur-3xl"
@@ -435,23 +329,13 @@ function RaffleCard({
             <div className="absolute inset-x-0 bottom-0 h-24 bg-[linear-gradient(180deg,transparent,rgba(0,0,0,0.28))]" />
 
             <div className="relative z-10 flex h-full items-start justify-between">
-              <div className="max-w-[70%]">
+              <div className="max-w-[72%]">
                 <div className="text-xs font-black uppercase tracking-[0.22em] text-white/78">
                   {live ? "Live Raffle" : "Completed"}
                 </div>
 
                 <div className="mt-4 line-clamp-3 text-[2rem] font-black uppercase leading-none text-white">
                   {raffle.prizeDetails}
-                </div>
-
-                <div className="mt-3 inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/70">
-                  <span
-                    className="h-2 w-2 rounded-full"
-                    style={{
-                      background: live ? "#38BDF8" : "rgba(255,255,255,0.45)",
-                    }}
-                  />
-                  {live ? "Accepting Entries" : "Draw Closed"}
                 </div>
               </div>
 
@@ -467,12 +351,14 @@ function RaffleCard({
       <div className="px-2 pb-2 pt-5">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <h3 className="text-[1.2rem] font-bold text-white">
+            <h3 className="text-[1.15rem] font-bold text-white">
               {raffle.title}
             </h3>
-            <p className="mt-1 text-sm leading-6 text-white/58">
-              {raffle.description || "Community raffle live on the DirtyGunner portal."}
-            </p>
+            {raffle.description ? (
+              <p className="mt-1 line-clamp-2 text-sm leading-6 text-white/58">
+                {raffle.description}
+              </p>
+            ) : null}
           </div>
 
           <div
@@ -490,7 +376,7 @@ function RaffleCard({
         <div className="mt-5 grid grid-cols-2 gap-3">
           <InfoTile
             icon={<Coins className="h-4 w-4" />}
-            label="Entry Cost"
+            label="Cost"
             value={
               raffle.entryCost > 0
                 ? `${raffle.entryCost.toLocaleString()} ${raffle.entryCurrency}`
@@ -499,7 +385,7 @@ function RaffleCard({
           />
           <InfoTile
             icon={<Users className="h-4 w-4" />}
-            label="Total Entries"
+            label="Entries"
             value={raffle.totalEntries.toLocaleString()}
           />
           <InfoTile
@@ -509,56 +395,15 @@ function RaffleCard({
           />
           <InfoTile
             icon={<Clock3 className="h-4 w-4" />}
-            label={live ? "Time Left" : "Status"}
-            value={live ? remaining : "Closed"}
+            label={live ? "Time Left" : "Winner"}
+            value={live ? remaining : winnerLabel}
           />
         </div>
 
-        <div
-          className="mt-4 rounded-2xl border px-4 py-3"
-          style={{
-            borderColor: "rgba(255,255,255,0.08)",
-            background: "rgba(255,255,255,0.03)",
-          }}
-        >
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/45">
-                Entry Feedback
-              </div>
-              <div className="mt-1 text-sm font-semibold text-white">
-                You have {raffle.currentUserEntries} entries
-              </div>
-            </div>
-
-            <div className="text-right">
-              <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/45">
-                Limit
-              </div>
-              <div className="mt-1 text-sm font-semibold text-white">
-                {usageText}
-              </div>
-            </div>
-          </div>
+        <div className="mt-4 flex items-center justify-between text-xs text-white/55">
+          <span>You have {raffle.currentUserEntries} entries</span>
+          <span>{limitText} used</span>
         </div>
-
-        {live ? null : (
-          <div
-            className="mt-4 rounded-2xl border px-4 py-3"
-            style={{
-              borderColor: "rgba(250,204,21,0.16)",
-              background:
-                "linear-gradient(180deg, rgba(250,204,21,0.08), rgba(255,255,255,0.02))",
-            }}
-          >
-            <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-yellow-200/70">
-              Winner
-            </div>
-            <div className="mt-1 text-base font-bold text-white">
-              {winnerLabel}
-            </div>
-          </div>
-        )}
 
         <RaffleEntryButton
           raffleId={raffle.id}
@@ -579,57 +424,12 @@ function RaffleCard({
   );
 }
 
-function SectionHeading({
-  icon,
-  title,
-  subtitle,
-}: {
-  icon: ReactNode;
-  title: string;
-  subtitle: string;
-}) {
-  return (
-    <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
-      <div className="flex items-center gap-3">
-        {icon}
-        <div>
-          <h2 className="text-2xl font-bold text-white">{title}</h2>
-          <p className="text-sm text-white/52">{subtitle}</p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function TopStat({
-  value,
-  label,
-}: {
-  value: string;
-  label: string;
-}) {
-  return (
-    <div
-      className="rounded-2xl border px-3 py-3"
-      style={{
-        borderColor: "rgba(255,255,255,0.08)",
-        background: "rgba(255,255,255,0.03)",
-      }}
-    >
-      <div className="text-lg font-bold text-white">{value}</div>
-      <div className="mt-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-white/42">
-        {label}
-      </div>
-    </div>
-  );
-}
-
 function InfoTile({
   icon,
   label,
   value,
 }: {
-  icon: ReactNode;
+  icon: React.ReactNode;
   label: string;
   value: string;
 }) {

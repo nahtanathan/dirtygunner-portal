@@ -1,23 +1,30 @@
-// FILE: src/app/(admin)/raffles/page.tsx
+// FILE: src/app/(admin)/admin/raffles/page.tsx
 
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { AdminResourceManager } from "@/components/admin/AdminResourceManager";
-import { raffleSchema } from "@/lib/validators/admin";
-import { Raffle } from "@/lib/types";
+import {
+  CheckCircle2,
+  Clock3,
+  Coins,
+  Gift,
+  Loader2,
+  Pencil,
+  Plus,
+  RefreshCw,
+  ShieldAlert,
+  Trash2,
+  Trophy,
+  Users,
+  XCircle,
+} from "lucide-react";
 
-type ApiEntrant = {
-  userId: string;
-  displayName: string;
-  kickUsername: string | null;
-  entryCount: number;
-  totalSpent: number;
-  pointsRemaining: number | null;
-  lastEnteredAt: string;
+type AdminUser = {
+  id: string;
+  isAdmin: boolean;
 };
 
-type ApiRaffle = {
+type RaffleItem = {
   id: string;
   title: string;
   description: string | null;
@@ -30,7 +37,6 @@ type ApiRaffle = {
   totalEntries: number;
   uniqueEntrants: number;
   totalSpent: number;
-  entrants: ApiEntrant[];
   currentUserEntries: number;
   currentUserPoints: number | null;
   startDate: string;
@@ -41,181 +47,272 @@ type ApiRaffle = {
   updatedAt: string;
 };
 
-type AdminRaffleWithEntrants = Raffle & {
-  entrants: ApiEntrant[];
+type RaffleFormState = {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+  status: "active" | "ended";
+  entryMethod: string;
+  entryCost: string;
+  entryCurrency: "bullets" | "points";
+  maxEntriesPerUser: string;
+  startDate: string;
+  endDate: string;
+  winner: string;
+  prizeDetails: string;
 };
 
-function toDateTimeLocal(value: string | Date) {
-  const date = typeof value === "string" ? new Date(value) : value;
-
-  if (Number.isNaN(date.getTime())) {
-    return "";
-  }
-
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  const hours = String(date.getHours()).padStart(2, "0");
-  const minutes = String(date.getMinutes()).padStart(2, "0");
-
-  return `${year}-${month}-${day}T${hours}:${minutes}`;
-}
-
-function createEmptyRaffle(): AdminRaffleWithEntrants {
-  const now = new Date();
-  const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000);
-
-  return {
-    id: crypto.randomUUID(),
-    title: "",
-    description: "",
-    image: "",
-    status: "active",
-    entryMethod: "Join for Free",
-    entryCost: 0,
-    entryCurrency: "bullets",
-    maxEntriesPerUser: null,
-    totalEntries: 0,
-    uniqueEntrants: 0,
-    totalSpent: 0,
-    currentUserEntries: 0,
-    currentUserPoints: 0,
-    startDate: toDateTimeLocal(now),
-    endDate: toDateTimeLocal(tomorrow),
-    winner: "",
-    prizeDetails: "",
-    entrants: [],
-  };
-}
-
-function normalizeRaffleForEditor(item: ApiRaffle): AdminRaffleWithEntrants {
-  return {
-    id: item.id,
-    title: item.title ?? "",
-    description: item.description ?? "",
-    image: item.image ?? "",
-    status: item.status === "active" ? "active" : "ended",
-    entryMethod: item.entryMethod ?? "Join for Free",
-    entryCost: Number(item.entryCost ?? 0),
-    entryCurrency: item.entryCurrency === "points" ? "points" : "bullets",
-    maxEntriesPerUser: item.maxEntriesPerUser ?? null,
-    totalEntries: Number(item.totalEntries ?? 0),
-    uniqueEntrants: Number(item.uniqueEntrants ?? 0),
-    totalSpent: Number(item.totalSpent ?? 0),
-    currentUserEntries: Number(item.currentUserEntries ?? 0),
-    currentUserPoints: Number(item.currentUserPoints ?? 0),
-    startDate: toDateTimeLocal(item.startDate),
-    endDate: toDateTimeLocal(item.endDate),
-    winner: item.winner ?? "",
-    prizeDetails: item.prizeDetails ?? "",
-    entrants: Array.isArray(item.entrants) ? item.entrants : [],
-  };
-}
+const EMPTY_FORM: RaffleFormState = {
+  id: "",
+  title: "",
+  description: "",
+  image: "",
+  status: "active",
+  entryMethod: "Enter Now",
+  entryCost: "0",
+  entryCurrency: "bullets",
+  maxEntriesPerUser: "",
+  startDate: "",
+  endDate: "",
+  winner: "",
+  prizeDetails: "",
+};
 
 export default function AdminRafflesPage() {
-  const [items, setItems] = useState<AdminRaffleWithEntrants[]>([]);
-  const [emptyValue, setEmptyValue] = useState<AdminRaffleWithEntrants>(createEmptyRaffle());
-  const [resetToken, setResetToken] = useState(0);
-  const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
+  const [me, setMe] = useState<AdminUser | null>(null);
+  const [loadingUser, setLoadingUser] = useState(true);
+  const [loadingRaffles, setLoadingRaffles] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [actionRaffleId, setActionRaffleId] = useState<string | null>(null);
+  const [message, setMessage] = useState<string>("");
+  const [error, setError] = useState<string>("");
+  const [raffles, setRaffles] = useState<RaffleItem[]>([]);
+  const [form, setForm] = useState<RaffleFormState>(EMPTY_FORM);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
-  const activeCount = useMemo(
-    () => items.filter((item) => item.status === "active").length,
-    [items],
-  );
+  async function loadUser() {
+    setLoadingUser(true);
+
+    try {
+      const res = await fetch("/api/auth/me", {
+        method: "GET",
+        cache: "no-store",
+      });
+
+      const data = (await res.json()) as { user?: AdminUser | null };
+      setMe(data.user ?? null);
+    } catch {
+      setMe(null);
+    } finally {
+      setLoadingUser(false);
+    }
+  }
+
+  async function loadRaffles() {
+    setLoadingRaffles(true);
+
+    try {
+      const res = await fetch("/api/raffles", {
+        method: "GET",
+        cache: "no-store",
+      });
+
+      const data = (await res.json()) as RaffleItem[];
+
+      if (!res.ok) {
+        throw new Error("Failed to load raffles");
+      }
+
+      setRaffles(data);
+    } catch (fetchError) {
+      setError(
+        fetchError instanceof Error
+          ? fetchError.message
+          : "Failed to load raffles",
+      );
+    } finally {
+      setLoadingRaffles(false);
+    }
+  }
 
   useEffect(() => {
+    void loadUser();
     void loadRaffles();
   }, []);
 
-  async function loadRaffles() {
-    const res = await fetch("/api/raffles", {
-      method: "GET",
-      cache: "no-store",
+  const activeRaffles = useMemo(
+    () => raffles.filter((item) => item.status === "active"),
+    [raffles],
+  );
+
+  const endedRaffles = useMemo(
+    () => raffles.filter((item) => item.status === "ended"),
+    [raffles],
+  );
+
+  function setField<K extends keyof RaffleFormState>(
+    key: K,
+    value: RaffleFormState[K],
+  ) {
+    setForm((current) => ({
+      ...current,
+      [key]: value,
+    }));
+  }
+
+  function resetForm() {
+    setForm(EMPTY_FORM);
+    setEditingId(null);
+    setError("");
+    setMessage("");
+  }
+
+  function startCreate() {
+    resetForm();
+
+    const now = new Date();
+    const inSevenDays = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+
+    setForm({
+      ...EMPTY_FORM,
+      id: createRaffleId(),
+      startDate: toLocalDateTimeValue(now),
+      endDate: toLocalDateTimeValue(inSevenDays),
     });
-
-    if (!res.ok) {
-      const text = await res.text();
-      throw new Error(text || "Failed to load raffles");
-    }
-
-    const data = (await res.json()) as ApiRaffle[];
-    const normalized = Array.isArray(data)
-      ? data.map(normalizeRaffleForEditor)
-      : [];
-
-    setItems(normalized);
   }
 
-  function resetEditor() {
-    setEmptyValue(createEmptyRaffle());
-    setResetToken((value) => value + 1);
-  }
+  function startEdit(raffle: RaffleItem) {
+    setEditingId(raffle.id);
+    setMessage("");
+    setError("");
 
-  async function saveRaffle(payload: AdminRaffleWithEntrants) {
-    const body = {
-      id: payload.id,
-      title: payload.title.trim(),
-      description: payload.description?.trim() || null,
-      image: payload.image?.trim() || null,
-      status: payload.status,
-      entryMethod: payload.entryMethod.trim(),
-      entryCost: Number(payload.entryCost ?? 0),
-      entryCurrency: payload.entryCurrency,
+    setForm({
+      id: raffle.id,
+      title: raffle.title,
+      description: raffle.description ?? "",
+      image: raffle.image ?? "",
+      status: raffle.status,
+      entryMethod: raffle.entryMethod,
+      entryCost: String(raffle.entryCost),
+      entryCurrency: raffle.entryCurrency,
       maxEntriesPerUser:
-        payload.maxEntriesPerUser === null ||
-        payload.maxEntriesPerUser === undefined ||
-        payload.maxEntriesPerUser === ("" as never)
-          ? null
-          : Number(payload.maxEntriesPerUser),
-      totalEntries: Number(payload.totalEntries ?? 0),
-      startDate: new Date(payload.startDate).toISOString(),
-      endDate: new Date(payload.endDate).toISOString(),
-      winner: payload.winner?.trim() || null,
-      prizeDetails: payload.prizeDetails.trim(),
-    };
-
-    const res = await fetch("/api/raffles", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
+        raffle.maxEntriesPerUser === null
+          ? ""
+          : String(raffle.maxEntriesPerUser),
+      startDate: toLocalDateTimeValue(new Date(raffle.startDate)),
+      endDate: toLocalDateTimeValue(new Date(raffle.endDate)),
+      winner: raffle.winner ?? "",
+      prizeDetails: raffle.prizeDetails,
     });
-
-    if (!res.ok) {
-      const text = await res.text();
-      throw new Error(text || "Failed to save raffle");
-    }
-
-    await loadRaffles();
-    resetEditor();
   }
 
-  async function removeRaffle(id: string) {
-    const res = await fetch("/api/raffles", {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ id }),
-    });
+  async function handleSave(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
 
-    if (!res.ok) {
-      const text = await res.text();
-      throw new Error(text || "Failed to delete raffle");
+    setIsSaving(true);
+    setMessage("");
+    setError("");
+
+    try {
+      const payload = {
+        id: form.id.trim(),
+        title: form.title.trim(),
+        description: form.description.trim() || null,
+        image: form.image.trim() || null,
+        status: form.status,
+        entryMethod: form.entryMethod.trim() || "Enter Now",
+        entryCost: Number(form.entryCost || 0),
+        entryCurrency: form.entryCurrency,
+        maxEntriesPerUser:
+          form.maxEntriesPerUser.trim() === ""
+            ? null
+            : Number(form.maxEntriesPerUser),
+        startDate: new Date(form.startDate).toISOString(),
+        endDate: new Date(form.endDate).toISOString(),
+        winner: form.winner.trim() || null,
+        prizeDetails: form.prizeDetails.trim(),
+      };
+
+      const res = await fetch("/api/raffles", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = (await res.json()) as { error?: string };
+
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to save raffle");
+      }
+
+      setMessage(editingId ? "Raffle updated." : "Raffle created.");
+      await loadRaffles();
+
+      if (!editingId) {
+        startCreate();
+      }
+    } catch (saveError) {
+      setError(
+        saveError instanceof Error ? saveError.message : "Failed to save raffle",
+      );
+    } finally {
+      setIsSaving(false);
     }
-
-    await loadRaffles();
-    resetEditor();
   }
 
-  async function runRaffleAction(
+  async function handleDelete(raffleId: string) {
+    if (!window.confirm("Delete this raffle?")) {
+      return;
+    }
+
+    setActionRaffleId(raffleId);
+    setMessage("");
+    setError("");
+
+    try {
+      const res = await fetch("/api/raffles", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: raffleId }),
+      });
+
+      const data = (await res.json()) as { error?: string };
+
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to delete raffle");
+      }
+
+      if (editingId === raffleId) {
+        resetForm();
+      }
+
+      setMessage("Raffle deleted.");
+      await loadRaffles();
+    } catch (deleteError) {
+      setError(
+        deleteError instanceof Error
+          ? deleteError.message
+          : "Failed to delete raffle",
+      );
+    } finally {
+      setActionRaffleId(null);
+    }
+  }
+
+  async function handleAction(
     raffleId: string,
     action: "pickWinner" | "rerollWinner" | "clearWinner",
   ) {
-    try {
-      setActionLoadingId(`${raffleId}:${action}`);
+    setActionRaffleId(raffleId);
+    setMessage("");
+    setError("");
 
+    try {
       const res = await fetch("/api/raffles", {
         method: "POST",
         headers: {
@@ -227,187 +324,731 @@ export default function AdminRafflesPage() {
         }),
       });
 
-      const data = await res.json().catch(() => null);
+      const data = (await res.json()) as { error?: string };
 
       if (!res.ok) {
-        throw new Error(
-          data && typeof data === "object" && "error" in data
-            ? String(data.error)
-            : "Failed to update raffle winner",
-        );
+        throw new Error(data.error || "Action failed");
       }
 
+      setMessage(
+        action === "pickWinner"
+          ? "Winner picked."
+          : action === "rerollWinner"
+            ? "Winner rerolled."
+            : "Winner cleared and raffle reopened.",
+      );
+
       await loadRaffles();
+    } catch (actionError) {
+      setError(
+        actionError instanceof Error ? actionError.message : "Action failed",
+      );
     } finally {
-      setActionLoadingId(null);
+      setActionRaffleId(null);
     }
   }
 
-  return (
-    <div className="space-y-6">
-      <AdminResourceManager<AdminRaffleWithEntrants>
-        title="Raffles"
-        description={`Create, edit, end, and manage community raffle events. ${activeCount} active.`}
-        items={items}
-        schema={raffleSchema}
-        emptyValue={emptyValue}
-        resetToken={resetToken}
-        fields={[
-          { name: "title", label: "Title" },
-          { name: "description", label: "Description", type: "textarea" },
-          { name: "image", label: "Image URL", type: "url" },
-          { name: "status", label: "Status", type: "select", options: ["active", "ended"] },
-          { name: "entryMethod", label: "Button Text" },
-          { name: "entryCost", label: "Entry Cost", type: "number" },
-          { name: "entryCurrency", label: "Currency", type: "select", options: ["bullets", "points"] },
-          { name: "maxEntriesPerUser", label: "Max Entries Per User", type: "number" },
-          { name: "startDate", label: "Start Date", type: "datetime-local" },
-          { name: "endDate", label: "End Date", type: "datetime-local" },
-          { name: "winner", label: "Winner" },
-          { name: "prizeDetails", label: "Prize Details", type: "textarea" },
-        ]}
-        onSave={saveRaffle}
-        onDelete={removeRaffle}
-        renderMeta={(item) => {
-          const costLabel =
-            item.entryCost > 0
-              ? `${item.entryCost.toLocaleString()} ${item.entryCurrency}`
-              : "free";
+  if (loadingUser) {
+    return (
+      <div className="flex min-h-[50vh] items-center justify-center">
+        <div className="inline-flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-4 text-white/75">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          Loading admin panel...
+        </div>
+      </div>
+    );
+  }
 
-          return `${item.status} · ${item.totalEntries} entries · ${item.uniqueEntrants ?? 0} entrants · ${costLabel} · spent ${(item.totalSpent ?? 0).toLocaleString()}`;
+  if (!me?.isAdmin) {
+    return (
+      <div
+        className="mx-auto max-w-3xl rounded-[28px] border p-8"
+        style={{
+          borderColor: "rgba(239,68,68,0.18)",
+          background:
+            "linear-gradient(180deg, rgba(28,10,14,0.92) 0%, rgba(18,8,11,0.98) 100%)",
+          boxShadow:
+            "0 0 0 1px rgba(239,68,68,0.08), 0 24px 70px rgba(2,8,23,0.5)",
         }}
-      />
+      >
+        <div className="flex items-center gap-3">
+          <ShieldAlert className="h-6 w-6 text-red-300" />
+          <div className="text-2xl font-bold text-white">Access denied</div>
+        </div>
+        <p className="mt-3 text-sm leading-7 text-white/60">
+          You must be an admin to manage raffles.
+        </p>
+      </div>
+    );
+  }
 
-      <section className="grid gap-4">
-        {items.map((raffle) => (
-          <article
-            key={`entrant-panel-${raffle.id}`}
-            className="rounded-3xl border border-white/10 bg-black/20 p-5"
-          >
-            <div className="flex flex-col gap-4">
-              <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                <div>
-                  <div className="text-xs uppercase tracking-[0.28em] text-electric/70">
-                    Entrants
-                  </div>
-                  <h3 className="mt-2 text-2xl font-bold uppercase tracking-wide text-white">
-                    {raffle.title}
-                  </h3>
-                  <div className="mt-2 text-sm text-silver/60">
-                    {raffle.status} · {raffle.totalEntries} total entries ·{" "}
-                    {raffle.uniqueEntrants ?? 0} unique entrants · spent{" "}
-                    {(raffle.totalSpent ?? 0).toLocaleString()} {raffle.entryCurrency}
-                  </div>
-                </div>
+  return (
+    <div className="mx-auto w-full max-w-[1360px] space-y-6">
+      <section
+        className="rounded-[30px] border p-6 md:p-8"
+        style={{
+          borderColor: "rgba(255,255,255,0.08)",
+          background:
+            "linear-gradient(180deg, rgba(10,16,30,0.96) 0%, rgba(5,10,22,0.98) 100%)",
+          boxShadow:
+            "0 0 0 1px rgba(255,255,255,0.02), 0 24px 70px rgba(2,8,23,0.45)",
+        }}
+      >
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <div className="text-xs font-semibold uppercase tracking-[0.3em] text-sky-300/85">
+              Admin
+            </div>
+            <h1 className="mt-2 text-3xl font-bold text-white md:text-4xl">
+              Raffles Control
+            </h1>
+            <p className="mt-3 max-w-2xl text-sm leading-7 text-white/58">
+              Create, edit, delete, pick winners, reroll results, and keep the
+              public raffle page synced with live data.
+            </p>
+          </div>
 
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                  <MiniStat label="Entries" value={String(raffle.totalEntries)} />
-                  <MiniStat label="Entrants" value={String(raffle.uniqueEntrants ?? 0)} />
-                  <MiniStat
-                    label="Cost"
-                    value={
-                      raffle.entryCost > 0
-                        ? `${raffle.entryCost} ${raffle.entryCurrency}`
-                        : "Free"
-                    }
-                  />
-                  <MiniStat
-                    label="Winner"
-                    value={raffle.winner?.trim() ? raffle.winner : "Pending"}
-                  />
-                </div>
+          <div className="grid grid-cols-3 gap-3">
+            <TopStat value={String(raffles.length)} label="Total" />
+            <TopStat value={String(activeRaffles.length)} label="Active" />
+            <TopStat value={String(endedRaffles.length)} label="Ended" />
+          </div>
+        </div>
+      </section>
+
+      {message ? (
+        <Notice tone="success" icon={<CheckCircle2 className="h-4 w-4" />}>
+          {message}
+        </Notice>
+      ) : null}
+
+      {error ? (
+        <Notice tone="error" icon={<XCircle className="h-4 w-4" />}>
+          {error}
+        </Notice>
+      ) : null}
+
+      <div className="grid gap-6 xl:grid-cols-[420px_minmax(0,1fr)]">
+        <section
+          className="rounded-[28px] border p-5 md:p-6"
+          style={{
+            borderColor: "rgba(255,255,255,0.08)",
+            background:
+              "linear-gradient(180deg, rgba(12,18,34,0.96) 0%, rgba(7,12,24,0.98) 100%)",
+          }}
+        >
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <div className="text-xs font-semibold uppercase tracking-[0.26em] text-white/42">
+                {editingId ? "Edit Raffle" : "Create Raffle"}
               </div>
+              <h2 className="mt-2 text-2xl font-bold text-white">
+                {editingId ? "Update Details" : "New Raffle"}
+              </h2>
+            </div>
 
-              <div className="flex flex-wrap gap-3">
-                <button
-                  type="button"
-                  onClick={() => void runRaffleAction(raffle.id, "pickWinner")}
-                  disabled={actionLoadingId !== null}
-                  className="rounded-xl border border-white/10 px-4 py-2 text-sm font-semibold text-white hover:bg-white/[0.05] disabled:opacity-60"
+            <button
+              type="button"
+              onClick={startCreate}
+              className="inline-flex h-11 items-center gap-2 rounded-2xl border px-4 text-sm font-semibold text-white transition-all duration-200 hover:bg-white/[0.05]"
+              style={{
+                borderColor: "rgba(255,255,255,0.08)",
+                background: "rgba(255,255,255,0.02)",
+              }}
+            >
+              <Plus className="h-4 w-4" />
+              New
+            </button>
+          </div>
+
+          <form className="mt-6 space-y-4" onSubmit={handleSave}>
+            <Field label="Raffle ID">
+              <input
+                value={form.id}
+                onChange={(event) => setField("id", event.target.value)}
+                className={inputClassName}
+                placeholder="weekly-giveaway-apr-1"
+                disabled={Boolean(editingId)}
+              />
+            </Field>
+
+            <Field label="Title">
+              <input
+                value={form.title}
+                onChange={(event) => setField("title", event.target.value)}
+                className={inputClassName}
+                placeholder="Weekly Stream Giveaway"
+              />
+            </Field>
+
+            <Field label="Prize Details">
+              <input
+                value={form.prizeDetails}
+                onChange={(event) => setField("prizeDetails", event.target.value)}
+                className={inputClassName}
+                placeholder="$250 Cash Prize"
+              />
+            </Field>
+
+            <Field label="Description">
+              <textarea
+                value={form.description}
+                onChange={(event) => setField("description", event.target.value)}
+                className={`${inputClassName} min-h-[96px] resize-none`}
+                placeholder="Short description for the public raffle page"
+              />
+            </Field>
+
+            <Field label="Image URL">
+              <input
+                value={form.image}
+                onChange={(event) => setField("image", event.target.value)}
+                className={inputClassName}
+                placeholder="https://..."
+              />
+            </Field>
+
+            <div className="grid grid-cols-2 gap-4">
+              <Field label="Status">
+                <select
+                  value={form.status}
+                  onChange={(event) =>
+                    setField("status", event.target.value as "active" | "ended")
+                  }
+                  className={inputClassName}
                 >
-                  {actionLoadingId === `${raffle.id}:pickWinner`
-                    ? "Picking..."
-                    : "Pick Winner"}
-                </button>
+                  <option value="active">active</option>
+                  <option value="ended">ended</option>
+                </select>
+              </Field>
 
-                <button
-                  type="button"
-                  onClick={() => void runRaffleAction(raffle.id, "rerollWinner")}
-                  disabled={actionLoadingId !== null}
-                  className="rounded-xl border border-white/10 px-4 py-2 text-sm font-semibold text-white hover:bg-white/[0.05] disabled:opacity-60"
+              <Field label="Entry Currency">
+                <select
+                  value={form.entryCurrency}
+                  onChange={(event) =>
+                    setField(
+                      "entryCurrency",
+                      event.target.value as "bullets" | "points",
+                    )
+                  }
+                  className={inputClassName}
                 >
-                  {actionLoadingId === `${raffle.id}:rerollWinner`
-                    ? "Rerolling..."
-                    : "Reroll Winner"}
-                </button>
+                  <option value="bullets">bullets</option>
+                  <option value="points">points</option>
+                </select>
+              </Field>
+            </div>
 
-                <button
-                  type="button"
-                  onClick={() => void runRaffleAction(raffle.id, "clearWinner")}
-                  disabled={actionLoadingId !== null}
-                  className="rounded-xl border border-red-400/20 bg-red-500/10 px-4 py-2 text-sm font-semibold text-red-200 disabled:opacity-60"
-                >
-                  {actionLoadingId === `${raffle.id}:clearWinner`
-                    ? "Clearing..."
-                    : "Clear Winner"}
-                </button>
-              </div>
+            <div className="grid grid-cols-2 gap-4">
+              <Field label="Entry Cost">
+                <input
+                  type="number"
+                  min="0"
+                  value={form.entryCost}
+                  onChange={(event) => setField("entryCost", event.target.value)}
+                  className={inputClassName}
+                />
+              </Field>
 
-              <div className="overflow-hidden rounded-2xl border border-white/10">
-                <div className="grid grid-cols-[minmax(0,1.4fr)_120px_140px_180px] gap-3 border-b border-white/10 bg-white/[0.03] px-4 py-3 text-xs uppercase tracking-[0.2em] text-silver/55">
-                  <div>User</div>
-                  <div>Entries</div>
-                  <div>Total Spent</div>
-                  <div>Last Entered</div>
-                </div>
+              <Field label="Max Entries Per User">
+                <input
+                  type="number"
+                  min="1"
+                  value={form.maxEntriesPerUser}
+                  onChange={(event) =>
+                    setField("maxEntriesPerUser", event.target.value)
+                  }
+                  className={inputClassName}
+                  placeholder="Leave blank for unlimited"
+                />
+              </Field>
+            </div>
 
-                {raffle.entrants.length > 0 ? (
-                  raffle.entrants.map((entrant) => (
-                    <div
-                      key={`${raffle.id}-${entrant.userId}`}
-                      className="grid grid-cols-[minmax(0,1.4fr)_120px_140px_180px] gap-3 border-b border-white/5 px-4 py-3 text-sm last:border-b-0"
-                    >
-                      <div className="min-w-0">
-                        <div className="truncate font-semibold text-white">
-                          {entrant.displayName}
-                        </div>
-                        <div className="truncate text-xs text-silver/55">
-                          {entrant.kickUsername ? `@${entrant.kickUsername}` : entrant.userId}
-                        </div>
-                      </div>
+            <Field label="Entry Button Text">
+              <input
+                value={form.entryMethod}
+                onChange={(event) => setField("entryMethod", event.target.value)}
+                className={inputClassName}
+                placeholder="Enter Now"
+              />
+            </Field>
 
-                      <div className="text-white">{entrant.entryCount}</div>
+            <div className="grid grid-cols-2 gap-4">
+              <Field label="Start Date">
+                <input
+                  type="datetime-local"
+                  value={form.startDate}
+                  onChange={(event) => setField("startDate", event.target.value)}
+                  className={inputClassName}
+                />
+              </Field>
 
-                      <div className="text-white">
-                        {entrant.totalSpent.toLocaleString()} {raffle.entryCurrency}
-                      </div>
+              <Field label="End Date">
+                <input
+                  type="datetime-local"
+                  value={form.endDate}
+                  onChange={(event) => setField("endDate", event.target.value)}
+                  className={inputClassName}
+                />
+              </Field>
+            </div>
 
-                      <div className="text-silver/70">
-                        {new Date(entrant.lastEnteredAt).toLocaleString()}
-                      </div>
-                    </div>
-                  ))
+            <Field label="Winner Override (optional)">
+              <input
+                value={form.winner}
+                onChange={(event) => setField("winner", event.target.value)}
+                className={inputClassName}
+                placeholder="Leave blank to let system pick"
+              />
+            </Field>
+
+            <div className="flex gap-3 pt-2">
+              <button
+                type="submit"
+                disabled={isSaving}
+                className="inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-2xl text-sm font-extrabold uppercase tracking-[0.08em] text-white disabled:cursor-not-allowed disabled:opacity-60"
+                style={{
+                  background:
+                    "linear-gradient(180deg, rgba(59,130,246,0.96), rgba(37,99,235,0.96))",
+                  boxShadow:
+                    "inset 0 1px 0 rgba(255,255,255,0.18), 0 12px 28px rgba(37,99,235,0.22)",
+                }}
+              >
+                {isSaving ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : editingId ? (
+                  <Pencil className="h-4 w-4" />
                 ) : (
-                  <div className="px-4 py-5 text-sm text-silver/60">
-                    No entrants yet.
-                  </div>
+                  <Plus className="h-4 w-4" />
                 )}
+                {isSaving ? "Saving..." : editingId ? "Update Raffle" : "Create Raffle"}
+              </button>
+
+              <button
+                type="button"
+                onClick={resetForm}
+                className="inline-flex h-12 items-center justify-center rounded-2xl border px-4 text-sm font-semibold text-white/80 transition-all duration-200 hover:bg-white/[0.05]"
+                style={{
+                  borderColor: "rgba(255,255,255,0.08)",
+                  background: "rgba(255,255,255,0.02)",
+                }}
+              >
+                Reset
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <section className="space-y-4">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <div className="text-xs font-semibold uppercase tracking-[0.26em] text-white/42">
+                Live Data
+              </div>
+              <h2 className="mt-2 text-2xl font-bold text-white">Manage Raffles</h2>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => void loadRaffles()}
+              className="inline-flex h-11 items-center gap-2 rounded-2xl border px-4 text-sm font-semibold text-white transition-all duration-200 hover:bg-white/[0.05]"
+              style={{
+                borderColor: "rgba(255,255,255,0.08)",
+                background: "rgba(255,255,255,0.02)",
+              }}
+            >
+              <RefreshCw className="h-4 w-4" />
+              Refresh
+            </button>
+          </div>
+
+          {loadingRaffles ? (
+            <div
+              className="rounded-[28px] border px-6 py-10 text-center text-white/65"
+              style={{
+                borderColor: "rgba(255,255,255,0.08)",
+                background:
+                  "linear-gradient(180deg, rgba(12,18,34,0.96) 0%, rgba(7,12,24,0.98) 100%)",
+              }}
+            >
+              <div className="inline-flex items-center gap-3">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Loading raffles...
               </div>
             </div>
-          </article>
-        ))}
-      </section>
+          ) : raffles.length === 0 ? (
+            <div
+              className="rounded-[28px] border px-6 py-10 text-center"
+              style={{
+                borderColor: "rgba(255,255,255,0.08)",
+                background:
+                  "linear-gradient(180deg, rgba(12,18,34,0.96) 0%, rgba(7,12,24,0.98) 100%)",
+              }}
+            >
+              <div className="text-xl font-bold text-white">No raffles yet</div>
+              <div className="mt-2 text-sm text-white/55">
+                Create your first raffle from the panel on the left.
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {raffles.map((raffle) => {
+                const isBusy = actionRaffleId === raffle.id;
+                const isEnded = raffle.status === "ended";
+
+                return (
+                  <article
+                    key={raffle.id}
+                    className="rounded-[28px] border p-5 md:p-6"
+                    style={{
+                      borderColor: "rgba(255,255,255,0.08)",
+                      background:
+                        "linear-gradient(180deg, rgba(12,18,34,0.96) 0%, rgba(7,12,24,0.98) 100%)",
+                      boxShadow:
+                        "0 0 0 1px rgba(255,255,255,0.02), 0 18px 44px rgba(2,8,23,0.35)",
+                    }}
+                  >
+                    <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center gap-3">
+                          <h3 className="truncate text-2xl font-bold text-white">
+                            {raffle.title}
+                          </h3>
+
+                          <span
+                            className="inline-flex h-8 items-center rounded-full border px-3 text-xs font-semibold uppercase tracking-[0.16em]"
+                            style={{
+                              borderColor:
+                                raffle.status === "active"
+                                  ? "rgba(56,189,248,0.18)"
+                                  : "rgba(250,204,21,0.16)",
+                              background:
+                                raffle.status === "active"
+                                  ? "rgba(56,189,248,0.10)"
+                                  : "rgba(250,204,21,0.08)",
+                              color: "rgba(255,255,255,0.82)",
+                            }}
+                          >
+                            {raffle.status}
+                          </span>
+                        </div>
+
+                        <div className="mt-2 text-sm text-white/58">
+                          {raffle.prizeDetails}
+                        </div>
+
+                        {raffle.description ? (
+                          <div className="mt-2 text-sm leading-6 text-white/52">
+                            {raffle.description}
+                          </div>
+                        ) : null}
+
+                        <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+                          <MiniStat
+                            icon={<Users className="h-4 w-4" />}
+                            label="Total Entries"
+                            value={raffle.totalEntries.toLocaleString()}
+                          />
+                          <MiniStat
+                            icon={<Gift className="h-4 w-4" />}
+                            label="Unique Entrants"
+                            value={raffle.uniqueEntrants.toLocaleString()}
+                          />
+                          <MiniStat
+                            icon={<Coins className="h-4 w-4" />}
+                            label="Entry Cost"
+                            value={
+                              raffle.entryCost > 0
+                                ? `${raffle.entryCost.toLocaleString()} ${raffle.entryCurrency}`
+                                : "Free"
+                            }
+                          />
+                          <MiniStat
+                            icon={<CheckCircle2 className="h-4 w-4" />}
+                            label="Max Per User"
+                            value={
+                              raffle.maxEntriesPerUser === null
+                                ? "Unlimited"
+                                : raffle.maxEntriesPerUser.toLocaleString()
+                            }
+                          />
+                          <MiniStat
+                            icon={<Trophy className="h-4 w-4" />}
+                            label="Winner"
+                            value={raffle.winner?.trim() || "Pending"}
+                          />
+                        </div>
+
+                        <div className="mt-5 grid gap-3 md:grid-cols-2">
+                          <MetaRow
+                            label="Starts"
+                            value={formatAdminDate(raffle.startDate)}
+                            icon={<Clock3 className="h-4 w-4" />}
+                          />
+                          <MetaRow
+                            label="Ends"
+                            value={formatAdminDate(raffle.endDate)}
+                            icon={<Clock3 className="h-4 w-4" />}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid gap-2 sm:grid-cols-2 xl:w-[280px] xl:grid-cols-1">
+                        <ActionButton
+                          label="Edit"
+                          icon={<Pencil className="h-4 w-4" />}
+                          onClick={() => startEdit(raffle)}
+                        />
+                        <ActionButton
+                          label="Pick Winner"
+                          icon={
+                            isBusy ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              <Trophy className="h-4 w-4" />
+                            )
+                          }
+                          onClick={() =>
+                            void handleAction(raffle.id, "pickWinner")
+                          }
+                          disabled={isBusy}
+                        />
+                        <ActionButton
+                          label="Reroll Winner"
+                          icon={
+                            isBusy ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              <RefreshCw className="h-4 w-4" />
+                            )
+                          }
+                          onClick={() =>
+                            void handleAction(raffle.id, "rerollWinner")
+                          }
+                          disabled={isBusy || !isEnded}
+                        />
+                        <ActionButton
+                          label="Reopen / Clear Winner"
+                          icon={
+                            isBusy ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              <XCircle className="h-4 w-4" />
+                            )
+                          }
+                          onClick={() =>
+                            void handleAction(raffle.id, "clearWinner")
+                          }
+                          disabled={isBusy}
+                        />
+                        <ActionButton
+                          label="Delete"
+                          icon={
+                            isBusy ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              <Trash2 className="h-4 w-4" />
+                            )
+                          }
+                          onClick={() => void handleDelete(raffle.id)}
+                          disabled={isBusy}
+                          danger
+                        />
+                      </div>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          )}
+        </section>
+      </div>
     </div>
   );
 }
 
-function MiniStat({ label, value }: { label: string; value: string }) {
+function Field({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
-      <div className="text-[10px] uppercase tracking-[0.24em] text-silver/45">
+    <label className="block">
+      <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-white/45">
         {label}
       </div>
-      <div className="mt-1 text-sm font-semibold text-white">{value}</div>
+      {children}
+    </label>
+  );
+}
+
+function TopStat({
+  value,
+  label,
+}: {
+  value: string;
+  label: string;
+}) {
+  return (
+    <div
+      className="rounded-2xl border px-4 py-3"
+      style={{
+        borderColor: "rgba(255,255,255,0.08)",
+        background: "rgba(255,255,255,0.03)",
+      }}
+    >
+      <div className="text-lg font-bold text-white">{value}</div>
+      <div className="mt-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-white/42">
+        {label}
+      </div>
     </div>
   );
 }
+
+function Notice({
+  tone,
+  icon,
+  children,
+}: {
+  tone: "success" | "error";
+  icon: React.ReactNode;
+  children: React.ReactNode;
+}) {
+  const isSuccess = tone === "success";
+
+  return (
+    <div
+      className="rounded-2xl border px-4 py-3 text-sm"
+      style={{
+        borderColor: isSuccess
+          ? "rgba(34,197,94,0.18)"
+          : "rgba(239,68,68,0.18)",
+        background: isSuccess
+          ? "rgba(34,197,94,0.08)"
+          : "rgba(239,68,68,0.08)",
+        color: "rgba(255,255,255,0.86)",
+      }}
+    >
+      <div className="flex items-center gap-2">
+        {icon}
+        <span>{children}</span>
+      </div>
+    </div>
+  );
+}
+
+function MiniStat({
+  icon,
+  label,
+  value,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+}) {
+  return (
+    <div
+      className="rounded-2xl border px-4 py-3"
+      style={{
+        borderColor: "rgba(255,255,255,0.08)",
+        background: "rgba(255,255,255,0.03)",
+      }}
+    >
+      <div className="flex items-center gap-2 text-white/44">
+        {icon}
+        <span className="text-[11px] font-semibold uppercase tracking-[0.18em]">
+          {label}
+        </span>
+      </div>
+      <div className="mt-2 truncate text-base font-bold text-white">{value}</div>
+    </div>
+  );
+}
+
+function MetaRow({
+  label,
+  value,
+  icon,
+}: {
+  label: string;
+  value: string;
+  icon: React.ReactNode;
+}) {
+  return (
+    <div
+      className="flex items-center gap-3 rounded-2xl border px-4 py-3"
+      style={{
+        borderColor: "rgba(255,255,255,0.08)",
+        background: "rgba(255,255,255,0.02)",
+      }}
+    >
+      <div className="text-white/45">{icon}</div>
+      <div>
+        <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/42">
+          {label}
+        </div>
+        <div className="mt-1 text-sm font-medium text-white">{value}</div>
+      </div>
+    </div>
+  );
+}
+
+function ActionButton({
+  label,
+  icon,
+  onClick,
+  disabled,
+  danger = false,
+}: {
+  label: string;
+  icon: React.ReactNode;
+  onClick: () => void;
+  disabled?: boolean;
+  danger?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className="inline-flex h-11 items-center justify-center gap-2 rounded-2xl border px-4 text-sm font-semibold text-white transition-all duration-200 hover:bg-white/[0.05] disabled:cursor-not-allowed disabled:opacity-50"
+      style={{
+        borderColor: danger
+          ? "rgba(239,68,68,0.18)"
+          : "rgba(255,255,255,0.08)",
+        background: danger ? "rgba(239,68,68,0.08)" : "rgba(255,255,255,0.02)",
+      }}
+    >
+      {icon}
+      {label}
+    </button>
+  );
+}
+
+function toLocalDateTimeValue(date: Date) {
+  const copy = new Date(date);
+  copy.setMinutes(copy.getMinutes() - copy.getTimezoneOffset());
+  return copy.toISOString().slice(0, 16);
+}
+
+function formatAdminDate(value: string) {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "Invalid date";
+  }
+
+  return new Intl.DateTimeFormat(undefined, {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(date);
+}
+
+function createRaffleId() {
+  return `raffle-${Date.now()}`;
+}
+
+const inputClassName =
+  "h-12 w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 text-sm text-white outline-none transition-all duration-200 placeholder:text-white/28 focus:border-sky-400/30 focus:bg-white/[0.05]";

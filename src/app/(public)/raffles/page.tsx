@@ -1,9 +1,8 @@
 // FILE: src/app/(public)/raffles/page.tsx
 
-import { cookies } from "next/headers";
 import { unstable_noStore as noStore } from "next/cache";
-import { Gift } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+import { getSession } from "@/lib/session";
 import { PageHero } from "@/components/ui/PageHero";
 import { PublicRafflesClient } from "@/components/raffles/PublicRafflesClient";
 
@@ -13,13 +12,12 @@ export const revalidate = 0;
 export default async function RafflesPage() {
   noStore();
 
-  const cookieStore = await cookies();
-  const sessionUserId = cookieStore.get("session_user_id")?.value ?? null;
+  const session = await getSession();
 
   const [viewer, rows] = await Promise.all([
-    sessionUserId
+    session?.sub
       ? prisma.user.findUnique({
-          where: { id: sessionUserId },
+          where: { id: session.sub },
           select: {
             id: true,
             points: true,
@@ -70,81 +68,11 @@ export default async function RafflesPage() {
     <div className="space-y-8">
       <PageHero
         eyebrow="Raffles"
-        title="Live Community Raffles"
-        description="Enter premium community raffles, track your entries in real time, and watch each draw close down to the second."
-        aside={
-          <div
-            className="rounded-[28px] border p-5"
-            style={{
-              borderColor: "rgba(255,255,255,0.08)",
-              background:
-                "linear-gradient(180deg, rgba(9,14,28,0.88) 0%, rgba(5,10,22,0.94) 100%)",
-              boxShadow:
-                "0 0 0 1px rgba(56,189,248,0.08), 0 24px 60px rgba(2,8,23,0.45)",
-            }}
-          >
-            <div className="flex items-center gap-3">
-              <div
-                className="flex h-11 w-11 items-center justify-center rounded-2xl"
-                style={{
-                  background:
-                    "linear-gradient(180deg, rgba(56,189,248,0.18), rgba(59,130,246,0.12))",
-                  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.12)",
-                }}
-              >
-                <Gift className="h-5 w-5 text-sky-300" />
-              </div>
-
-              <div>
-                <div className="text-xs font-semibold uppercase tracking-[0.28em] text-white/45">
-                  Portal Status
-                </div>
-                <div className="mt-1 text-lg font-bold text-white">
-                  {raffles.filter((item) => item.status === "active").length} Active
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-5 grid grid-cols-2 gap-3">
-              <MetricTile
-                value={raffles.length.toString()}
-                label="Total Raffles"
-              />
-              <MetricTile
-                value={raffles
-                  .reduce((sum, item) => sum + item.totalEntries, 0)
-                  .toLocaleString()}
-                label="Total Entries"
-              />
-            </div>
-          </div>
-        }
+        title="Community Raffles"
+        description="Enter live draws, track your entries, and watch each raffle close in real time."
       />
 
       <PublicRafflesClient initialRaffles={raffles} />
-    </div>
-  );
-}
-
-function MetricTile({
-  value,
-  label,
-}: {
-  value: string;
-  label: string;
-}) {
-  return (
-    <div
-      className="rounded-2xl border px-4 py-3"
-      style={{
-        borderColor: "rgba(255,255,255,0.08)",
-        background: "rgba(255,255,255,0.03)",
-      }}
-    >
-      <div className="text-lg font-bold text-white">{value}</div>
-      <div className="mt-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-white/45">
-        {label}
-      </div>
     </div>
   );
 }
