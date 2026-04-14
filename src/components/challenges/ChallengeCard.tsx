@@ -210,19 +210,26 @@ export function ChallengeCard({
     <>
       <PremiumPanel className="group overflow-hidden border border-white/10 bg-[linear-gradient(180deg,rgba(36,24,42,0.88),rgba(19,24,35,0.96))] p-0 shadow-[0_20px_60px_rgba(0,0,0,0.30)]">
         <div className="relative">
-          <div className="relative h-[180px] overflow-hidden">
+          <div className="relative h-[180px] overflow-hidden bg-[linear-gradient(180deg,rgba(33,23,38,0.95),rgba(19,24,35,1))]">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.06),transparent_55%)]" />
+
             {rich.imageUrl ? (
-              <Image
-                src={rich.imageUrl}
-                alt={getSlotLabel(rich)}
-                fill
-                className="object-cover transition duration-500 group-hover:scale-[1.03]"
-              />
+              <div className="absolute inset-0 flex items-center justify-center p-4">
+                <div className="relative h-full w-full">
+                  <Image
+                    src={rich.imageUrl}
+                    alt={getSlotLabel(rich)}
+                    fill
+                    className="object-contain"
+                    sizes="(max-width: 768px) 100vw, 320px"
+                  />
+                </div>
+              </div>
             ) : (
               <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(88,39,82,0.42),rgba(19,24,35,0.96))]" />
             )}
 
-            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(17,13,22,0.12),rgba(17,13,22,0.72))]" />
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(17,13,22,0.10),rgba(17,13,22,0.55))]" />
 
             <div className="absolute left-4 top-4">
               <span className="inline-flex rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.24em] text-amber-100">
@@ -235,10 +242,12 @@ export function ChallengeCard({
             <div>
               <h3 className="line-clamp-2 text-xl font-bold leading-tight text-white">
                 {getSlotLabel(rich)}
-                {rich.challengeType === "multiplier" && typeof rich.targetValue === "number"
+                {rich.challengeType === "multiplier" &&
+                typeof rich.targetValue === "number"
                   ? ` ${rich.targetValue.toLocaleString()}x`
                   : ""}
-                {rich.challengeType === "win_amount" && typeof rich.targetValue === "number"
+                {rich.challengeType === "win_amount" &&
+                typeof rich.targetValue === "number"
                   ? ` ${formatCurrency(rich.targetValue)}`
                   : ""}
                 {getMinBet(rich) ? ` with min ${getMinBet(rich)} bet` : ""}

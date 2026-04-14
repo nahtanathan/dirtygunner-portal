@@ -1,7 +1,3 @@
-// FILE: src/components/navigation/AppSidebar.tsx
-
-// FILE: src/components/navigation/AppSidebar.tsx
-
 "use client";
 
 import Image from "next/image";
@@ -12,6 +8,7 @@ import clsx from "clsx";
 import {
   ChevronRight,
   ExternalLink,
+  FileCheck,
   Flame,
   Gift,
   Home,
@@ -47,6 +44,7 @@ const adminNavItems = [
   { name: "Leaderboard", href: "/admin/leaderboard", icon: Trophy },
   { name: "Raffles", href: "/admin/raffles", icon: Gift },
   { name: "Challenges", href: "/admin/challenges", icon: Target },
+  { name: "Challenge Claims", href: "/admin/challenge-claims", icon: FileCheck },
   { name: "Bonus Hunts", href: "/admin/bonus-hunts", icon: Flame },
 ];
 

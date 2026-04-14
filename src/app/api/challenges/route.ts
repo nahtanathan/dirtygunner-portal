@@ -22,6 +22,40 @@ type UpsertChallengePayload = {
   endDate: string;
 };
 
+type BonusHuntApiBonus = {
+  id?: string | null;
+  slotName?: string | null;
+  provider?: string | null;
+  betSize?: number | null;
+  payout?: number | null;
+  multiplier?: number | null;
+  image?: string | null;
+  imageUrl?: string | null;
+  thumbnail?: string | null;
+  thumbnailUrl?: string | null;
+  slotImage?: string | null;
+  gameImage?: string | null;
+  logo?: string | null;
+  [key: string]: unknown;
+};
+
+type BonusHuntApiListItem = {
+  id: string;
+  title?: string | null;
+  bonuses?: BonusHuntApiBonus[] | null;
+  [key: string]: unknown;
+};
+
+type BonusHuntApiListResponse = {
+  hunts?: BonusHuntApiListItem[] | null;
+};
+
+type BonusHuntApiDetailResponse = {
+  id: string;
+  bonuses?: BonusHuntApiBonus[] | null;
+  [key: string]: unknown;
+};
+
 class HttpError extends Error {
   status: number;
 
@@ -31,25 +65,378 @@ class HttpError extends Error {
   }
 }
 
-function slugifySlotName(value: string) {
-  return value
-    .trim()
+function getBonusHuntApiBaseUrl() {
+  return (
+    process.env.BONUSHUNT_API_BASE_URL?.trim() ||
+    process.env.BONUS_HUNT_API_BASE_URL?.trim() ||
+    "https://bonushunt.gg/api/public"
+  ).replace(/\/+$/, "");
+}
+
+function getBonusHuntApiKey() {
+  return (
+    process.env.BONUSHUNT_API_KEY?.trim() ||
+    process.env.BONUS_HUNT_API_KEY?.trim() ||
+    process.env.BONUSHUNTGG_API_KEY?.trim() ||
+    ""
+  );
+}
+
+function normalizeSpace(value: string) {
+  return value.replace(/\s+/g, " ").trim();
+}
+
+function normalizeLookupValue(value?: string | null) {
+  if (!value) return "";
+  return normalizeSpace(value)
+    .toLowerCase()
+    .replace(/[™®©]/g, "")
     .replace(/['’]/g, "")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
+function slugifySlotName(value: string) {
+  return normalizeSpace(value)
+    .replace(/['’]/g, "")
+    .replace(/[™®©]/g, "")
     .replace(/[^a-zA-Z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 }
 
-async function resolveChallengeImageUrl(
-  slotName?: string | null,
-  manualImageUrl?: string | null,
+function createSlotLookupCandidates(slotName: string) {
+  const normalized = normalizeSpace(slotName);
+  const withoutProviderSuffix = normalized.replace(
+    /\s+(by|from)\s+[a-z0-9'&.\- ]+$/i,
+    "",
+  );
+  const withoutTrademark = withoutProviderSuffix.replace(/[™®©]/g, "").trim();
+  const withoutSlotWord = withoutTrademark.replace(/\bslot\b/gi, "").trim();
+
+  const rawCandidates = [
+    normalized,
+    withoutProviderSuffix,
+    withoutTrademark,
+    withoutSlotWord,
+    normalized.replace(/\s*1000\b/gi, " 1000"),
+  ].filter(Boolean);
+
+  return Array.from(
+    new Set(
+      rawCandidates
+        .map((item) => slugifySlotName(item))
+        .filter((item) => item.length > 0),
+    ),
+  );
+}
+
+function absolutizeImageUrl(url: string, pageUrl: string) {
+  try {
+    return new URL(url, pageUrl).toString();
+  } catch {
+    return null;
+  }
+}
+
+function looksLikeUsefulImage(url: string) {
+  const lower = url.toLowerCase();
+
+  if (
+    lower.includes(".svg") ||
+    lower.includes("favicon") ||
+    lower.includes("logo-slotcatalog") ||
+    lower.includes("flag") ||
+    lower.includes("avatar")
+  ) {
+    return false;
+  }
+
+  return (
+    lower.includes(".jpg") ||
+    lower.includes(".jpeg") ||
+    lower.includes(".png") ||
+    lower.includes(".webp") ||
+    lower.includes("/img/") ||
+    lower.includes("/image/") ||
+    lower.includes("slot")
+  );
+}
+
+function scoreImageCandidate(url: string, slotName?: string | null) {
+  const lower = url.toLowerCase();
+  const normalizedSlot = normalizeLookupValue(slotName);
+  let score = 0;
+
+  if (normalizedSlot) {
+    for (const token of normalizedSlot.split(" ")) {
+      if (token.length >= 3 && lower.includes(token)) {
+        score += 3;
+      }
+    }
+  }
+
+  if (lower.includes("slot")) score += 6;
+  if (lower.includes("game")) score += 4;
+  if (lower.includes("gallery")) score += 3;
+  if (lower.includes("logo")) score -= 6;
+  if (lower.includes("icon")) score -= 6;
+  if (lower.includes("favicon")) score -= 10;
+
+  return score;
+}
+
+function extractImageCandidates(html: string, pageUrl: string, slotName?: string | null) {
+  const candidates = new Set<string>();
+
+  const patterns = [
+    /<meta\s+property=["']og:image["']\s+content=["']([^"']+)["']/gi,
+    /<meta\s+name=["']twitter:image["']\s+content=["']([^"']+)["']/gi,
+    /<img[^>]+src=["']([^"']+)["']/gi,
+    /<img[^>]+data-src=["']([^"']+)["']/gi,
+    /<img[^>]+data-lazy-src=["']([^"']+)["']/gi,
+    /<source[^>]+srcset=["']([^"']+)["']/gi,
+    /"image"\s*:\s*"([^"]+)"/gi,
+    /"contentUrl"\s*:\s*"([^"]+)"/gi,
+    /"thumbnailUrl"\s*:\s*"([^"]+)"/gi,
+  ];
+
+  for (const pattern of patterns) {
+    let match: RegExpExecArray | null = pattern.exec(html);
+
+    while (match) {
+      const raw = match[1]?.trim();
+
+      if (raw) {
+        const firstSrcsetItem = raw.split(",")[0]?.trim().split(" ")[0]?.trim();
+        const absolute = absolutizeImageUrl(firstSrcsetItem || raw, pageUrl);
+
+        if (absolute && looksLikeUsefulImage(absolute)) {
+          candidates.add(absolute);
+        }
+      }
+
+      match = pattern.exec(html);
+    }
+  }
+
+  return Array.from(candidates).sort(
+    (a, b) => scoreImageCandidate(b, slotName) - scoreImageCandidate(a, slotName),
+  );
+}
+
+async function fetchBonusHuntJson<T>(path: string) {
+  const apiKey = getBonusHuntApiKey();
+
+  if (!apiKey) {
+    return null;
+  }
+
+  const response = await fetch(`${getBonusHuntApiBaseUrl()}${path}`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      Accept: "application/json",
+    },
+    cache: "no-store",
+    signal: AbortSignal.timeout(8000),
+  });
+
+  if (!response.ok) {
+    return null;
+  }
+
+  return (await response.json()) as T;
+}
+
+function collectImageUrlsFromUnknown(
+  value: unknown,
+  results: Set<string>,
+  depth = 0,
 ) {
-  if (manualImageUrl?.trim()) {
+  if (depth > 4 || value === null || value === undefined) {
+    return;
+  }
+
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+
+    if (
+      /^https?:\/\//i.test(trimmed) &&
+      looksLikeUsefulImage(trimmed)
+    ) {
+      results.add(trimmed);
+    }
+
+    return;
+  }
+
+  if (Array.isArray(value)) {
+    for (const item of value) {
+      collectImageUrlsFromUnknown(item, results, depth + 1);
+    }
+    return;
+  }
+
+  if (typeof value === "object") {
+    for (const [key, nested] of Object.entries(value)) {
+      const lowerKey = key.toLowerCase();
+
+      if (
+        lowerKey.includes("image") ||
+        lowerKey.includes("thumbnail") ||
+        lowerKey.includes("poster") ||
+        lowerKey.includes("cover") ||
+        lowerKey.includes("logo")
+      ) {
+        collectImageUrlsFromUnknown(nested, results, depth + 1);
+      }
+    }
+  }
+}
+
+function bonusMatchesSlot(
+  bonus: BonusHuntApiBonus,
+  slotName: string,
+  provider?: string | null,
+) {
+  const normalizedBonusSlot = normalizeLookupValue(bonus.slotName);
+  const normalizedTargetSlot = normalizeLookupValue(slotName);
+
+  if (!normalizedBonusSlot || !normalizedTargetSlot) {
+    return false;
+  }
+
+  const slotMatch =
+    normalizedBonusSlot === normalizedTargetSlot ||
+    normalizedBonusSlot.includes(normalizedTargetSlot) ||
+    normalizedTargetSlot.includes(normalizedBonusSlot);
+
+  if (!slotMatch) {
+    return false;
+  }
+
+  const normalizedTargetProvider = normalizeLookupValue(provider);
+  const normalizedBonusProvider = normalizeLookupValue(bonus.provider);
+
+  if (!normalizedTargetProvider) {
+    return true;
+  }
+
+  if (!normalizedBonusProvider) {
+    return true;
+  }
+
+  return (
+    normalizedBonusProvider === normalizedTargetProvider ||
+    normalizedBonusProvider.includes(normalizedTargetProvider) ||
+    normalizedTargetProvider.includes(normalizedBonusProvider)
+  );
+}
+
+async function resolveImageFromBonusHuntApi(
+  slotName?: string | null,
+  provider?: string | null,
+) {
+  const apiKey = getBonusHuntApiKey();
+
+  if (!apiKey || !slotName?.trim()) {
     return {
-      imageUrl: manualImageUrl.trim(),
-      imageSource: "manual",
+      imageUrl: null,
+      imageSource: null,
     };
   }
 
+  console.log("[challenge-image] BonusHunt lookup start", {
+    slotName,
+    provider,
+  });
+
+  const listResponse = await fetchBonusHuntJson<BonusHuntApiListResponse>(
+    "/hunts?limit=25",
+  );
+
+  const hunts = listResponse?.hunts ?? [];
+
+  for (const hunt of hunts) {
+    const inlineBonuses = hunt.bonuses ?? [];
+
+    for (const bonus of inlineBonuses) {
+      if (!bonusMatchesSlot(bonus, slotName, provider)) {
+        continue;
+      }
+
+      const imageCandidates = new Set<string>();
+      collectImageUrlsFromUnknown(bonus, imageCandidates);
+      collectImageUrlsFromUnknown(hunt, imageCandidates);
+
+      const ordered = Array.from(imageCandidates).sort(
+        (a, b) => scoreImageCandidate(b, slotName) - scoreImageCandidate(a, slotName),
+      );
+
+      console.log("[challenge-image] BonusHunt inline match", {
+        huntId: hunt.id,
+        slotName,
+        provider,
+        imageCandidates: ordered.slice(0, 5),
+      });
+
+      if (ordered.length > 0) {
+        return {
+          imageUrl: ordered[0],
+          imageSource: "bonushunt-auto",
+        };
+      }
+    }
+
+    const detail = await fetchBonusHuntJson<BonusHuntApiDetailResponse>(
+      `/hunts/${hunt.id}`,
+    );
+
+    const detailBonuses = detail?.bonuses ?? [];
+
+    for (const bonus of detailBonuses) {
+      if (!bonusMatchesSlot(bonus, slotName, provider)) {
+        continue;
+      }
+
+      const imageCandidates = new Set<string>();
+      collectImageUrlsFromUnknown(bonus, imageCandidates);
+      collectImageUrlsFromUnknown(detail, imageCandidates);
+
+      const ordered = Array.from(imageCandidates).sort(
+        (a, b) => scoreImageCandidate(b, slotName) - scoreImageCandidate(a, slotName),
+      );
+
+      console.log("[challenge-image] BonusHunt detail match", {
+        huntId: hunt.id,
+        slotName,
+        provider,
+        imageCandidates: ordered.slice(0, 5),
+      });
+
+      if (ordered.length > 0) {
+        return {
+          imageUrl: ordered[0],
+          imageSource: "bonushunt-auto",
+        };
+      }
+    }
+  }
+
+  console.log("[challenge-image] BonusHunt lookup found no image", {
+    slotName,
+    provider,
+  });
+
+  return {
+    imageUrl: null,
+    imageSource: null,
+  };
+}
+
+async function resolveImageFromSlotCatalog(
+  slotName?: string | null,
+) {
   if (!slotName?.trim()) {
     return {
       imageUrl: null,
@@ -57,54 +444,98 @@ async function resolveChallengeImageUrl(
     };
   }
 
-  const slug = slugifySlotName(slotName);
-  const url = `https://slotcatalog.com/en/slots/${slug}`;
+  const candidates = createSlotLookupCandidates(slotName);
 
-  try {
-    const response = await fetch(url, {
-      headers: {
-        Accept: "text/html",
-      },
-      cache: "no-store",
-      signal: AbortSignal.timeout(7000),
+  console.log("[challenge-image] SlotCatalog lookup start", {
+    slotName,
+    slugCandidates: candidates,
+  });
+
+  for (const candidate of candidates) {
+    const urls = [
+      `https://slotcatalog.com/en/slots/${candidate}`,
+      `https://slotcatalog.com/slots/${candidate}`,
+    ];
+
+    for (const url of urls) {
+      try {
+        console.log("[challenge-image] SlotCatalog trying url", { slotName, url });
+
+        const response = await fetch(url, {
+          headers: {
+            Accept: "text/html",
+            "User-Agent":
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36",
+          },
+          cache: "no-store",
+          signal: AbortSignal.timeout(8000),
+        });
+
+        if (!response.ok) {
+          console.log("[challenge-image] SlotCatalog non-ok response", {
+            url,
+            status: response.status,
+            statusText: response.statusText,
+          });
+          continue;
+        }
+
+        const html = await response.text();
+        const imageCandidates = extractImageCandidates(html, url, slotName);
+
+        console.log("[challenge-image] SlotCatalog candidates found", {
+          url,
+          count: imageCandidates.length,
+          topCandidates: imageCandidates.slice(0, 5),
+        });
+
+        if (imageCandidates.length > 0) {
+          return {
+            imageUrl: imageCandidates[0],
+            imageSource: "slotcatalog-auto",
+          };
+        }
+      } catch (error) {
+        console.log("[challenge-image] SlotCatalog lookup failed", {
+          url,
+          error: error instanceof Error ? error.message : String(error),
+        });
+      }
+    }
+  }
+
+  console.log("[challenge-image] SlotCatalog no image found", { slotName });
+
+  return {
+    imageUrl: null,
+    imageSource: null,
+  };
+}
+
+async function resolveChallengeImageUrl(
+  slotName?: string | null,
+  provider?: string | null,
+  manualImageUrl?: string | null,
+) {
+  if (manualImageUrl?.trim()) {
+    console.log("[challenge-image] using manual image override", {
+      slotName,
+      imageUrl: manualImageUrl.trim(),
     });
 
-    if (!response.ok) {
-      return {
-        imageUrl: null,
-        imageSource: null,
-      };
-    }
-
-    const html = await response.text();
-
-    const match =
-      html.match(
-        /<meta\s+property=["']og:image["']\s+content=["']([^"']+)["']/i,
-      ) ??
-      html.match(
-        /<meta\s+name=["']twitter:image["']\s+content=["']([^"']+)["']/i,
-      );
-
-    const imageUrl = match?.[1]?.trim();
-
-    if (!imageUrl) {
-      return {
-        imageUrl: null,
-        imageSource: null,
-      };
-    }
-
     return {
-      imageUrl,
-      imageSource: "slotcatalog-auto",
-    };
-  } catch {
-    return {
-      imageUrl: null,
-      imageSource: null,
+      imageUrl: manualImageUrl.trim(),
+      imageSource: "manual",
     };
   }
+
+  const bonusHuntResult = await resolveImageFromBonusHuntApi(slotName, provider);
+
+  if (bonusHuntResult.imageUrl) {
+    return bonusHuntResult;
+  }
+
+  return resolveImageFromSlotCatalog(slotName);
 }
 
 function normalizePayload(body: UpsertChallengePayload) {
@@ -304,6 +735,7 @@ export async function POST(req: Request) {
     const data = normalizePayload(body);
     const resolvedImage = await resolveChallengeImageUrl(
       data.slotName,
+      data.provider,
       data.imageUrl,
     );
 
