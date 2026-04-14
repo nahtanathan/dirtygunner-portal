@@ -1,6 +1,21 @@
+// FILE: src/app/api/leaderboard-settings/route.ts
+
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
+
+type PrizeTierInput = {
+  place?: unknown;
+  prize?: unknown;
+};
+
+type LeaderboardSettingsInput = {
+  title?: unknown;
+  subtitle?: unknown;
+  startDate?: unknown;
+  endDate?: unknown;
+  prizeTiers?: unknown;
+};
 
 function normalizeDate(value: unknown) {
   if (typeof value !== "string" || !value.trim()) return null;
@@ -100,7 +115,7 @@ export async function PUT(req: Request) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const body = await req.json().catch(() => null);
+  const body = (await req.json().catch(() => null)) as LeaderboardSettingsInput | null;
 
   if (!body || typeof body !== "object") {
     return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
@@ -111,7 +126,9 @@ export async function PUT(req: Request) {
   const startDate = normalizeDate(body.startDate);
   const endDate = normalizeDate(body.endDate);
 
-  const rawPrizeTiers = Array.isArray(body.prizeTiers) ? body.prizeTiers : [];
+  const rawPrizeTiers: PrizeTierInput[] = Array.isArray(body.prizeTiers)
+    ? (body.prizeTiers as PrizeTierInput[])
+    : [];
 
   if (!title) {
     return NextResponse.json({ error: "Title is required" }, { status: 400 });
@@ -132,35 +149,35 @@ export async function PUT(req: Request) {
   if (startDate >= endDate) {
     return NextResponse.json(
       { error: "End time must be after start time" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
   if (rawPrizeTiers.length === 0) {
     return NextResponse.json(
       { error: "At least one prize tier is required" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
   const prizeTiers = rawPrizeTiers
-    .map((tier) => ({
-      place: Number(tier?.place),
-      prize: Number(tier?.prize),
+    .map((tier: PrizeTierInput) => ({
+      place: Number(tier.place),
+      prize: Number(tier.prize),
     }))
     .filter(
       (tier) =>
         Number.isInteger(tier.place) &&
         tier.place > 0 &&
         Number.isFinite(tier.prize) &&
-        tier.prize >= 0
+        tier.prize >= 0,
     )
     .sort((a, b) => a.place - b.place);
 
   if (prizeTiers.length === 0) {
     return NextResponse.json(
       { error: "Prize tiers are invalid" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
