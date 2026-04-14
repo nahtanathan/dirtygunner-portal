@@ -210,6 +210,20 @@ exports.Prisma.RaffleEntryScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.ChallengeScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  status: 'status',
+  goal: 'goal',
+  currentProgress: 'currentProgress',
+  reward: 'reward',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -244,7 +258,8 @@ exports.Prisma.ModelName = {
   LeaderboardSettings: 'LeaderboardSettings',
   LeaderboardPrizeTier: 'LeaderboardPrizeTier',
   Raffle: 'Raffle',
-  RaffleEntry: 'RaffleEntry'
+  RaffleEntry: 'RaffleEntry',
+  Challenge: 'Challenge'
 };
 
 /**

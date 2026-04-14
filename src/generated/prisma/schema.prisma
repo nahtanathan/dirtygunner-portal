@@ -115,3 +115,21 @@ model RaffleEntry {
   @@index([userId])
   @@index([createdAt])
 }
+
+model Challenge {
+  id              String   @id
+  title           String
+  description     String?
+  status          String   @default("active")
+  goal            Int
+  currentProgress Int      @default(0)
+  reward          String
+  startDate       DateTime
+  endDate         DateTime
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([status])
+  @@index([endDate])
+  @@index([createdAt])
+}

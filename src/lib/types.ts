@@ -21,15 +21,18 @@ export type LeaderboardSettings = {
 };
 
 export type LeaderboardEntry = {
-  id: string;
+  id?: string;
+  rank?: number;
   username: string;
-  wagered: number;
+  wagered?: number;
+  wageredTotal?: number;
+  prize?: number | null;
 };
 
 export type Raffle = {
   id: string;
   title: string;
-  description?: string;
+  description?: string | null;
   status: "active" | "ended";
   entryMethod: string;
   entryCost: number;
@@ -39,23 +42,40 @@ export type Raffle = {
   uniqueEntrants?: number;
   totalSpent?: number;
   currentUserEntries?: number;
-  currentUserPoints?: number;
+  currentUserPoints?: number | null;
   startDate: string;
   endDate: string;
   prizeDetails: string;
   winner?: string | null;
   image?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 export type Challenge = {
   id: string;
   title: string;
-  description?: string;
-  status: "active" | "ended";
+  description?: string | null;
+  status: "active" | "completed";
+  goal: number;
+  currentProgress: number;
+  reward: string;
+  startDate: string;
+  endDate: string;
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 export type BonusHunt = {
   id: string;
   title: string;
-  status: "active" | "ended";
+  date?: string;
+  status: "active" | "archived";
+  provider?: string;
+  buyCount?: number;
+  totalCost?: number;
+  totalReturn?: number;
+  profitLoss?: number;
+  notes?: string;
+  items?: string;
 };
