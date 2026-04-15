@@ -1,4 +1,7 @@
-import type { ReactNode } from "react";
+// FILE: src/components/layout/SiteFooter.tsx
+"use client";
+
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -10,7 +13,6 @@ import {
   Trophy,
   Youtube,
 } from "lucide-react";
-import { prisma } from "@/lib/prisma";
 
 type FooterColumnLink = {
   href: string;
@@ -19,10 +21,26 @@ type FooterColumnLink = {
   external?: boolean;
 };
 
+type SiteSettings = {
+  kickUrl?: string;
+  discordUrl?: string;
+  youtubeUrl?: string;
+  xUrl?: string;
+  instagramUrl?: string;
+};
+
 type SocialLinkItem = {
   href: string;
   label: string;
   icon: ReactNode;
+};
+
+const EMPTY_SETTINGS: SiteSettings = {
+  kickUrl: "",
+  discordUrl: "",
+  youtubeUrl: "",
+  xUrl: "",
+  instagramUrl: "",
 };
 
 function normalizeHref(value?: string | null) {
@@ -30,85 +48,90 @@ function normalizeHref(value?: string | null) {
   return trimmed.length > 0 ? trimmed : "";
 }
 
-export default async function SiteFooter() {
-  let settings: {
-    kickUrl: string;
-    discordUrl: string;
-    youtubeUrl: string;
-    xUrl: string;
-    instagramUrl: string;
-  } = {
-    kickUrl: "",
-    discordUrl: "",
-    youtubeUrl: "",
-    xUrl: "",
-    instagramUrl: "",
-  };
+export default function SiteFooter() {
+  const [settings, setSettings] = useState<SiteSettings>(EMPTY_SETTINGS);
 
-  try {
-    const dbSettings = await prisma.siteSettings.findUnique({
-      where: { id: "site-settings" },
-      select: {
-        kickUrl: true,
-        discordUrl: true,
-        youtubeUrl: true,
-        xUrl: true,
-        instagramUrl: true,
-      },
-    });
+  useEffect(() => {
+    let mounted = true;
 
-    settings = {
-      kickUrl: normalizeHref(dbSettings?.kickUrl),
-      discordUrl: normalizeHref(dbSettings?.discordUrl),
-      youtubeUrl: normalizeHref(dbSettings?.youtubeUrl),
-      xUrl: normalizeHref(dbSettings?.xUrl),
-      instagramUrl: normalizeHref(dbSettings?.instagramUrl),
+    async function loadSiteSettings() {
+      try {
+        const res = await fetch("/api/site-settings", {
+          method: "GET",
+          cache: "no-store",
+        });
+
+        const data = await res.json();
+
+        if (!mounted) return;
+
+        setSettings({
+          kickUrl: normalizeHref(data?.settings?.kickUrl),
+          discordUrl: normalizeHref(data?.settings?.discordUrl),
+          youtubeUrl: normalizeHref(data?.settings?.youtubeUrl),
+          xUrl: normalizeHref(data?.settings?.xUrl),
+          instagramUrl: normalizeHref(data?.settings?.instagramUrl),
+        });
+      } catch (error) {
+        console.error("Failed to load footer site settings:", error);
+
+        if (!mounted) return;
+        setSettings(EMPTY_SETTINGS);
+      }
+    }
+
+    void loadSiteSettings();
+
+    return () => {
+      mounted = false;
     };
-  } catch (error) {
-    console.error("Failed to load footer site settings:", error);
-  }
+  }, []);
 
-  const socialLinks: SocialLinkItem[] = [];
+  const socialLinks = useMemo<SocialLinkItem[]>(() => {
+    const links: SocialLinkItem[] = [];
 
-  if (settings.kickUrl) {
-    socialLinks.push({
-      href: settings.kickUrl,
-      label: "Kick",
-      icon: <Radio className="h-4 w-4" />,
-    });
-  }
+    if (normalizeHref(settings.kickUrl)) {
+      links.push({
+        href: normalizeHref(settings.kickUrl),
+        label: "Kick",
+        icon: <Radio className="h-4 w-4" />,
+      });
+    }
 
-  if (settings.discordUrl) {
-    socialLinks.push({
-      href: settings.discordUrl,
-      label: "Discord",
-      icon: <Disc3 className="h-4 w-4" />,
-    });
-  }
+    if (normalizeHref(settings.discordUrl)) {
+      links.push({
+        href: normalizeHref(settings.discordUrl),
+        label: "Discord",
+        icon: <Disc3 className="h-4 w-4" />,
+      });
+    }
 
-  if (settings.youtubeUrl) {
-    socialLinks.push({
-      href: settings.youtubeUrl,
-      label: "YouTube",
-      icon: <Youtube className="h-4 w-4" />,
-    });
-  }
+    if (normalizeHref(settings.youtubeUrl)) {
+      links.push({
+        href: normalizeHref(settings.youtubeUrl),
+        label: "YouTube",
+        icon: <Youtube className="h-4 w-4" />,
+      });
+    }
 
-  if (settings.xUrl) {
-    socialLinks.push({
-      href: settings.xUrl,
-      label: "X",
-      icon: <XLogo />,
-    });
-  }
+    if (normalizeHref(settings.xUrl)) {
+      links.push({
+        href: normalizeHref(settings.xUrl),
+        label: "X",
+        icon: <XLogo />,
+      });
+    }
 
-  if (settings.instagramUrl) {
-    socialLinks.push({
-      href: settings.instagramUrl,
-      label: "Instagram",
-      icon: <InstagramLogo />,
-    });
-  }
+    if (normalizeHref(settings.instagramUrl)) {
+      links.push({
+        href: normalizeHref(settings.instagramUrl),
+        label: "Instagram",
+        icon: <InstagramLogo />,
+      });
+    }
+
+    return links;
+  }, [settings]);
 
   const hasSocialLinks = socialLinks.length > 0;
 

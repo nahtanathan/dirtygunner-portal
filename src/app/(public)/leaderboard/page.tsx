@@ -1,9 +1,13 @@
-// FILE: src/app/(public)/leaderboard/page.tsx
+import { unstable_noStore as noStore } from "next/cache";
+
 import { PageHero } from "@/components/ui/PageHero";
 import { CountdownTimer } from "@/components/leaderboard/CountdownTimer";
 import { TopThreeCards } from "@/components/leaderboard/TopThreeCards";
 import { prisma } from "@/lib/prisma";
 import { getRoobetLeaderboard } from "@/lib/roobet";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 type LeaderboardEntry = {
   rank: number;
@@ -13,6 +17,8 @@ type LeaderboardEntry = {
 };
 
 export default async function LeaderboardPage() {
+  noStore();
+
   const settings = await prisma.leaderboardSettings.findUnique({
     where: { id: "leaderboard-settings" },
     include: {
