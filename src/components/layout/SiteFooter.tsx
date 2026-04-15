@@ -1,4 +1,3 @@
-// FILE: src/components/layout/SiteFooter.tsx
 import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,8 +10,131 @@ import {
   Trophy,
   Youtube,
 } from "lucide-react";
+import { prisma } from "@/lib/prisma";
 
-export default function SiteFooter() {
+type FooterColumnLink = {
+  href: string;
+  label: string;
+  icon: ReactNode;
+  external?: boolean;
+};
+
+type SocialLinkItem = {
+  href: string;
+  label: string;
+  icon: ReactNode;
+};
+
+function normalizeHref(value?: string | null) {
+  const trimmed = value?.trim() ?? "";
+  return trimmed.length > 0 ? trimmed : "";
+}
+
+export default async function SiteFooter() {
+  let settings: {
+    kickUrl: string;
+    discordUrl: string;
+    youtubeUrl: string;
+    xUrl: string;
+    instagramUrl: string;
+  } = {
+    kickUrl: "",
+    discordUrl: "",
+    youtubeUrl: "",
+    xUrl: "",
+    instagramUrl: "",
+  };
+
+  try {
+    const dbSettings = await prisma.siteSettings.findUnique({
+      where: { id: "site-settings" },
+      select: {
+        kickUrl: true,
+        discordUrl: true,
+        youtubeUrl: true,
+        xUrl: true,
+        instagramUrl: true,
+      },
+    });
+
+    settings = {
+      kickUrl: normalizeHref(dbSettings?.kickUrl),
+      discordUrl: normalizeHref(dbSettings?.discordUrl),
+      youtubeUrl: normalizeHref(dbSettings?.youtubeUrl),
+      xUrl: normalizeHref(dbSettings?.xUrl),
+      instagramUrl: normalizeHref(dbSettings?.instagramUrl),
+    };
+  } catch (error) {
+    console.error("Failed to load footer site settings:", error);
+  }
+
+  const socialLinks: SocialLinkItem[] = [];
+
+  if (settings.kickUrl) {
+    socialLinks.push({
+      href: settings.kickUrl,
+      label: "Kick",
+      icon: <Radio className="h-4 w-4" />,
+    });
+  }
+
+  if (settings.discordUrl) {
+    socialLinks.push({
+      href: settings.discordUrl,
+      label: "Discord",
+      icon: <Disc3 className="h-4 w-4" />,
+    });
+  }
+
+  if (settings.youtubeUrl) {
+    socialLinks.push({
+      href: settings.youtubeUrl,
+      label: "YouTube",
+      icon: <Youtube className="h-4 w-4" />,
+    });
+  }
+
+  if (settings.xUrl) {
+    socialLinks.push({
+      href: settings.xUrl,
+      label: "X",
+      icon: <XLogo />,
+    });
+  }
+
+  if (settings.instagramUrl) {
+    socialLinks.push({
+      href: settings.instagramUrl,
+      label: "Instagram",
+      icon: <InstagramLogo />,
+    });
+  }
+
+  const hasSocialLinks = socialLinks.length > 0;
+
+  const exploreLinks: FooterColumnLink[] = [
+    {
+      href: "/leaderboard",
+      label: "Leaderboard",
+      icon: <Trophy className="h-4 w-4" />,
+    },
+    {
+      href: "/raffles",
+      label: "Raffles",
+      icon: <Gift className="h-4 w-4" />,
+    },
+    {
+      href: "/challenges",
+      label: "Challenges",
+      icon: <Crosshair className="h-4 w-4" />,
+    },
+    {
+      href: "/bonus-hunts",
+      label: "Bonus Hunts",
+      icon: <Archive className="h-4 w-4" />,
+    },
+  ];
+
   return (
     <footer className="px-4 pb-6 pt-10 sm:px-6 lg:px-8 lg:pb-8 lg:pt-12">
       <div
@@ -24,7 +146,14 @@ export default function SiteFooter() {
           boxShadow: "0 20px 50px rgba(0,0,0,0.28)",
         }}
       >
-        <div className="grid gap-8 px-5 py-6 md:grid-cols-[minmax(0,1.2fr)_minmax(180px,auto)_minmax(180px,auto)] md:px-7 lg:px-8 lg:py-7">
+        <div
+          className={[
+            "grid gap-8 px-5 py-6 md:px-7 lg:px-8 lg:py-7",
+            hasSocialLinks
+              ? "md:grid-cols-[minmax(0,1.2fr)_minmax(180px,auto)_minmax(180px,auto)]"
+              : "md:grid-cols-[minmax(0,1.2fr)_minmax(180px,auto)]",
+          ].join(" ")}
+        >
           <div className="min-w-0">
             <div className="flex min-w-0 items-start gap-4">
               <div className="relative h-12 w-12 flex-shrink-0">
@@ -61,74 +190,33 @@ export default function SiteFooter() {
               responsibly.
             </div>
 
-            <div className="mt-5 flex flex-wrap items-center gap-3">
-              <SocialLink
-                href="https://kick.com/dirtygunner"
-                label="Kick"
-                icon={<Radio className="h-4 w-4" />}
-              />
-              <SocialLink
-                href="https://discord.gg/dirtygunner"
-                label="Discord"
-                icon={<Disc3 className="h-4 w-4" />}
-              />
-              <SocialLink
-                href="https://youtube.com/@dirtygunner"
-                label="YouTube"
-                icon={<Youtube className="h-4 w-4" />}
-              />
-            </div>
+            {hasSocialLinks ? (
+              <div className="mt-5 flex flex-wrap items-center gap-3">
+                {socialLinks.map((link) => (
+                  <SocialLink
+                    key={`pill-${link.label}`}
+                    href={link.href}
+                    label={link.label}
+                    icon={link.icon}
+                  />
+                ))}
+              </div>
+            ) : null}
           </div>
 
-          <FooterColumn
-            title="Explore"
-            links={[
-              {
-                href: "/leaderboard",
-                label: "Leaderboard",
-                icon: <Trophy className="h-4 w-4" />,
-              },
-              {
-                href: "/raffles",
-                label: "Raffles",
-                icon: <Gift className="h-4 w-4" />,
-              },
-              {
-                href: "/challenges",
-                label: "Challenges",
-                icon: <Crosshair className="h-4 w-4" />,
-              },
-              {
-                href: "/bonus-hunts",
-                label: "Bonus Hunts",
-                icon: <Archive className="h-4 w-4" />,
-              },
-            ]}
-          />
+          <FooterColumn title="Explore" links={exploreLinks} />
 
-          <FooterColumn
-            title="Social Media"
-            links={[
-              {
-                href: "https://kick.com/dirtygunner",
-                label: "Kick",
-                icon: <Radio className="h-4 w-4" />,
+          {hasSocialLinks ? (
+            <FooterColumn
+              title="Social Media"
+              links={socialLinks.map((link) => ({
+                href: link.href,
+                label: link.label,
+                icon: link.icon,
                 external: true,
-              },
-              {
-                href: "https://discord.gg/dirtygunner",
-                label: "Discord",
-                icon: <Disc3 className="h-4 w-4" />,
-                external: true,
-              },
-              {
-                href: "https://youtube.com/@dirtygunner",
-                label: "YouTube",
-                icon: <Youtube className="h-4 w-4" />,
-                external: true,
-              },
-            ]}
-          />
+              }))}
+            />
+          ) : null}
         </div>
 
         <div
@@ -152,13 +240,6 @@ export default function SiteFooter() {
     </footer>
   );
 }
-
-type FooterColumnLink = {
-  href: string;
-  label: string;
-  icon: ReactNode;
-  external?: boolean;
-};
 
 function FooterColumn({
   title,
@@ -210,5 +291,21 @@ function SocialLink({
       <span className="shrink-0 text-white/55">{icon}</span>
       <span className="truncate whitespace-nowrap">{label}</span>
     </Link>
+  );
+}
+
+function XLogo() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden="true">
+      <path d="M18.244 2H21l-6.522 7.455L22.15 22h-6.007l-4.705-6.16L6.05 22H3.292l6.978-7.977L1.85 2h6.16l4.253 5.621L18.244 2Zm-1.053 18h1.527L7.18 3.896H5.542L17.19 20Z" />
+    </svg>
+  );
+}
+
+function InstagramLogo() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden="true">
+      <path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2Zm0 1.8A3.95 3.95 0 0 0 3.8 7.75v8.5a3.95 3.95 0 0 0 3.95 3.95h8.5a3.95 3.95 0 0 0 3.95-3.95v-8.5a3.95 3.95 0 0 0-3.95-3.95h-8.5Zm8.95 1.35a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2ZM12 6.85A5.15 5.15 0 1 1 6.85 12 5.16 5.16 0 0 1 12 6.85Zm0 1.8A3.35 3.35 0 1 0 15.35 12 3.35 3.35 0 0 0 12 8.65Z" />
+    </svg>
   );
 }

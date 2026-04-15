@@ -20,7 +20,6 @@ import {
   Trophy,
   X,
 } from "lucide-react";
-import { useAdminStore } from "@/store/admin-store";
 import { HeaderAuth } from "@/components/layout/header-auth";
 
 type MeUser = {
@@ -33,6 +32,20 @@ type SiteSettings = {
   youtubeUrl?: string;
   xUrl?: string;
   instagramUrl?: string;
+};
+
+type SocialLinkItem = {
+  label: string;
+  href: string;
+  icon: React.ReactNode;
+};
+
+const EMPTY_SETTINGS: SiteSettings = {
+  kickUrl: "",
+  discordUrl: "",
+  youtubeUrl: "",
+  xUrl: "",
+  instagramUrl: "",
 };
 
 const baseNavItems = [
@@ -63,16 +76,14 @@ function isPathActive(pathname: string, href: string) {
 
 function normalizeHref(value?: string) {
   const trimmed = value?.trim() ?? "";
-  return trimmed.length > 0 ? trimmed : "#";
+  return trimmed.length > 0 ? trimmed : "";
 }
 
 export default function MobileNav() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [user, setUser] = useState<MeUser | null>(null);
-  const siteSettings = useAdminStore(
-    (state) => state.siteSettings,
-  ) as SiteSettings;
+  const [siteSettings, setSiteSettings] = useState<SiteSettings>(EMPTY_SETTINGS);
 
   useEffect(() => {
     let mounted = true;
@@ -94,7 +105,31 @@ export default function MobileNav() {
       }
     }
 
-    void loadUser();
+    async function loadSiteSettings() {
+      try {
+        const res = await fetch("/api/site-settings", {
+          method: "GET",
+          cache: "no-store",
+        });
+
+        const data = await res.json();
+
+        if (!mounted) return;
+
+        setSiteSettings({
+          kickUrl: normalizeHref(data?.settings?.kickUrl),
+          discordUrl: normalizeHref(data?.settings?.discordUrl),
+          youtubeUrl: normalizeHref(data?.settings?.youtubeUrl),
+          xUrl: normalizeHref(data?.settings?.xUrl),
+          instagramUrl: normalizeHref(data?.settings?.instagramUrl),
+        });
+      } catch {
+        if (!mounted) return;
+        setSiteSettings(EMPTY_SETTINGS);
+      }
+    }
+
+    void Promise.all([loadUser(), loadSiteSettings()]);
 
     return () => {
       mounted = false;
@@ -109,18 +144,47 @@ export default function MobileNav() {
     return [...baseNavItems, { name: "Admin", href: "/admin", icon: Shield }];
   }, [user]);
 
-  const kickUrl = normalizeHref(siteSettings?.kickUrl);
-  const discordUrl = normalizeHref(siteSettings?.discordUrl);
-  const youtubeUrl = normalizeHref(siteSettings?.youtubeUrl);
-  const xUrl = normalizeHref(siteSettings?.xUrl);
-  const instagramUrl = normalizeHref(siteSettings?.instagramUrl);
+  const kickUrl = normalizeHref(siteSettings.kickUrl);
 
-  const socialLinks = [
-    { label: "Discord", href: discordUrl, icon: <DiscordLogo /> },
-    { label: "YouTube", href: youtubeUrl, icon: <YouTubeLogo /> },
-    { label: "X", href: xUrl, icon: <XLogo /> },
-    { label: "Instagram", href: instagramUrl, icon: <InstagramLogo /> },
-  ];
+  const socialLinks = useMemo<SocialLinkItem[]>(() => {
+    const links: SocialLinkItem[] = [];
+
+    if (normalizeHref(siteSettings.discordUrl)) {
+      links.push({
+        label: "Discord",
+        href: normalizeHref(siteSettings.discordUrl),
+        icon: <DiscordLogo />,
+      });
+    }
+
+    if (normalizeHref(siteSettings.youtubeUrl)) {
+      links.push({
+        label: "YouTube",
+        href: normalizeHref(siteSettings.youtubeUrl),
+        icon: <YouTubeLogo />,
+      });
+    }
+
+    if (normalizeHref(siteSettings.xUrl)) {
+      links.push({
+        label: "X",
+        href: normalizeHref(siteSettings.xUrl),
+        icon: <XLogo />,
+      });
+    }
+
+    if (normalizeHref(siteSettings.instagramUrl)) {
+      links.push({
+        label: "Instagram",
+        href: normalizeHref(siteSettings.instagramUrl),
+        icon: <InstagramLogo />,
+      });
+    }
+
+    return links;
+  }, [siteSettings]);
+
+  const hasStreamLinks = Boolean(kickUrl || socialLinks.length > 0);
 
   return (
     <>
@@ -293,48 +357,54 @@ export default function MobileNav() {
               </div>
             )}
 
-            <div className="mt-7">
-              <div className="mb-3 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-white/40">
-                Stream
-              </div>
+            {hasStreamLinks ? (
+              <div className="mt-7">
+                <div className="mb-3 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-white/40">
+                  Stream
+                </div>
 
-              <div className="space-y-2">
-                <Link
-                  href={kickUrl}
-                  target={kickUrl === "#" ? undefined : "_blank"}
-                  rel={kickUrl === "#" ? undefined : "noreferrer"}
-                  className="flex min-w-0 items-center justify-between gap-3 rounded-2xl border px-4 py-3 text-sm font-medium transition-all duration-200 hover:bg-white/5"
-                  style={{
-                    borderColor: "rgba(255,255,255,0.08)",
-                    background: "rgba(255,255,255,0.03)",
-                    color: "rgba(255,255,255,0.9)",
-                  }}
-                >
-                  <span className="min-w-0 truncate whitespace-nowrap">Watch on Kick</span>
-                  <ExternalLink className="h-4 w-4 shrink-0 text-white/55" />
-                </Link>
-
-                <div className="grid grid-cols-2 gap-2">
-                  {socialLinks.map((item) => (
+                <div className="space-y-2">
+                  {kickUrl ? (
                     <Link
-                      key={item.label}
-                      href={item.href}
-                      target={item.href === "#" ? undefined : "_blank"}
-                      rel={item.href === "#" ? undefined : "noreferrer"}
-                      className="flex min-w-0 items-center justify-center gap-2 rounded-2xl border px-3 py-3 text-sm font-medium transition-all duration-200 hover:bg-white/5"
+                      href={kickUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex min-w-0 items-center justify-between gap-3 rounded-2xl border px-4 py-3 text-sm font-medium transition-all duration-200 hover:bg-white/5"
                       style={{
                         borderColor: "rgba(255,255,255,0.08)",
                         background: "rgba(255,255,255,0.03)",
-                        color: "rgba(255,255,255,0.82)",
+                        color: "rgba(255,255,255,0.9)",
                       }}
                     >
-                      {item.icon}
-                      <span className="truncate whitespace-nowrap">{item.label}</span>
+                      <span className="min-w-0 truncate whitespace-nowrap">Watch on Kick</span>
+                      <ExternalLink className="h-4 w-4 shrink-0 text-white/55" />
                     </Link>
-                  ))}
+                  ) : null}
+
+                  {socialLinks.length > 0 ? (
+                    <div className="grid grid-cols-2 gap-2">
+                      {socialLinks.map((item) => (
+                        <Link
+                          key={item.label}
+                          href={item.href}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="flex min-w-0 items-center justify-center gap-2 rounded-2xl border px-3 py-3 text-sm font-medium transition-all duration-200 hover:bg-white/5"
+                          style={{
+                            borderColor: "rgba(255,255,255,0.08)",
+                            background: "rgba(255,255,255,0.03)",
+                            color: "rgba(255,255,255,0.82)",
+                          }}
+                        >
+                          {item.icon}
+                          <span className="truncate whitespace-nowrap">{item.label}</span>
+                        </Link>
+                      ))}
+                    </div>
+                  ) : null}
                 </div>
               </div>
-            </div>
+            ) : null}
           </div>
         </div>
       )}
