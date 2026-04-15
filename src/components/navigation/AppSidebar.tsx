@@ -397,7 +397,7 @@ function SidebarBrandMark() {
           DIRTYGUNNER
         </span>
         <span className="truncate text-[10px] tracking-widest text-zinc-400">
-          CONTROL PANEL
+          
         </span>
       </div>
     </div>

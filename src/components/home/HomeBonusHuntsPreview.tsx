@@ -69,7 +69,7 @@ export function HomeBonusHuntsPreview({
       <SectionHeader
         eyebrow="Bonus Hunts"
         title="Live Opening Feed"
-        description="See the current opening hunt at a glance, then jump straight into the full hunt archive for more detail."
+        description=" "
         action={<CTAButton href="/bonus-hunts">View Bonus Hunts</CTAButton>}
       />
 
