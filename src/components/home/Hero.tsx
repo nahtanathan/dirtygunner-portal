@@ -25,7 +25,7 @@ export default function Hero() {
           </h1>
 
           <p className="mt-4 text-zinc-400 max-w-md">
-            Compete, earn, and climb. DirtyGunner raffles, challenges, and bonus hunts — all in one place.
+            Don't forget to tell someone you love them you might make their day!
           </p>
 
           <div className="mt-6 flex gap-4">
