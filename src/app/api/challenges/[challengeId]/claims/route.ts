@@ -1,4 +1,3 @@
-import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 
@@ -6,8 +5,11 @@ import { NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
+import { getChallengeProofsBucket, supabaseAdmin } from "@/lib/supabase-admin";
 
 export const runtime = "nodejs";
+
+const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024;
 
 class HttpError extends Error {
   status: number;
@@ -33,26 +35,60 @@ function sanitizeFileExtension(fileName: string, mimeType: string) {
   return ".jpg";
 }
 
-async function saveProofFile(file: File) {
+async function uploadProofFile(file: File, userId: string, challengeId: string) {
   if (!file.type.startsWith("image/")) {
     throw new HttpError("Proof file must be an image");
   }
 
-  const bytes = Buffer.from(await file.arrayBuffer());
+  if (file.size <= 0) {
+    throw new HttpError("Proof file is empty");
+  }
+
+  if (file.size > MAX_FILE_SIZE_BYTES) {
+    throw new HttpError("Proof image must be 10MB or smaller");
+  }
+
+  const bytes = await file.arrayBuffer();
+  const buffer = Buffer.from(bytes);
   const extension = sanitizeFileExtension(file.name, file.type);
 
   const now = new Date();
   const year = String(now.getUTCFullYear());
   const month = String(now.getUTCMonth() + 1).padStart(2, "0");
-  const fileName = `${randomUUID()}${extension}`;
 
-  const relativeDir = path.join("uploads", "challenge-proofs", year, month);
-  const absoluteDir = path.join(process.cwd(), "public", relativeDir);
+  const objectPath = [
+    "challenge-proofs",
+    year,
+    month,
+    challengeId,
+    userId,
+    `${randomUUID()}${extension}`,
+  ].join("/");
 
-  await mkdir(absoluteDir, { recursive: true });
-  await writeFile(path.join(absoluteDir, fileName), bytes);
+  const bucket = getChallengeProofsBucket();
 
-  return `/${relativeDir.replaceAll("\\", "/")}/${fileName}`;
+  const { error: uploadError } = await supabaseAdmin.storage
+    .from(bucket)
+    .upload(objectPath, buffer, {
+      contentType: file.type || "image/jpeg",
+      cacheControl: "3600",
+      upsert: false,
+    });
+
+  if (uploadError) {
+    throw new HttpError(
+      `Failed to upload proof image: ${uploadError.message}`,
+      500,
+    );
+  }
+
+  const { data } = supabaseAdmin.storage.from(bucket).getPublicUrl(objectPath);
+
+  if (!data?.publicUrl) {
+    throw new HttpError("Failed to generate proof image URL", 500);
+  }
+
+  return data.publicUrl;
 }
 
 export async function POST(
@@ -133,7 +169,11 @@ export async function POST(
       throw new HttpError("You already have a pending proof submission");
     }
 
-    const proofImageUrl = await saveProofFile(proof);
+    const proofImageUrl = await uploadProofFile(
+      proof,
+      session.sub,
+      challenge.id,
+    );
 
     const created = await prisma.challengeClaim.create({
       data: {

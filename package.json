@@ -14,6 +14,7 @@
     "@hookform/resolvers": "^3.10.0",
     "@prisma/adapter-pg": "^7.7.0",
     "@prisma/client": "^7.7.0",
+    "@supabase/supabase-js": "^2.49.8",
     "clsx": "^2.1.1",
     "framer-motion": "^11.11.11",
     "jose": "^6.2.2",
