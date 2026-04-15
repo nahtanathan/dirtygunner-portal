@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
-import { getChallengeProofsBucket, supabaseAdmin } from "@/lib/supabase-admin";
+import { getChallengeProofsBucket, getSupabaseAdmin } from "@/lib/supabase-admin";
 
 export const runtime = "nodejs";
 
@@ -66,6 +66,7 @@ async function uploadProofFile(file: File, userId: string, challengeId: string) 
   ].join("/");
 
   const bucket = getChallengeProofsBucket();
+  const supabaseAdmin = getSupabaseAdmin();
 
   const { error: uploadError } = await supabaseAdmin.storage
     .from(bucket)
