@@ -42,7 +42,7 @@ export default async function BonusHuntsPage() {
       <PageHero
         eyebrow="Bonus Hunts"
         title="Live Hunts and Archive History"
-        description="Track the current opening session, review finished hunt performance, and keep the DirtyGunner bonus hunt feed clean, premium, and readable without clutter."
+        description=" "
         aside={
           <PremiumPanel className="grid gap-4 border border-white/10 bg-white/[0.03] p-5 sm:grid-cols-3">
             <MetricBlock
@@ -89,7 +89,7 @@ export default async function BonusHuntsPage() {
         <SectionHeader
           eyebrow="Live"
           title="Current Hunt"
-          description="The active opening session stays isolated up top so viewers can see the live state instantly."
+          description=" "
         />
 
         {liveHunts.length > 0 ? (
@@ -109,7 +109,7 @@ export default async function BonusHuntsPage() {
         <SectionHeader
           eyebrow="Archive"
           title="Previous Hunts"
-          description="Finished sessions stay separated below with clean performance data and recent slot rows when available."
+          description=" "
         />
 
         {previousHunts.length > 0 ? (

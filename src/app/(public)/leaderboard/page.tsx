@@ -62,7 +62,7 @@ export default async function LeaderboardPage() {
   const title = settings?.title || "Weekly Roobet Race";
   const subtitle =
     settings?.subtitle ||
-    "Top grinders earn premium payouts before the weekly reset. Every wager matters.";
+    " ";
 
   const countdownTarget =
     settings?.countdownTarget?.toISOString().slice(0, 16) ||

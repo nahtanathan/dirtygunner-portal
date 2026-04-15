@@ -52,7 +52,7 @@ export default async function ChallengesPage() {
       <PageHero
         eyebrow="Challenges"
         title="Slot Challenge Drops"
-        description="Compact, claimable slot challenges built for quick browsing. Open a challenge, upload proof, and keep the main grid clean."
+        description=" "
         aside={
           <PremiumPanel className="grid gap-4 border border-white/10 bg-white/[0.03] p-5 sm:grid-cols-3">
             <MetricBlock label="Live now" value={String(activeChallenges.length)} />
@@ -69,7 +69,7 @@ export default async function ChallengesPage() {
         <SectionHeader
           eyebrow="Active"
           title="Live Challenges"
-          description="Current slot challenges with cleaner cards and proof submission tucked behind a modal."
+          description=" "
         />
 
         {activeChallenges.length > 0 ? (
@@ -90,7 +90,7 @@ export default async function ChallengesPage() {
         <SectionHeader
           eyebrow="Completed"
           title="Finished Challenges"
-          description="Completed challenge drops and previously claimed runs."
+          description=" "
         />
 
         {completedChallenges.length > 0 ? (
