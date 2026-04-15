@@ -1,7 +1,5 @@
 // FILE: src/components/layout/PageShell.tsx
 
-// FILE: src/components/layout/PageShell.tsx
-
 import type { ReactNode } from "react";
 import AppSidebar from "@/components/navigation/AppSidebar";
 import MobileNav from "@/components/navigation/MobileNav";
@@ -26,7 +24,13 @@ export default function PageShell({ children }: PageShellProps) {
           <MobileNav />
         </div>
 
-        <div className="pointer-events-none fixed right-4 top-4 z-50 lg:right-6 lg:top-5">
+        <div className="pointer-events-none fixed left-4 top-3 z-50 right-20 lg:hidden">
+          <div className="pointer-events-auto max-w-full">
+            <HeaderAuth compact />
+          </div>
+        </div>
+
+        <div className="pointer-events-none fixed right-4 top-4 z-50 hidden lg:block lg:right-6 lg:top-5">
           <div className="pointer-events-auto">
             <HeaderAuth />
           </div>
