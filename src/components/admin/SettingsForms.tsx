@@ -1,4 +1,3 @@
-// FILE: src/components/admin/SettingsForms.tsx
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -7,12 +6,16 @@ type SiteSettingsShape = {
   kickUrl: string;
   discordUrl: string;
   youtubeUrl: string;
+  xUrl: string;
+  instagramUrl: string;
 };
 
 const EMPTY_SETTINGS: SiteSettingsShape = {
   kickUrl: "",
   discordUrl: "",
   youtubeUrl: "",
+  xUrl: "",
+  instagramUrl: "",
 };
 
 const inputClassName =
@@ -48,6 +51,8 @@ export function SiteSettingsForm() {
           kickUrl: data.settings?.kickUrl ?? "",
           discordUrl: data.settings?.discordUrl ?? "",
           youtubeUrl: data.settings?.youtubeUrl ?? "",
+          xUrl: data.settings?.xUrl ?? "",
+          instagramUrl: data.settings?.instagramUrl ?? "",
         };
 
         if (!mounted) return;
@@ -102,6 +107,8 @@ export function SiteSettingsForm() {
         kickUrl: data.settings?.kickUrl ?? "",
         discordUrl: data.settings?.discordUrl ?? "",
         youtubeUrl: data.settings?.youtubeUrl ?? "",
+        xUrl: data.settings?.xUrl ?? "",
+        instagramUrl: data.settings?.instagramUrl ?? "",
       };
 
       setForm(nextForm);
@@ -126,6 +133,8 @@ export function SiteSettingsForm() {
       kickUrl: form.kickUrl.trim(),
       discordUrl: form.discordUrl.trim(),
       youtubeUrl: form.youtubeUrl.trim(),
+      xUrl: form.xUrl.trim(),
+      instagramUrl: form.instagramUrl.trim(),
     }),
     [form],
   );
@@ -201,7 +210,31 @@ export function SiteSettingsForm() {
               placeholder="https://youtube.com/@dirtygunner"
             />
           </Field>
+
+          <Field label="X URL">
+            <input
+              value={form.xUrl}
+              onChange={(e) => updateField("xUrl", e.target.value)}
+              className={inputClassName}
+              placeholder="https://x.com/dirtygunner"
+            />
+          </Field>
+
+          <Field label="Instagram URL">
+            <input
+              value={form.instagramUrl}
+              onChange={(e) => updateField("instagramUrl", e.target.value)}
+              className={inputClassName}
+              placeholder="https://instagram.com/dirtygunner"
+            />
+          </Field>
         </div>
+
+        {message ? (
+          <div className="mt-5 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-zinc-300">
+            {message}
+          </div>
+        ) : null}
       </section>
 
       <section className="rounded-3xl border border-white/10 bg-black/30 p-5 backdrop-blur-xl sm:p-6">
@@ -210,41 +243,16 @@ export function SiteSettingsForm() {
             Preview
           </h3>
           <p className="truncate-3 mt-1 text-sm leading-6 text-zinc-400">
-            These are the exact values the site will use. Long URLs now truncate
-            cleanly instead of wrapping across the card.
+            These are the exact values the site will use.
           </p>
         </div>
 
-        <div className="grid gap-3 text-sm md:grid-cols-3">
+        <div className="grid gap-3 text-sm md:grid-cols-2 xl:grid-cols-5">
           <PreviewCard label="Kick" value={preview.kickUrl || "Not set"} />
           <PreviewCard label="Discord" value={preview.discordUrl || "Not set"} />
           <PreviewCard label="YouTube" value={preview.youtubeUrl || "Not set"} />
-        </div>
-
-        <div className="mt-6 flex min-w-0 flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-          <button
-            type="button"
-            onClick={() => void handleSave()}
-            disabled={saving}
-            className="inline-flex h-12 min-w-0 items-center justify-center rounded-full bg-white px-5 text-sm font-semibold text-black transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            <span className="truncate whitespace-nowrap">
-              {saving ? "Saving..." : "Save settings"}
-            </span>
-          </button>
-
-          <button
-            type="button"
-            onClick={handleReset}
-            disabled={saving}
-            className="inline-flex h-12 min-w-0 items-center justify-center rounded-full border border-white/10 bg-white/5 px-5 text-sm font-semibold text-white transition hover:border-white/20 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            <span className="truncate whitespace-nowrap">Reset</span>
-          </button>
-
-          {message ? (
-            <span className="truncate-2 text-sm text-zinc-300">{message}</span>
-          ) : null}
+          <PreviewCard label="X" value={preview.xUrl || "Not set"} />
+          <PreviewCard label="Instagram" value={preview.instagramUrl || "Not set"} />
         </div>
       </section>
     </div>
@@ -259,8 +267,8 @@ function Field({
   children: React.ReactNode;
 }) {
   return (
-    <label className="block min-w-0 space-y-2">
-      <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-zinc-400">
+    <label className="grid gap-2">
+      <span className="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-white/45">
         {label}
       </span>
       {children}
@@ -276,13 +284,11 @@ function PreviewCard({
   value: string;
 }) {
   return (
-    <div className="min-w-0 rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
-      <div className="text-xs uppercase tracking-[0.2em] text-zinc-500">
+    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+      <div className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-white/40">
         {label}
       </div>
-      <div className="mt-2 truncate text-sm font-medium text-white sm:text-base">
-        {value}
-      </div>
+      <div className="mt-2 truncate text-sm text-white/85">{value}</div>
     </div>
   );
 }

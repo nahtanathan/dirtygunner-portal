@@ -1,4 +1,3 @@
-// FILE: src/components/navigation/MobileNav.tsx
 "use client";
 
 import Image from "next/image";
@@ -32,6 +31,8 @@ type SiteSettings = {
   kickUrl?: string;
   discordUrl?: string;
   youtubeUrl?: string;
+  xUrl?: string;
+  instagramUrl?: string;
 };
 
 const baseNavItems = [
@@ -58,6 +59,11 @@ function isPathActive(pathname: string, href: string) {
   }
 
   return pathname === href || pathname.startsWith(`${href}/`);
+}
+
+function normalizeHref(value?: string) {
+  const trimmed = value?.trim() ?? "";
+  return trimmed.length > 0 ? trimmed : "#";
 }
 
 export default function MobileNav() {
@@ -103,9 +109,18 @@ export default function MobileNav() {
     return [...baseNavItems, { name: "Admin", href: "/admin", icon: Shield }];
   }, [user]);
 
-  const kickUrl = siteSettings?.kickUrl?.trim() || "#";
-  const discordUrl = siteSettings?.discordUrl?.trim() || "#";
-  const youtubeUrl = siteSettings?.youtubeUrl?.trim() || "#";
+  const kickUrl = normalizeHref(siteSettings?.kickUrl);
+  const discordUrl = normalizeHref(siteSettings?.discordUrl);
+  const youtubeUrl = normalizeHref(siteSettings?.youtubeUrl);
+  const xUrl = normalizeHref(siteSettings?.xUrl);
+  const instagramUrl = normalizeHref(siteSettings?.instagramUrl);
+
+  const socialLinks = [
+    { label: "Discord", href: discordUrl, icon: <DiscordLogo /> },
+    { label: "YouTube", href: youtubeUrl, icon: <YouTubeLogo /> },
+    { label: "X", href: xUrl, icon: <XLogo /> },
+    { label: "Instagram", href: instagramUrl, icon: <InstagramLogo /> },
+  ];
 
   return (
     <>
@@ -300,35 +315,23 @@ export default function MobileNav() {
                 </Link>
 
                 <div className="grid grid-cols-2 gap-2">
-                  <Link
-                    href={discordUrl}
-                    target={discordUrl === "#" ? undefined : "_blank"}
-                    rel={discordUrl === "#" ? undefined : "noreferrer"}
-                    className="flex min-w-0 items-center justify-center gap-2 rounded-2xl border px-3 py-3 text-sm font-medium transition-all duration-200 hover:bg-white/5"
-                    style={{
-                      borderColor: "rgba(255,255,255,0.08)",
-                      background: "rgba(255,255,255,0.03)",
-                      color: "rgba(255,255,255,0.82)",
-                    }}
-                  >
-                    <DiscordLogo />
-                    <span className="truncate whitespace-nowrap">Discord</span>
-                  </Link>
-
-                  <Link
-                    href={youtubeUrl}
-                    target={youtubeUrl === "#" ? undefined : "_blank"}
-                    rel={youtubeUrl === "#" ? undefined : "noreferrer"}
-                    className="flex min-w-0 items-center justify-center gap-2 rounded-2xl border px-3 py-3 text-sm font-medium transition-all duration-200 hover:bg-white/5"
-                    style={{
-                      borderColor: "rgba(255,255,255,0.08)",
-                      background: "rgba(255,255,255,0.03)",
-                      color: "rgba(255,255,255,0.82)",
-                    }}
-                  >
-                    <YouTubeLogo />
-                    <span className="truncate whitespace-nowrap">YouTube</span>
-                  </Link>
+                  {socialLinks.map((item) => (
+                    <Link
+                      key={item.label}
+                      href={item.href}
+                      target={item.href === "#" ? undefined : "_blank"}
+                      rel={item.href === "#" ? undefined : "noreferrer"}
+                      className="flex min-w-0 items-center justify-center gap-2 rounded-2xl border px-3 py-3 text-sm font-medium transition-all duration-200 hover:bg-white/5"
+                      style={{
+                        borderColor: "rgba(255,255,255,0.08)",
+                        background: "rgba(255,255,255,0.03)",
+                        color: "rgba(255,255,255,0.82)",
+                      }}
+                    >
+                      {item.icon}
+                      <span className="truncate whitespace-nowrap">{item.label}</span>
+                    </Link>
+                  ))}
                 </div>
               </div>
             </div>
@@ -375,6 +378,22 @@ function YouTubeLogo() {
   return (
     <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 fill-current" aria-hidden="true">
       <path d="M23.498 6.186a2.997 2.997 0 0 0-2.11-2.12C19.52 3.5 12 3.5 12 3.5s-7.52 0-9.388.566a2.997 2.997 0 0 0-2.11 2.12C-.002 8.07-.002 12-.002 12s0 3.93.504 5.814a2.997 2.997 0 0 0 2.11 2.12C4.48 20.5 12 20.5 12 20.5s7.52 0 9.388-.566a2.997 2.997 0 0 0 2.11-2.12c.504-1.884.504-5.814.504-5.814s0-3.93-.504-5.814ZM9.6 15.568V8.432L15.818 12 9.6 15.568Z" />
+    </svg>
+  );
+}
+
+function XLogo() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 fill-current" aria-hidden="true">
+      <path d="M18.244 2H21l-6.522 7.455L22.15 22h-6.007l-4.705-6.16L6.05 22H3.292l6.978-7.977L1.85 2h6.16l4.253 5.621L18.244 2Zm-1.053 18h1.527L7.18 3.896H5.542L17.19 20Z" />
+    </svg>
+  );
+}
+
+function InstagramLogo() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 fill-current" aria-hidden="true">
+      <path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2Zm0 1.8A3.95 3.95 0 0 0 3.8 7.75v8.5a3.95 3.95 0 0 0 3.95 3.95h8.5a3.95 3.95 0 0 0 3.95-3.95v-8.5a3.95 3.95 0 0 0-3.95-3.95h-8.5Zm8.95 1.35a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2ZM12 6.85A5.15 5.15 0 1 1 6.85 12 5.16 5.16 0 0 1 12 6.85Zm0 1.8A3.35 3.35 0 1 0 15.35 12 3.35 3.35 0 0 0 12 8.65Z" />
     </svg>
   );
 }

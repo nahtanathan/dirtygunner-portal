@@ -2,6 +2,8 @@ export type SiteSettings = {
   kickUrl: string;
   discordUrl?: string;
   youtubeUrl?: string;
+  xUrl?: string;
+  instagramUrl?: string;
 };
 
 export type PrizeTier = {
@@ -119,30 +121,9 @@ export type BonusHunt = {
   totalCost?: number;
   totalReturn?: number;
   profitLoss?: number;
-  profitLossPercentage?: number;
-  currentOpeningSlot?: string;
-  notes?: string;
-  items?: string;
-  bonuses?: BonusHuntBonus[];
-};
-
-export type BonusHuntSnapshot = {
-  liveHunts: BonusHunt[];
-  previousHunts: BonusHunt[];
-  totalHunts?: number;
-  activeHunts?: number;
-  completedHunts?: number;
-  totalBonuses?: number;
-  totalInvested?: number;
+  startCost?: number;
   totalWinnings?: number;
-  totalProfitLoss?: number;
-  totalProfitLossPercentage?: number;
-  source: "bonushunt" | "fallback";
-  fetchedAt: string;
-  message?: string;
-  rateLimit?: {
-    limit?: number;
-    remaining?: number;
-    reset?: number;
-  };
+  bonusCount?: number;
+  currentOpeningSlot?: string | null;
+  bonuses?: BonusHuntBonus[];
 };

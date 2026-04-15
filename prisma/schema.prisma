@@ -8,24 +8,24 @@ datasource db {
 }
 
 model User {
-  id                    String           @id @default(cuid())
-  kick_user_id          String?          @unique
-  kick_username         String?
-  email                 String?          @unique
-  avatar                String?
-  access_token          String?
-  refresh_token         String?
-  kick_token_expires_at DateTime?
-  points                Int              @default(0)
-  isAdmin               Boolean          @default(false)
-  isKickBroadcaster     Boolean          @default(false)
-  createdAt             DateTime         @default(now())
-  updatedAt             DateTime         @updatedAt
-  bio                   String?
-  display_name          String?
-  profile_accent        String?
-  raffleEntries         RaffleEntry[]
-  challengeClaims       ChallengeClaim[] @relation("ChallengeClaimUser")
+  id                      String           @id @default(cuid())
+  kick_user_id            String?          @unique
+  kick_username           String?
+  email                   String?          @unique
+  avatar                  String?
+  access_token            String?
+  refresh_token           String?
+  kick_token_expires_at   DateTime?
+  points                  Int              @default(0)
+  isAdmin                 Boolean          @default(false)
+  isKickBroadcaster       Boolean          @default(false)
+  createdAt               DateTime         @default(now())
+  updatedAt               DateTime         @updatedAt
+  bio                     String?
+  display_name            String?
+  profile_accent          String?
+  raffleEntries           RaffleEntry[]
+  challengeClaims         ChallengeClaim[] @relation("ChallengeClaimUser")
   reviewedChallengeClaims ChallengeClaim[] @relation("ChallengeClaimReviewer")
 }
 
@@ -46,12 +46,14 @@ model KickReward {
 }
 
 model SiteSettings {
-  id         String   @id @default("site-settings")
-  kickUrl    String
-  discordUrl String?
-  youtubeUrl String?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id           String   @id @default("site-settings")
+  kickUrl      String
+  discordUrl   String?
+  youtubeUrl   String?
+  xUrl         String?
+  instagramUrl String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 model LeaderboardSettings {

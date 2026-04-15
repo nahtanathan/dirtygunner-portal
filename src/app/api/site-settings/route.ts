@@ -2,6 +2,10 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 
+function toTrimmedString(value: unknown) {
+  return typeof value === "string" ? value.trim() : "";
+}
+
 export async function GET() {
   const settings = await prisma.siteSettings.upsert({
     where: { id: "site-settings" },
@@ -11,6 +15,8 @@ export async function GET() {
       kickUrl: "https://kick.com/dirtygunner",
       discordUrl: "",
       youtubeUrl: "",
+      xUrl: "",
+      instagramUrl: "",
     },
   });
 
@@ -19,6 +25,8 @@ export async function GET() {
       kickUrl: settings.kickUrl,
       discordUrl: settings.discordUrl ?? "",
       youtubeUrl: settings.youtubeUrl ?? "",
+      xUrl: settings.xUrl ?? "",
+      instagramUrl: settings.instagramUrl ?? "",
     },
   });
 }
@@ -45,17 +53,16 @@ export async function PUT(req: Request) {
     return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
   }
 
-  const kickUrl =
-    typeof body.kickUrl === "string" ? body.kickUrl.trim() : "";
-  const discordUrl =
-    typeof body.discordUrl === "string" ? body.discordUrl.trim() : "";
-  const youtubeUrl =
-    typeof body.youtubeUrl === "string" ? body.youtubeUrl.trim() : "";
+  const kickUrl = toTrimmedString(body.kickUrl);
+  const discordUrl = toTrimmedString(body.discordUrl);
+  const youtubeUrl = toTrimmedString(body.youtubeUrl);
+  const xUrl = toTrimmedString(body.xUrl);
+  const instagramUrl = toTrimmedString(body.instagramUrl);
 
   if (!kickUrl) {
     return NextResponse.json(
       { error: "Kick URL is required" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -65,12 +72,16 @@ export async function PUT(req: Request) {
       kickUrl,
       discordUrl,
       youtubeUrl,
+      xUrl,
+      instagramUrl,
     },
     create: {
       id: "site-settings",
       kickUrl,
       discordUrl,
       youtubeUrl,
+      xUrl,
+      instagramUrl,
     },
   });
 
@@ -79,6 +90,8 @@ export async function PUT(req: Request) {
       kickUrl: settings.kickUrl,
       discordUrl: settings.discordUrl ?? "",
       youtubeUrl: settings.youtubeUrl ?? "",
+      xUrl: settings.xUrl ?? "",
+      instagramUrl: settings.instagramUrl ?? "",
     },
   });
 }
