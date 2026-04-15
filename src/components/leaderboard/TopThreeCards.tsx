@@ -104,7 +104,7 @@ function PlaceCard({
         style={{
           borderColor: "var(--border-subtle)",
           background:
-            "linear-gradient(180deg, rgba(25,31,40,0.98), rgba(14,18,24,0.98))",
+            "linear-gradient(180deg, rgba(20,26,36,0.98), rgba(11,15,22,0.99))",
           boxShadow: featured
             ? "0 0 42px rgba(109,143,179,0.14)"
             : "0 12px 40px rgba(0,0,0,0.5)",
@@ -112,15 +112,16 @@ function PlaceCard({
           transition: "transform 0.15s ease",
         }}
       >
-        <div className="absolute inset-x-0 top-0 h-[46%] overflow-hidden">
+        <div className="absolute inset-x-0 top-0 h-[50%] overflow-hidden">
           <div
             className="absolute inset-0"
             style={{
               backgroundImage: `url(${getCardArt(place)})`,
               backgroundSize: "cover",
               backgroundPosition: "center",
-              opacity: place === 1 ? 0.34 : 0.24,
-              filter: "saturate(0.65) brightness(0.88)",
+              opacity: place === 1 ? 0.30 : 0.22,
+              filter: "saturate(0.62) brightness(0.82) blur(0.2px)",
+              transform: "scale(1.02)",
             }}
           />
 
@@ -129,8 +130,8 @@ function PlaceCard({
             style={{
               background:
                 place === 1
-                  ? "linear-gradient(180deg, rgba(109,143,179,0.16), rgba(14,18,24,0.84))"
-                  : "linear-gradient(180deg, rgba(127,147,171,0.10), rgba(14,18,24,0.92))",
+                  ? "linear-gradient(180deg, rgba(109,143,179,0.14) 0%, rgba(28,36,48,0.38) 34%, rgba(15,20,28,0.76) 68%, rgba(11,15,22,0.94) 100%)"
+                  : "linear-gradient(180deg, rgba(127,147,171,0.08) 0%, rgba(24,31,42,0.34) 34%, rgba(14,18,25,0.80) 68%, rgba(11,15,22,0.95) 100%)",
             }}
           />
 
@@ -138,8 +139,16 @@ function PlaceCard({
             className="absolute inset-0"
             style={{
               background:
-                "linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.05), transparent 70%)",
-              opacity: glow.on ? 0.4 : 0.16,
+                "radial-gradient(circle at 50% 18%, rgba(255,255,255,0.05), transparent 34%), linear-gradient(180deg, rgba(8,11,18,0.00) 0%, rgba(8,11,18,0.18) 55%, rgba(8,11,18,0.46) 100%)",
+            }}
+          />
+
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.045), transparent 70%)",
+              opacity: glow.on ? 0.32 : 0.12,
             }}
           />
         </div>
@@ -156,7 +165,9 @@ function PlaceCard({
           <div
             className={clsx(
               "relative",
-              featured ? "h-32 w-32 sm:h-36 sm:w-36 md:h-40 md:w-40" : "h-24 w-24 sm:h-28 sm:w-28 md:h-32 md:w-32",
+              featured
+                ? "h-32 w-32 sm:h-36 sm:w-36 md:h-40 md:w-40"
+                : "h-24 w-24 sm:h-28 sm:w-28 md:h-32 md:w-32",
             )}
             style={{
               filter: featured
@@ -179,17 +190,16 @@ function PlaceCard({
         <div
           className="pointer-events-none absolute left-1/2 z-20 -translate-x-1/2"
           style={{
-            top: featured ? "140px" : "120px",
+            top: featured ? "162px" : "136px",
           }}
         >
           <div className="text-center">
-            <div className="text-[10px] font-bold uppercase tracking-[0.26em] text-white/40 sm:text-[11px]">
-              Payout
-            </div>
             <div
               className={clsx(
-                "mt-1 whitespace-nowrap font-black leading-none",
-                featured ? "text-[20px] sm:text-[22px] md:text-[24px]" : "text-[18px] sm:text-[19px] md:text-[20px]",
+                "whitespace-nowrap font-black leading-none",
+                featured
+                  ? "text-[20px] sm:text-[22px] md:text-[24px]"
+                  : "text-[18px] sm:text-[19px] md:text-[20px]",
               )}
               style={{
                 color: place === 1 ? "#c7d3df" : "#e6eaf2",
@@ -204,15 +214,15 @@ function PlaceCard({
 
         <div className="relative z-10 flex w-full min-w-0 flex-col justify-end">
           <div
-            className="pointer-events-none absolute inset-x-0 bottom-0 h-[60%]"
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-[66%]"
             style={{
               background:
-                "linear-gradient(180deg, rgba(5,8,18,0) 0%, rgba(5,8,18,0.10) 20%, rgba(5,8,18,0.35) 45%, rgba(5,8,18,0.55) 65%, rgba(5,8,18,0.65) 75%, rgba(5,8,18,0.50) 85%, rgba(5,8,18,0.25) 92%, rgba(5,8,18,0.0) 100%)",
+                "linear-gradient(180deg, rgba(6,9,16,0.00) 0%, rgba(6,9,16,0.10) 18%, rgba(6,9,16,0.24) 38%, rgba(6,9,16,0.42) 56%, rgba(6,9,16,0.62) 72%, rgba(6,9,16,0.82) 86%, rgba(6,9,16,0.96) 100%)",
             }}
           />
 
           <div
-            className="relative z-10 w-full pt-[155px] sm:pt-[170px] md:pt-[180px]"
+            className="relative z-10 w-full pt-[175px] sm:pt-[190px] md:pt-[205px]"
             style={{
               transform: "translateZ(24px)",
               marginTop: "auto",
@@ -222,7 +232,9 @@ function PlaceCard({
               <div
                 className={clsx(
                   "truncate font-black uppercase text-white",
-                  featured ? "text-[26px] sm:text-[30px] md:text-[36px]" : "text-[22px] sm:text-[26px] md:text-[30px]",
+                  featured
+                    ? "text-[26px] sm:text-[30px] md:text-[36px]"
+                    : "text-[22px] sm:text-[26px] md:text-[30px]",
                 )}
               >
                 {player.username}
@@ -235,7 +247,9 @@ function PlaceCard({
               <div
                 className={clsx(
                   "mt-1 whitespace-nowrap font-black",
-                  featured ? "text-[26px] sm:text-[30px] md:text-[36px]" : "text-[22px] sm:text-[26px] md:text-[30px]",
+                  featured
+                    ? "text-[26px] sm:text-[30px] md:text-[36px]"
+                    : "text-[22px] sm:text-[26px] md:text-[30px]",
                 )}
                 style={{
                   color: "#aebdcb",
