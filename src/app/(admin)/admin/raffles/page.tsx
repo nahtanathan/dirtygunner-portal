@@ -1,5 +1,4 @@
 // FILE: src/app/(admin)/admin/raffles/page.tsx
-
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -78,6 +77,12 @@ const EMPTY_FORM: RaffleFormState = {
   winner: "",
   prizeDetails: "",
 };
+
+const inputClassName =
+  "h-12 w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 text-sm text-white outline-none transition-all duration-200 placeholder:text-white/28 focus:border-sky-400/30 focus:bg-white/[0.05]";
+
+const textareaClassName =
+  "min-h-[110px] w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white outline-none transition-all duration-200 placeholder:text-white/28 focus:border-sky-400/30 focus:bg-white/[0.05]";
 
 export default function AdminRafflesPage() {
   const [me, setMe] = useState<AdminUser | null>(null);
@@ -385,7 +390,7 @@ export default function AdminRafflesPage() {
   return (
     <div className="mx-auto w-full max-w-[1360px] space-y-6">
       <section
-        className="rounded-[30px] border p-6 md:p-8"
+        className="rounded-[30px] border p-5 sm:p-6 md:p-8"
         style={{
           borderColor: "rgba(255,255,255,0.08)",
           background:
@@ -394,15 +399,15 @@ export default function AdminRafflesPage() {
             "0 0 0 1px rgba(255,255,255,0.02), 0 24px 70px rgba(2,8,23,0.45)",
         }}
       >
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div>
+        <div className="flex min-w-0 flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+          <div className="min-w-0">
             <div className="text-xs font-semibold uppercase tracking-[0.3em] text-sky-300/85">
               Admin
             </div>
-            <h1 className="mt-2 text-3xl font-bold text-white md:text-4xl">
+            <h1 className="mt-2 truncate text-2xl font-bold text-white sm:text-3xl md:text-4xl">
               Raffles Control
             </h1>
-            <p className="mt-3 max-w-2xl text-sm leading-7 text-white/58">
+            <p className="truncate-3 mt-3 max-w-2xl text-sm leading-7 text-white/58">
               Create, edit, delete, pick winners, reroll results, and keep the
               public raffle page synced with live data.
             </p>
@@ -430,19 +435,19 @@ export default function AdminRafflesPage() {
 
       <div className="grid gap-6 xl:grid-cols-[420px_minmax(0,1fr)]">
         <section
-          className="rounded-[28px] border p-5 md:p-6"
+          className="rounded-[28px] border p-5 sm:p-6"
           style={{
             borderColor: "rgba(255,255,255,0.08)",
             background:
               "linear-gradient(180deg, rgba(12,18,34,0.96) 0%, rgba(7,12,24,0.98) 100%)",
           }}
         >
-          <div className="flex items-center justify-between gap-3">
-            <div>
+          <div className="flex min-w-0 items-start justify-between gap-3">
+            <div className="min-w-0">
               <div className="text-xs font-semibold uppercase tracking-[0.26em] text-white/42">
                 {editingId ? "Edit Raffle" : "Create Raffle"}
               </div>
-              <h2 className="mt-2 text-2xl font-bold text-white">
+              <h2 className="mt-2 truncate text-xl font-bold text-white sm:text-2xl">
                 {editingId ? "Update Details" : "New Raffle"}
               </h2>
             </div>
@@ -450,14 +455,14 @@ export default function AdminRafflesPage() {
             <button
               type="button"
               onClick={startCreate}
-              className="inline-flex h-11 items-center gap-2 rounded-2xl border px-4 text-sm font-semibold text-white transition-all duration-200 hover:bg-white/[0.05]"
+              className="inline-flex h-11 min-w-0 items-center gap-2 rounded-2xl border px-4 text-sm font-semibold text-white transition-all duration-200 hover:bg-white/[0.05]"
               style={{
                 borderColor: "rgba(255,255,255,0.08)",
                 background: "rgba(255,255,255,0.02)",
               }}
             >
-              <Plus className="h-4 w-4" />
-              New
+              <Plus className="h-4 w-4 shrink-0" />
+              <span className="truncate whitespace-nowrap">New</span>
             </button>
           </div>
 
@@ -494,7 +499,7 @@ export default function AdminRafflesPage() {
               <textarea
                 value={form.description}
                 onChange={(event) => setField("description", event.target.value)}
-                className={`${inputClassName} min-h-[96px] resize-none`}
+                className={textareaClassName}
                 placeholder="Short description for the public raffle page"
               />
             </Field>
@@ -508,7 +513,7 @@ export default function AdminRafflesPage() {
               />
             </Field>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Status">
                 <select
                   value={form.status}
@@ -539,7 +544,7 @@ export default function AdminRafflesPage() {
               </Field>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Entry Cost">
                 <input
                   type="number"
@@ -573,7 +578,7 @@ export default function AdminRafflesPage() {
               />
             </Field>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Start Date">
                 <input
                   type="datetime-local"
@@ -602,11 +607,11 @@ export default function AdminRafflesPage() {
               />
             </Field>
 
-            <div className="flex gap-3 pt-2">
+            <div className="flex min-w-0 flex-col gap-3 pt-2 sm:flex-row">
               <button
                 type="submit"
                 disabled={isSaving}
-                className="inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-2xl text-sm font-extrabold uppercase tracking-[0.08em] text-white disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex h-12 min-w-0 flex-1 items-center justify-center gap-2 rounded-2xl text-sm font-extrabold uppercase tracking-[0.08em] text-white disabled:cursor-not-allowed disabled:opacity-60"
                 style={{
                   background:
                     "linear-gradient(180deg, rgba(59,130,246,0.96), rgba(37,99,235,0.96))",
@@ -615,50 +620,58 @@ export default function AdminRafflesPage() {
                 }}
               >
                 {isSaving ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2 className="h-4 w-4 animate-spin shrink-0" />
                 ) : editingId ? (
-                  <Pencil className="h-4 w-4" />
+                  <Pencil className="h-4 w-4 shrink-0" />
                 ) : (
-                  <Plus className="h-4 w-4" />
+                  <Plus className="h-4 w-4 shrink-0" />
                 )}
-                {isSaving ? "Saving..." : editingId ? "Update Raffle" : "Create Raffle"}
+                <span className="truncate whitespace-nowrap">
+                  {isSaving
+                    ? "Saving..."
+                    : editingId
+                      ? "Update Raffle"
+                      : "Create Raffle"}
+                </span>
               </button>
 
               <button
                 type="button"
                 onClick={resetForm}
-                className="inline-flex h-12 items-center justify-center rounded-2xl border px-4 text-sm font-semibold text-white/80 transition-all duration-200 hover:bg-white/[0.05]"
+                className="inline-flex h-12 min-w-0 items-center justify-center rounded-2xl border px-4 text-sm font-semibold text-white/80 transition-all duration-200 hover:bg-white/[0.05]"
                 style={{
                   borderColor: "rgba(255,255,255,0.08)",
                   background: "rgba(255,255,255,0.02)",
                 }}
               >
-                Reset
+                <span className="truncate whitespace-nowrap">Reset</span>
               </button>
             </div>
           </form>
         </section>
 
         <section className="space-y-4">
-          <div className="flex items-center justify-between gap-3">
-            <div>
+          <div className="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div className="min-w-0">
               <div className="text-xs font-semibold uppercase tracking-[0.26em] text-white/42">
                 Live Data
               </div>
-              <h2 className="mt-2 text-2xl font-bold text-white">Manage Raffles</h2>
+              <h2 className="mt-2 truncate text-xl font-bold text-white sm:text-2xl">
+                Manage Raffles
+              </h2>
             </div>
 
             <button
               type="button"
               onClick={() => void loadRaffles()}
-              className="inline-flex h-11 items-center gap-2 rounded-2xl border px-4 text-sm font-semibold text-white transition-all duration-200 hover:bg-white/[0.05]"
+              className="inline-flex h-11 min-w-0 items-center gap-2 rounded-2xl border px-4 text-sm font-semibold text-white transition-all duration-200 hover:bg-white/[0.05]"
               style={{
                 borderColor: "rgba(255,255,255,0.08)",
                 background: "rgba(255,255,255,0.02)",
               }}
             >
-              <RefreshCw className="h-4 w-4" />
-              Refresh
+              <RefreshCw className="h-4 w-4 shrink-0" />
+              <span className="truncate whitespace-nowrap">Refresh</span>
             </button>
           </div>
 
@@ -699,7 +712,7 @@ export default function AdminRafflesPage() {
                 return (
                   <article
                     key={raffle.id}
-                    className="rounded-[28px] border p-5 md:p-6"
+                    className="rounded-[28px] border p-5 sm:p-6"
                     style={{
                       borderColor: "rgba(255,255,255,0.08)",
                       background:
@@ -708,15 +721,15 @@ export default function AdminRafflesPage() {
                         "0 0 0 1px rgba(255,255,255,0.02), 0 18px 44px rgba(2,8,23,0.35)",
                     }}
                   >
-                    <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
+                    <div className="flex min-w-0 flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
                       <div className="min-w-0 flex-1">
-                        <div className="flex flex-wrap items-center gap-3">
-                          <h3 className="truncate text-2xl font-bold text-white">
+                        <div className="flex min-w-0 flex-wrap items-center gap-2.5">
+                          <h3 className="truncate text-xl font-bold text-white sm:text-2xl">
                             {raffle.title}
                           </h3>
 
                           <span
-                            className="inline-flex h-8 items-center rounded-full border px-3 text-xs font-semibold uppercase tracking-[0.16em]"
+                            className="inline-flex h-8 max-w-full items-center rounded-full border px-3 text-xs font-semibold uppercase tracking-[0.16em]"
                             style={{
                               borderColor:
                                 raffle.status === "active"
@@ -729,16 +742,18 @@ export default function AdminRafflesPage() {
                               color: "rgba(255,255,255,0.82)",
                             }}
                           >
-                            {raffle.status}
+                            <span className="truncate whitespace-nowrap">
+                              {raffle.status}
+                            </span>
                           </span>
                         </div>
 
-                        <div className="mt-2 text-sm text-white/58">
+                        <div className="mt-2 truncate-2 text-sm text-white/58">
                           {raffle.prizeDetails}
                         </div>
 
                         {raffle.description ? (
-                          <div className="mt-2 text-sm leading-6 text-white/52">
+                          <div className="truncate-3 mt-2 text-sm leading-6 text-white/52">
                             {raffle.description}
                           </div>
                         ) : null}
@@ -875,7 +890,7 @@ function Field({
   children: React.ReactNode;
 }) {
   return (
-    <label className="block">
+    <label className="block min-w-0">
       <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-white/45">
         {label}
       </div>
@@ -893,13 +908,13 @@ function TopStat({
 }) {
   return (
     <div
-      className="rounded-2xl border px-4 py-3"
+      className="min-w-0 rounded-2xl border px-4 py-3"
       style={{
         borderColor: "rgba(255,255,255,0.08)",
         background: "rgba(255,255,255,0.03)",
       }}
     >
-      <div className="text-lg font-bold text-white">{value}</div>
+      <div className="truncate text-lg font-bold text-white">{value}</div>
       <div className="mt-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-white/42">
         {label}
       </div>
@@ -931,9 +946,9 @@ function Notice({
         color: "rgba(255,255,255,0.86)",
       }}
     >
-      <div className="flex items-center gap-2">
-        {icon}
-        <span>{children}</span>
+      <div className="flex min-w-0 items-center gap-2">
+        <span className="shrink-0">{icon}</span>
+        <span className="truncate-2">{children}</span>
       </div>
     </div>
   );
@@ -950,15 +965,15 @@ function MiniStat({
 }) {
   return (
     <div
-      className="rounded-2xl border px-4 py-3"
+      className="min-w-0 rounded-2xl border px-4 py-3"
       style={{
         borderColor: "rgba(255,255,255,0.08)",
         background: "rgba(255,255,255,0.03)",
       }}
     >
-      <div className="flex items-center gap-2 text-white/44">
-        {icon}
-        <span className="text-[11px] font-semibold uppercase tracking-[0.18em]">
+      <div className="flex min-w-0 items-center gap-2 text-white/44">
+        <span className="shrink-0">{icon}</span>
+        <span className="truncate text-[11px] font-semibold uppercase tracking-[0.18em]">
           {label}
         </span>
       </div>
@@ -978,18 +993,18 @@ function MetaRow({
 }) {
   return (
     <div
-      className="flex items-center gap-3 rounded-2xl border px-4 py-3"
+      className="flex min-w-0 items-center gap-3 rounded-2xl border px-4 py-3"
       style={{
         borderColor: "rgba(255,255,255,0.08)",
         background: "rgba(255,255,255,0.02)",
       }}
     >
-      <div className="text-white/45">{icon}</div>
-      <div>
+      <div className="shrink-0 text-white/45">{icon}</div>
+      <div className="min-w-0">
         <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/42">
           {label}
         </div>
-        <div className="mt-1 text-sm font-medium text-white">{value}</div>
+        <div className="mt-1 truncate text-sm font-medium text-white">{value}</div>
       </div>
     </div>
   );
@@ -1013,7 +1028,7 @@ function ActionButton({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className="inline-flex h-11 items-center justify-center gap-2 rounded-2xl border px-4 text-sm font-semibold text-white transition-all duration-200 hover:bg-white/[0.05] disabled:cursor-not-allowed disabled:opacity-50"
+      className="inline-flex h-11 min-w-0 items-center justify-center gap-2 rounded-2xl border px-4 text-sm font-semibold text-white transition-all duration-200 hover:bg-white/[0.05] disabled:cursor-not-allowed disabled:opacity-50"
       style={{
         borderColor: danger
           ? "rgba(239,68,68,0.18)"
@@ -1021,8 +1036,8 @@ function ActionButton({
         background: danger ? "rgba(239,68,68,0.08)" : "rgba(255,255,255,0.02)",
       }}
     >
-      {icon}
-      {label}
+      <span className="shrink-0">{icon}</span>
+      <span className="truncate whitespace-nowrap">{label}</span>
     </button>
   );
 }
@@ -1049,6 +1064,3 @@ function formatAdminDate(value: string) {
 function createRaffleId() {
   return `raffle-${Date.now()}`;
 }
-
-const inputClassName =
-  "h-12 w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 text-sm text-white outline-none transition-all duration-200 placeholder:text-white/28 focus:border-sky-400/30 focus:bg-white/[0.05]";

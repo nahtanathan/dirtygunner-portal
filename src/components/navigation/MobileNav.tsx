@@ -1,5 +1,4 @@
 // FILE: src/components/navigation/MobileNav.tsx
-
 "use client";
 
 import Image from "next/image";
@@ -10,6 +9,7 @@ import clsx from "clsx";
 import {
   ChevronRight,
   ExternalLink,
+  FileCheck,
   Flame,
   Gift,
   Home,
@@ -48,6 +48,7 @@ const adminNavItems = [
   { name: "Leaderboard", href: "/admin/leaderboard", icon: Trophy },
   { name: "Raffles", href: "/admin/raffles", icon: Gift },
   { name: "Challenges", href: "/admin/challenges", icon: Target },
+  { name: "Challenge Claims", href: "/admin/challenge-claims", icon: FileCheck },
   { name: "Bonus Hunts", href: "/admin/bonus-hunts", icon: Flame },
 ];
 
@@ -115,13 +116,15 @@ export default function MobileNav() {
           background: "rgba(6,10,20,0.82)",
         }}
       >
-        <div className="flex items-center justify-between gap-3">
+        <div className="flex min-w-0 items-center gap-3">
           <Link href="/" className="min-w-0 flex-1 overflow-hidden">
             <SidebarBrandMark />
           </Link>
 
           <div className="flex shrink-0 items-center gap-2">
-            <HeaderAuth mobileCompact />
+            <div className="max-w-[124px] sm:max-w-none">
+              <HeaderAuth mobileCompact />
+            </div>
 
             <button
               type="button"
@@ -155,15 +158,15 @@ export default function MobileNav() {
                 "linear-gradient(180deg, rgba(7,12,24,0.98) 0%, rgba(6,10,20,0.96) 100%)",
             }}
           >
-            <div className="flex items-center justify-between gap-3">
-              <Link href="/" className="min-w-0" onClick={() => setOpen(false)}>
+            <div className="flex min-w-0 items-center justify-between gap-3">
+              <Link href="/" className="min-w-0 flex-1" onClick={() => setOpen(false)}>
                 <SidebarBrandMark />
               </Link>
 
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-xl border"
+                className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border"
                 style={{
                   borderColor: "rgba(255,255,255,0.08)",
                   background: "rgba(255,255,255,0.03)",
@@ -190,7 +193,7 @@ export default function MobileNav() {
                       href={item.href}
                       onClick={() => setOpen(false)}
                       className={clsx(
-                        "flex items-center gap-3 rounded-2xl border px-4 py-3 text-sm font-medium transition-all duration-200",
+                        "flex min-w-0 items-center gap-3 rounded-2xl border px-4 py-3 text-sm font-medium transition-all duration-200",
                         isActive && "shadow-[0_0_24px_rgba(56,189,248,0.12)]",
                       )}
                       style={{
@@ -207,11 +210,13 @@ export default function MobileNav() {
                     >
                       <Icon
                         className={clsx(
-                          "h-4 w-4",
+                          "h-4 w-4 shrink-0",
                           isActive ? "text-sky-300" : "text-white/50",
                         )}
                       />
-                      <span className="flex-1">{item.name}</span>
+                      <span className="min-w-0 flex-1 truncate whitespace-nowrap">
+                        {item.name}
+                      </span>
                     </Link>
                   );
                 })}
@@ -221,8 +226,8 @@ export default function MobileNav() {
             {user?.isAdmin && (
               <div className="mt-7">
                 <div className="mb-3 flex items-center gap-2 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-white/40">
-                  <Shield className="h-3.5 w-3.5 text-sky-300/70" />
-                  Admin
+                  <Shield className="h-3.5 w-3.5 shrink-0 text-sky-300/70" />
+                  <span className="truncate whitespace-nowrap">Admin</span>
                 </div>
 
                 <div
@@ -242,11 +247,9 @@ export default function MobileNav() {
                           key={item.href}
                           href={item.href}
                           onClick={() => setOpen(false)}
-                          className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200"
+                          className="flex min-w-0 items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200"
                           style={{
-                            background: isActive
-                              ? "rgba(56,189,248,0.12)"
-                              : "transparent",
+                            background: isActive ? "rgba(255,255,255,0.06)" : "transparent",
                             color: isActive
                               ? "rgba(255,255,255,0.96)"
                               : "rgba(255,255,255,0.68)",
@@ -254,17 +257,19 @@ export default function MobileNav() {
                         >
                           <ChevronRight
                             className={clsx(
-                              "h-3.5 w-3.5",
-                              isActive ? "text-sky-300" : "text-white/30",
+                              "h-3.5 w-3.5 shrink-0",
+                              isActive ? "text-white/70" : "text-white/30",
                             )}
                           />
                           <Icon
                             className={clsx(
-                              "h-4 w-4",
-                              isActive ? "text-sky-300" : "text-white/45",
+                              "h-4 w-4 shrink-0",
+                              isActive ? "text-white/82" : "text-white/45",
                             )}
                           />
-                          <span className="flex-1">{item.name}</span>
+                          <span className="min-w-0 flex-1 truncate whitespace-nowrap">
+                            {item.name}
+                          </span>
                         </Link>
                       );
                     })}
@@ -283,15 +288,15 @@ export default function MobileNav() {
                   href={kickUrl}
                   target={kickUrl === "#" ? undefined : "_blank"}
                   rel={kickUrl === "#" ? undefined : "noreferrer"}
-                  className="flex items-center justify-between rounded-2xl border px-4 py-3 text-sm font-medium"
+                  className="flex min-w-0 items-center justify-between gap-3 rounded-2xl border px-4 py-3 text-sm font-medium transition-all duration-200 hover:bg-white/5"
                   style={{
                     borderColor: "rgba(255,255,255,0.08)",
-                    background: "rgba(255,255,255,0.02)",
+                    background: "rgba(255,255,255,0.03)",
                     color: "rgba(255,255,255,0.9)",
                   }}
                 >
-                  <span>Watch on Kick</span>
-                  <ExternalLink className="h-4 w-4 text-white/55" />
+                  <span className="min-w-0 truncate whitespace-nowrap">Watch on Kick</span>
+                  <ExternalLink className="h-4 w-4 shrink-0 text-white/55" />
                 </Link>
 
                 <div className="grid grid-cols-2 gap-2">
@@ -299,28 +304,30 @@ export default function MobileNav() {
                     href={discordUrl}
                     target={discordUrl === "#" ? undefined : "_blank"}
                     rel={discordUrl === "#" ? undefined : "noreferrer"}
-                    className="flex items-center justify-center rounded-2xl border px-3 py-3 text-sm font-medium"
+                    className="flex min-w-0 items-center justify-center gap-2 rounded-2xl border px-3 py-3 text-sm font-medium transition-all duration-200 hover:bg-white/5"
                     style={{
                       borderColor: "rgba(255,255,255,0.08)",
-                      background: "rgba(255,255,255,0.02)",
+                      background: "rgba(255,255,255,0.03)",
                       color: "rgba(255,255,255,0.82)",
                     }}
                   >
-                    Discord
+                    <DiscordLogo />
+                    <span className="truncate whitespace-nowrap">Discord</span>
                   </Link>
 
                   <Link
                     href={youtubeUrl}
                     target={youtubeUrl === "#" ? undefined : "_blank"}
                     rel={youtubeUrl === "#" ? undefined : "noreferrer"}
-                    className="flex items-center justify-center rounded-2xl border px-3 py-3 text-sm font-medium"
+                    className="flex min-w-0 items-center justify-center gap-2 rounded-2xl border px-3 py-3 text-sm font-medium transition-all duration-200 hover:bg-white/5"
                     style={{
                       borderColor: "rgba(255,255,255,0.08)",
-                      background: "rgba(255,255,255,0.02)",
+                      background: "rgba(255,255,255,0.03)",
                       color: "rgba(255,255,255,0.82)",
                     }}
                   >
-                    YouTube
+                    <YouTubeLogo />
+                    <span className="truncate whitespace-nowrap">YouTube</span>
                   </Link>
                 </div>
               </div>
@@ -340,11 +347,11 @@ function SidebarBrandMark() {
           src="/brand/logo-mark.png"
           alt="DirtyGunner"
           fill
-          className="object-contain drop-shadow-[0_0_12px_rgba(139,92,246,0.6)]"
+          className="object-contain drop-shadow-[0_0_12px_rgba(139,92,246,0.45)]"
         />
       </div>
 
-      <div className="flex min-w-0 flex-col leading-tight">
+      <div className="min-w-0 flex flex-col leading-tight">
         <span className="truncate text-sm font-semibold tracking-wide text-white">
           DIRTYGUNNER
         </span>
@@ -353,5 +360,21 @@ function SidebarBrandMark() {
         </span>
       </div>
     </div>
+  );
+}
+
+function DiscordLogo() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 fill-current" aria-hidden="true">
+      <path d="M20.317 4.369a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.078.037c-.211.375-.444.864-.608 1.249a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.249.077.077 0 0 0-.078-.037 19.736 19.736 0 0 0-4.885 1.515.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.056 19.9 19.9 0 0 0 5.993 3.03.077.077 0 0 0 .084-.027c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.105 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.927 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.009c.12.099.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.04.106c.36.698.772 1.363 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.055c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028ZM8.02 15.331c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.418 2.157-2.418 1.21 0 2.175 1.094 2.156 2.418 0 1.334-.955 2.419-2.156 2.419Zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.418 2.157-2.418 1.21 0 2.175 1.094 2.156 2.418 0 1.334-.946 2.419-2.156 2.419Z" />
+    </svg>
+  );
+}
+
+function YouTubeLogo() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 fill-current" aria-hidden="true">
+      <path d="M23.498 6.186a2.997 2.997 0 0 0-2.11-2.12C19.52 3.5 12 3.5 12 3.5s-7.52 0-9.388.566a2.997 2.997 0 0 0-2.11 2.12C-.002 8.07-.002 12-.002 12s0 3.93.504 5.814a2.997 2.997 0 0 0 2.11 2.12C4.48 20.5 12 20.5 12 20.5s7.52 0 9.388-.566a2.997 2.997 0 0 0 2.11-2.12c.504-1.884.504-5.814.504-5.814s0-3.93-.504-5.814ZM9.6 15.568V8.432L15.818 12 9.6 15.568Z" />
+    </svg>
   );
 }

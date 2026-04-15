@@ -1,3 +1,4 @@
+// FILE: src/components/ui/CTAButton.tsx
 import Link from "next/link";
 import { ReactNode } from "react";
 import { cn } from "@/lib/utils/cn";
@@ -17,11 +18,11 @@ export function CTAButton({
     <Link
       href={href}
       className={cn(
-        "inline-flex items-center justify-center rounded-2xl px-5 py-3 text-sm font-semibold uppercase tracking-[0.18em] transition-all duration-300",
+        "inline-flex min-w-0 max-w-full items-center justify-center whitespace-nowrap rounded-2xl px-4 py-3 text-xs font-semibold uppercase tracking-[0.16em] transition-all duration-300 sm:px-5 sm:text-sm",
         variant === "primary"
           ? "text-white hover:-translate-y-[1px]"
           : "border hover:-translate-y-[1px]",
-        className
+        className,
       )}
       style={
         variant === "primary"
@@ -38,7 +39,7 @@ export function CTAButton({
             }
       }
     >
-      {children}
+      <span className="min-w-0 truncate">{children}</span>
     </Link>
   );
 }

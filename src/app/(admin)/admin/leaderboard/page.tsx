@@ -1,3 +1,4 @@
+// FILE: src/app/(admin)/admin/leaderboard/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -29,6 +30,9 @@ const EMPTY_SETTINGS: LeaderboardSettingsShape = {
     { place: 3, prize: 150 },
   ],
 };
+
+const inputClassName =
+  "h-12 w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 text-sm text-white outline-none transition placeholder:text-white/30 focus:border-white/20 focus:bg-white/[0.05]";
 
 export default function AdminLeaderboardPage() {
   const [form, setForm] = useState<LeaderboardSettingsShape>(EMPTY_SETTINGS);
@@ -79,7 +83,7 @@ export default function AdminLeaderboardPage() {
         setMessage(
           error instanceof Error
             ? error.message
-            : "Failed to load leaderboard settings"
+            : "Failed to load leaderboard settings",
         );
       } finally {
         if (mounted) setLoading(false);
@@ -200,7 +204,7 @@ export default function AdminLeaderboardPage() {
       setMessage(
         error instanceof Error
           ? error.message
-          : "Failed to save leaderboard settings"
+          : "Failed to save leaderboard settings",
       );
     } finally {
       setSaving(false);
@@ -220,7 +224,7 @@ export default function AdminLeaderboardPage() {
           title="Leaderboard Control"
           description="Edit title, timing, and prize values."
         />
-        <div className="rounded-3xl border border-white/10 bg-black/30 p-6 backdrop-blur-xl">
+        <div className="rounded-3xl border border-white/10 bg-black/30 p-5 backdrop-blur-xl sm:p-6">
           <div className="h-48 animate-pulse rounded-2xl bg-white/5" />
         </div>
       </div>
@@ -235,85 +239,121 @@ export default function AdminLeaderboardPage() {
         description="Edit title, start time, end time, and payout structure."
       />
 
-      <section className="rounded-3xl border border-white/10 bg-black/30 p-6 backdrop-blur-xl">
-        <div className="grid gap-5 md:grid-cols-2">
-          <div>
-            <label className="mb-2 block text-sm font-medium text-zinc-300">
-              Leaderboard Title
-            </label>
-            <input
-              value={form.title}
-              onChange={(e) => updateField("title", e.target.value)}
-              className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition placeholder:text-zinc-500 focus:border-white/20"
-              placeholder="Weekly Roobet Race"
-            />
+      <section className="rounded-3xl border border-white/10 bg-black/30 p-5 backdrop-blur-xl sm:p-6">
+        <div className="mb-6 flex min-w-0 flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <div className="min-w-0">
+            <h2 className="truncate text-xl font-bold text-white sm:text-2xl">
+              Event Copy & Timing
+            </h2>
+            <p className="truncate-3 mt-1 max-w-2xl text-sm leading-6 text-zinc-400">
+              These values drive the public leaderboard heading and countdown.
+              The countdown target always follows the end time.
+            </p>
           </div>
 
-          <div>
-            <label className="mb-2 block text-sm font-medium text-zinc-300">
-              Leaderboard Subtitle
-            </label>
-            <input
-              value={form.subtitle}
-              onChange={(e) => updateField("subtitle", e.target.value)}
-              className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition placeholder:text-zinc-500 focus:border-white/20"
-              placeholder="Top grinders earn premium payouts before the weekly reset."
-            />
+          <div className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:items-center">
+            <button
+              type="button"
+              onClick={() => void handleSave()}
+              disabled={saving}
+              className="inline-flex h-12 min-w-0 items-center justify-center rounded-full bg-white px-5 text-sm font-semibold text-black transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              <span className="truncate whitespace-nowrap">
+                {saving ? "Saving..." : "Save leaderboard"}
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={handleReset}
+              disabled={saving}
+              className="inline-flex h-12 min-w-0 items-center justify-center rounded-full border border-white/10 bg-white/5 px-5 text-sm font-semibold text-white transition hover:border-white/20 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              <span className="truncate whitespace-nowrap">Reset</span>
+            </button>
+          </div>
+        </div>
+
+        <div className="grid gap-5 xl:grid-cols-[minmax(0,1.2fr)_minmax(320px,0.8fr)]">
+          <div className="grid gap-5 md:grid-cols-2">
+            <Field label="Leaderboard Title">
+              <input
+                value={form.title}
+                onChange={(e) => updateField("title", e.target.value)}
+                className={inputClassName}
+                placeholder="Weekly Roobet Race"
+              />
+            </Field>
+
+            <Field label="Leaderboard Subtitle">
+              <input
+                value={form.subtitle}
+                onChange={(e) => updateField("subtitle", e.target.value)}
+                className={inputClassName}
+                placeholder="Top grinders earn premium payouts before the weekly reset."
+              />
+            </Field>
+
+            <Field label="Start Time">
+              <input
+                type="datetime-local"
+                value={form.startDate}
+                onChange={(e) => updateField("startDate", e.target.value)}
+                className={inputClassName}
+              />
+            </Field>
+
+            <Field label="End Time">
+              <input
+                type="datetime-local"
+                value={form.endDate}
+                onChange={(e) => updateField("endDate", e.target.value)}
+                className={inputClassName}
+              />
+            </Field>
           </div>
 
-          <div>
-            <label className="mb-2 block text-sm font-medium text-zinc-300">
-              Start Time
-            </label>
-            <input
-              type="datetime-local"
-              value={form.startDate}
-              onChange={(e) => updateField("startDate", e.target.value)}
-              className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition focus:border-white/20"
-            />
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm font-medium text-zinc-300">
-              End Time
-            </label>
-            <input
-              type="datetime-local"
-              value={form.endDate}
-              onChange={(e) => updateField("endDate", e.target.value)}
-              className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition focus:border-white/20"
-            />
-          </div>
-
-          <div className="md:col-span-2 rounded-2xl border border-white/10 bg-white/5 p-4">
-            <div className="text-xs uppercase tracking-[0.2em] text-zinc-500">
+          <div className="min-w-0 rounded-[24px] border border-white/10 bg-white/[0.03] p-4 sm:p-5">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-zinc-500">
               Countdown Target
             </div>
-            <div className="mt-2 text-sm font-medium text-white">
+
+            <div className="mt-3 truncate text-base font-semibold text-white sm:text-lg">
               {form.endDate || "Not set"}
             </div>
-            <p className="mt-2 text-xs text-zinc-500">
-              Countdown is always tied directly to the end time.
+
+            <p className="truncate-3 mt-3 text-sm leading-6 text-zinc-400">
+              This display is locked to the end time so the public countdown
+              never drifts from the configured event end.
             </p>
+
+            {message ? (
+              <div className="mt-4 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-zinc-200">
+                <span className="truncate-2">{message}</span>
+              </div>
+            ) : null}
           </div>
         </div>
       </section>
 
-      <section className="rounded-3xl border border-white/10 bg-black/30 p-6 backdrop-blur-xl">
-        <div className="mb-5 flex items-center justify-between gap-4">
-          <div>
-            <h2 className="text-xl font-bold text-white">Prize Tiers</h2>
-            <p className="mt-1 text-sm text-zinc-400">
-              Add as many payout positions as you need.
+      <section className="rounded-3xl border border-white/10 bg-black/30 p-5 backdrop-blur-xl sm:p-6">
+        <div className="mb-5 flex min-w-0 flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div className="min-w-0">
+            <h2 className="truncate text-xl font-bold text-white sm:text-2xl">
+              Prize Tiers
+            </h2>
+            <p className="truncate-3 mt-1 max-w-2xl text-sm leading-6 text-zinc-400">
+              Add as many payout positions as needed. Values stay aligned and
+              stop reflowing awkwardly across widths.
             </p>
           </div>
 
           <button
             type="button"
             onClick={addPrizeTier}
-            className="inline-flex h-11 items-center justify-center rounded-full bg-white px-5 text-sm font-semibold text-black transition hover:opacity-90"
+            className="inline-flex h-11 min-w-0 items-center justify-center rounded-full bg-white px-5 text-sm font-semibold text-black transition hover:opacity-90"
           >
-            + Add Tier
+            <span className="truncate whitespace-nowrap">+ Add Tier</span>
           </button>
         </div>
 
@@ -321,13 +361,13 @@ export default function AdminLeaderboardPage() {
           {form.prizeTiers.map((tier, index) => (
             <div
               key={tier.place}
-              className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3"
+              className="grid min-w-0 grid-cols-1 gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 sm:grid-cols-[72px_minmax(0,1fr)_auto] sm:items-center"
             >
-              <div className="w-[64px] shrink-0 text-base font-bold text-white">
+              <div className="whitespace-nowrap text-base font-bold text-white">
                 #{tier.place}
               </div>
 
-              <div className="flex-1">
+              <div className="min-w-0">
                 <input
                   type="number"
                   min={0}
@@ -335,7 +375,7 @@ export default function AdminLeaderboardPage() {
                   onChange={(e) =>
                     updatePrize(index, Number(e.target.value) || 0)
                   }
-                  className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition placeholder:text-zinc-500 focus:border-white/20"
+                  className="h-11 w-full rounded-xl border border-white/10 bg-white/5 px-4 text-white outline-none transition placeholder:text-zinc-500 focus:border-white/20"
                   placeholder="0"
                 />
               </div>
@@ -344,37 +384,58 @@ export default function AdminLeaderboardPage() {
                 <button
                   type="button"
                   onClick={() => removePrizeTier(index)}
-                  className="inline-flex h-10 items-center justify-center rounded-full border border-red-500/20 bg-red-500/10 px-4 text-sm font-semibold text-red-200 transition hover:border-red-500/30 hover:bg-red-500/15"
+                  className="inline-flex h-10 min-w-0 items-center justify-center rounded-full border border-red-500/20 bg-red-500/10 px-4 text-sm font-semibold text-red-200 transition hover:border-red-500/30 hover:bg-red-500/15"
                 >
-                  Remove
+                  <span className="truncate whitespace-nowrap">Remove</span>
                 </button>
               ) : null}
             </div>
           ))}
         </div>
 
-        <div className="mt-6 flex flex-wrap items-center gap-3">
+        <div className="mt-6 flex min-w-0 flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
           <button
             type="button"
             onClick={() => void handleSave()}
             disabled={saving}
-            className="inline-flex h-12 items-center justify-center rounded-full bg-white px-5 text-sm font-semibold text-black transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex h-12 min-w-0 items-center justify-center rounded-full bg-white px-5 text-sm font-semibold text-black transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {saving ? "Saving..." : "Save leaderboard"}
+            <span className="truncate whitespace-nowrap">
+              {saving ? "Saving..." : "Save leaderboard"}
+            </span>
           </button>
 
           <button
             type="button"
             onClick={handleReset}
             disabled={saving}
-            className="inline-flex h-12 items-center justify-center rounded-full border border-white/10 bg-white/5 px-5 text-sm font-semibold text-white transition hover:border-white/20 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex h-12 min-w-0 items-center justify-center rounded-full border border-white/10 bg-white/5 px-5 text-sm font-semibold text-white transition hover:border-white/20 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            Reset
+            <span className="truncate whitespace-nowrap">Reset</span>
           </button>
 
-          {message ? <span className="text-sm text-zinc-300">{message}</span> : null}
+          {message ? (
+            <span className="truncate-2 text-sm text-zinc-300">{message}</span>
+          ) : null}
         </div>
       </section>
     </div>
+  );
+}
+
+function Field({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <label className="block min-w-0 space-y-2">
+      <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-zinc-400">
+        {label}
+      </span>
+      {children}
+    </label>
   );
 }

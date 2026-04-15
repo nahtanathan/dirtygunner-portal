@@ -1,5 +1,4 @@
 // FILE: src/components/home/HomeBonusHuntsPreview.tsx
-
 import Link from "next/link";
 
 import { CTAButton } from "@/components/ui/CTAButton";
@@ -75,19 +74,21 @@ export function HomeBonusHuntsPreview({
       />
 
       <div className="grid gap-6 xl:grid-cols-[1.35fr_0.85fr]">
-        <PremiumPanel className="p-6 md:p-7">
-          <div className="flex flex-col gap-5">
-            <div className="flex flex-wrap items-start justify-between gap-4">
-              <div>
-                <div className="mb-3 inline-flex rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-emerald-300">
-                  {liveHunt ? "Live Hunt" : snapshot.source === "fallback" ? "Fallback Feed" : "Standby"}
+        <PremiumPanel className="p-5 sm:p-6 md:p-7">
+          <div className="flex min-w-0 flex-col gap-5">
+            <div className="flex min-w-0 flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+              <div className="min-w-0 flex-1">
+                <div className="mb-3 inline-flex max-w-full rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-emerald-300 sm:text-[11px] sm:tracking-[0.28em]">
+                  <span className="truncate whitespace-nowrap">
+                    {liveHunt ? "Live Hunt" : snapshot.source === "fallback" ? "Fallback Feed" : "Standby"}
+                  </span>
                 </div>
 
-                <h3 className="text-2xl font-bold uppercase tracking-wide text-white md:text-3xl">
+                <h3 className="truncate-2 text-[1.5rem] font-bold uppercase tracking-wide text-white sm:text-[1.8rem] md:text-[2rem]">
                   {liveHunt?.title || "No hunt currently opening"}
                 </h3>
 
-                <p className="mt-2 text-sm text-white/58">
+                <p className="truncate-3 mt-2 text-sm text-white/58 md:text-[15px]">
                   {liveHunt
                     ? `${liveHunt.casino || liveHunt.provider || "BonusHunt.gg"} · updated ${formatDateTime(
                         liveHunt.updatedAt || liveHunt.date,
@@ -96,17 +97,17 @@ export function HomeBonusHuntsPreview({
                 </p>
 
                 {liveHunt?.currentOpeningSlot ? (
-                  <p className="mt-3 text-sm text-emerald-300/90">
+                  <p className="mt-3 truncate text-sm text-emerald-300/90">
                     Opening now: {liveHunt.currentOpeningSlot}
                   </p>
                 ) : null}
               </div>
 
-              <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
+              <div className="w-full max-w-[220px] rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 lg:w-auto">
                 <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/42">
                   Source
                 </div>
-                <div className="mt-2 text-sm font-semibold text-white">
+                <div className="mt-2 truncate text-sm font-semibold text-white">
                   {snapshot.source === "bonushunt" ? "BonusHunt.gg" : "Local fallback"}
                 </div>
               </div>
@@ -130,7 +131,7 @@ export function HomeBonusHuntsPreview({
 
             {liveHunt?.bonuses && liveHunt.bonuses.length > 0 ? (
               <div className="overflow-hidden rounded-2xl border border-white/10 bg-black/20">
-                <div className="grid grid-cols-[minmax(0,1.7fr)_minmax(0,0.8fr)_100px] gap-3 border-b border-white/10 px-4 py-3 text-[11px] uppercase tracking-[0.24em] text-white/42">
+                <div className="grid grid-cols-[minmax(0,1.5fr)_minmax(0,0.8fr)_88px] gap-3 border-b border-white/10 px-4 py-3 text-[11px] uppercase tracking-[0.24em] text-white/42">
                   <div>Game</div>
                   <div>Provider</div>
                   <div className="text-right">Payout</div>
@@ -140,13 +141,13 @@ export function HomeBonusHuntsPreview({
                   {liveHunt.bonuses.slice(0, 4).map((bonus) => (
                     <div
                       key={bonus.id}
-                      className="grid grid-cols-[minmax(0,1.7fr)_minmax(0,0.8fr)_100px] gap-3 px-4 py-3 text-sm"
+                      className="grid grid-cols-[minmax(0,1.5fr)_minmax(0,0.8fr)_88px] gap-3 px-4 py-3 text-sm"
                     >
                       <div className="truncate text-white">{bonus.slotName}</div>
                       <div className="truncate text-white/58">
                         {bonus.provider || "—"}
                       </div>
-                      <div className="text-right text-white">
+                      <div className="text-right whitespace-nowrap text-white">
                         {formatMoney(bonus.payout)}
                       </div>
                     </div>
@@ -191,17 +192,17 @@ export function HomeBonusHuntsPreview({
           </PremiumPanel>
 
           <PremiumPanel className="p-5 md:p-6">
-            <div className="mb-4 flex items-center justify-between gap-3">
-              <div>
+            <div className="mb-4 flex min-w-0 items-center justify-between gap-3">
+              <div className="min-w-0">
                 <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/42">
                   Recent Archive
                 </div>
-                <h3 className="mt-2 text-xl font-bold text-white">Completed Hunts</h3>
+                <h3 className="mt-2 truncate text-xl font-bold text-white">Completed Hunts</h3>
               </div>
 
               <Link
                 href="/bonus-hunts"
-                className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-300 transition-opacity hover:opacity-80"
+                className="shrink-0 whitespace-nowrap text-xs font-semibold uppercase tracking-[0.2em] text-sky-300 transition-opacity hover:opacity-80"
               >
                 Open page
               </Link>
@@ -214,7 +215,7 @@ export function HomeBonusHuntsPreview({
                     key={hunt.id}
                     className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4"
                   >
-                    <div className="flex items-start justify-between gap-3">
+                    <div className="flex min-w-0 items-start justify-between gap-3">
                       <div className="min-w-0">
                         <div className="truncate text-sm font-semibold uppercase tracking-[0.12em] text-white">
                           {hunt.title}
@@ -224,22 +225,22 @@ export function HomeBonusHuntsPreview({
                         </div>
                       </div>
 
-                      <div className="text-right text-sm font-semibold text-white">
+                      <div className="shrink-0 whitespace-nowrap text-right text-sm font-semibold text-white">
                         {formatMoney(hunt.profitLoss)}
                       </div>
                     </div>
 
-                    <div className="mt-3 grid grid-cols-3 gap-2 text-xs text-white/58">
-                      <span>{formatCount(hunt.buyCount)} bonuses</span>
-                      <span>{formatMoney(hunt.totalReturn)} return</span>
-                      <span>{formatSignedPercent(hunt.profitLossPercentage)}</span>
+                    <div className="mt-3 grid grid-cols-1 gap-2 text-xs text-white/58 sm:grid-cols-3">
+                      <span className="truncate">{formatCount(hunt.buyCount)} bonuses</span>
+                      <span className="truncate">{formatMoney(hunt.totalReturn)} return</span>
+                      <span className="truncate">{formatSignedPercent(hunt.profitLossPercentage)}</span>
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
               <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-sm text-white/60">
-                No archived hunts are available yet.
+                Archived bonus hunts will appear here after completed sessions are synced.
               </div>
             )}
           </PremiumPanel>
@@ -249,19 +250,13 @@ export function HomeBonusHuntsPreview({
   );
 }
 
-function PreviewStat({
-  label,
-  value,
-}: {
-  label: string;
-  value: string;
-}) {
+function PreviewStat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+    <div className="min-w-0 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4">
       <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/42">
         {label}
       </div>
-      <div className="mt-2 text-base font-semibold text-white md:text-lg">
+      <div className="mt-2 overflow-hidden text-ellipsis whitespace-nowrap text-base font-semibold text-white sm:text-lg">
         {value}
       </div>
     </div>

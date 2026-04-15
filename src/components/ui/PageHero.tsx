@@ -1,3 +1,4 @@
+// FILE: src/components/ui/PageHero.tsx
 import { ReactNode } from "react";
 import { PremiumPanel } from "@/components/ui/PremiumPanel";
 
@@ -15,7 +16,7 @@ export function PageHero({
   aside?: ReactNode;
 }) {
   return (
-    <PremiumPanel className="overflow-hidden p-6 md:p-8 xl:p-10">
+    <PremiumPanel className="overflow-hidden p-5 sm:p-6 md:p-8 xl:p-10">
       <div
         className="absolute inset-0"
         style={{
@@ -28,33 +29,35 @@ export function PageHero({
       />
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-white/10" />
 
-      <div className="relative grid gap-8 xl:grid-cols-[1.5fr_0.8fr] xl:items-end">
-        <div>
+      <div className="relative grid min-w-0 gap-6 xl:grid-cols-[1.5fr_0.8fr] xl:items-end xl:gap-8">
+        <div className="min-w-0">
           <div
-            className="mb-3 text-sm font-semibold uppercase tracking-[0.35em]"
+            className="mb-3 text-label-tight"
             style={{ color: "#60A5FA" }}
           >
             {eyebrow}
           </div>
 
           <h1
-            className="max-w-4xl text-4xl font-bold uppercase tracking-wide md:text-6xl"
+            className="text-responsive-title max-w-4xl font-bold uppercase tracking-wide"
             style={{ color: "var(--text-primary)" }}
           >
             {title}
           </h1>
 
           <p
-            className="mt-5 max-w-2xl text-sm leading-7 md:text-base"
+            className="truncate-3 mt-4 max-w-2xl text-responsive-body"
             style={{ color: "var(--text-secondary)" }}
           >
             {description}
           </p>
 
-          {actions ? <div className="mt-7 flex flex-wrap gap-3">{actions}</div> : null}
+          {actions ? (
+            <div className="mt-6 flex flex-wrap gap-3">{actions}</div>
+          ) : null}
         </div>
 
-        {aside ? <div className="relative">{aside}</div> : null}
+        {aside ? <div className="relative min-w-0">{aside}</div> : null}
       </div>
     </PremiumPanel>
   );

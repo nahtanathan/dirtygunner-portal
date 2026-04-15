@@ -1,4 +1,3 @@
-// FILE: src/components/raffles/RaffleEntryButton.tsx
 
 "use client";
 
@@ -158,12 +157,12 @@ export function RaffleEntryButton({
   }
 
   return (
-    <div className="mt-5">
+    <div className="mt-5 min-w-0">
       <button
         type="button"
         onClick={() => void handleEnter()}
         disabled={isDisabled}
-        className="inline-flex h-12 w-full items-center justify-center rounded-2xl text-sm font-extrabold uppercase tracking-[0.08em] text-white transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-60"
+        className="inline-flex h-12 w-full min-w-0 items-center justify-center rounded-2xl px-4 text-sm font-extrabold uppercase tracking-[0.08em] text-white transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-60"
         style={{
           background:
             isDisabled && !isSubmitting
@@ -173,21 +172,21 @@ export function RaffleEntryButton({
             "inset 0 1px 0 rgba(255,255,255,0.18), 0 12px 28px rgba(37,99,235,0.22)",
         }}
       >
-        {buttonLabel}
+        <span className="truncate whitespace-nowrap">{buttonLabel}</span>
       </button>
 
-      <div className="mt-3 flex items-center justify-between gap-3 text-xs text-white/55">
-        <span>{totalEntries.toLocaleString()} total entries</span>
-        <span>
+      <div className="mt-3 flex min-w-0 flex-col gap-1 text-xs text-white/55 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
+        <span className="truncate">{totalEntries.toLocaleString()} total entries</span>
+        <span className="truncate sm:text-right">
           {isLoggedOut
             ? "Log in to view your balance"
             : `${currentUserEntries} entries • ${currentUserPoints.toLocaleString()} ${entryCurrency}`}
         </span>
       </div>
 
-      <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs">
-        <span className="text-white/65">You have {currentUserEntries} entries</span>
-        <span className="text-white/45">
+      <div className="mt-2 flex min-w-0 flex-wrap gap-x-4 gap-y-1 text-xs">
+        <span className="truncate text-white/65">You have {currentUserEntries} entries</span>
+        <span className="truncate text-white/45">
           {maxEntriesPerUser === null
             ? "Unlimited entries"
             : `${currentUserEntries} / ${maxEntriesPerUser} used`}
@@ -213,7 +212,7 @@ export function RaffleEntryButton({
       ) : null}
 
       {message ? (
-        <div className="mt-2 text-xs text-white/72">{message}</div>
+        <div className="mt-2 truncate-2 text-xs text-white/72">{message}</div>
       ) : null}
     </div>
   );

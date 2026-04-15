@@ -1,9 +1,8 @@
-// FILE: src/components/raffles/PublicRafflesClient.tsx
 
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Clock3, Coins, Gift, Trophy, Users } from "lucide-react";
+import { Clock3, Coins, Gift, Users } from "lucide-react";
 import { RaffleEntryButton } from "@/components/raffles/RaffleEntryButton";
 
 type PublicRaffleItem = {
@@ -174,17 +173,17 @@ export function PublicRafflesClient({
   return (
     <section className="mx-auto w-full max-w-[1280px] space-y-8">
       <section className="space-y-4">
-        <div className="flex items-center justify-between gap-4">
-          <div>
+        <div className="flex min-w-0 items-end justify-between gap-4">
+          <div className="min-w-0">
             <div className="text-xs font-semibold uppercase tracking-[0.28em] text-sky-300/80">
               Live Now
             </div>
-            <h2 className="mt-2 text-2xl font-bold text-white">
+            <h2 className="mt-2 truncate text-2xl font-bold text-white md:text-[1.75rem]">
               Active Raffles
             </h2>
           </div>
 
-          <div className="text-sm text-white/45">
+          <div className="shrink-0 whitespace-nowrap text-sm text-white/45">
             {activeRaffles.length} live
           </div>
         </div>
@@ -211,11 +210,11 @@ export function PublicRafflesClient({
       </section>
 
       <section className="space-y-4">
-        <div>
+        <div className="min-w-0">
           <div className="text-xs font-semibold uppercase tracking-[0.28em] text-white/40">
             Results
           </div>
-          <h2 className="mt-2 text-2xl font-bold text-white">
+          <h2 className="mt-2 truncate text-2xl font-bold text-white md:text-[1.75rem]">
             Completed Raffles
           </h2>
         </div>
@@ -296,7 +295,7 @@ function RaffleCard({
 
   return (
     <article
-      className="group overflow-hidden rounded-[28px] border p-3 transition-transform duration-200 hover:-translate-y-1"
+      className="group flex h-full min-w-0 flex-col overflow-hidden rounded-[28px] border p-3 transition-transform duration-200 hover:-translate-y-1"
       style={{
         borderColor: live ? accent.border : "rgba(255,255,255,0.08)",
         background:
@@ -328,18 +327,18 @@ function RaffleCard({
             />
             <div className="absolute inset-x-0 bottom-0 h-24 bg-[linear-gradient(180deg,transparent,rgba(0,0,0,0.28))]" />
 
-            <div className="relative z-10 flex h-full items-start justify-between">
-              <div className="max-w-[72%]">
+            <div className="relative z-10 flex h-full min-w-0 items-start justify-between gap-4">
+              <div className="min-w-0 max-w-[72%]">
                 <div className="text-xs font-black uppercase tracking-[0.22em] text-white/78">
                   {live ? "Live Raffle" : "Completed"}
                 </div>
 
-                <div className="mt-4 line-clamp-3 text-[2rem] font-black uppercase leading-none text-white">
+                <div className="truncate-3 mt-4 text-[1.75rem] font-black uppercase leading-none text-white sm:text-[2rem]">
                   {raffle.prizeDetails}
                 </div>
               </div>
 
-              <div className="relative flex h-full items-end justify-end pb-2">
+              <div className="relative flex h-full shrink-0 items-end justify-end pb-2">
                 <div className="absolute bottom-8 right-6 h-14 w-14 rounded-full bg-yellow-300/20 blur-2xl" />
                 <Coins className="h-16 w-16 text-yellow-300 drop-shadow-[0_0_18px_rgba(250,204,21,0.35)]" />
               </div>
@@ -348,14 +347,14 @@ function RaffleCard({
         )}
       </div>
 
-      <div className="px-2 pb-2 pt-5">
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <h3 className="text-[1.15rem] font-bold text-white">
+      <div className="flex min-w-0 flex-1 flex-col px-2 pb-2 pt-5">
+        <div className="flex min-w-0 items-start justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <h3 className="truncate-2 text-[1.1rem] font-bold text-white sm:text-[1.15rem]">
               {raffle.title}
             </h3>
             {raffle.description ? (
-              <p className="mt-1 line-clamp-2 text-sm leading-6 text-white/58">
+              <p className="truncate-3 mt-1 text-sm leading-6 text-white/58">
                 {raffle.description}
               </p>
             ) : null}
@@ -369,11 +368,11 @@ function RaffleCard({
               color: "rgba(255,255,255,0.86)",
             }}
           >
-            {live ? "Live" : "Ended"}
+            <span className="whitespace-nowrap">{live ? "Live" : "Ended"}</span>
           </div>
         </div>
 
-        <div className="mt-5 grid grid-cols-2 gap-3">
+        <div className="mt-5 grid gap-3 sm:grid-cols-2">
           <InfoTile
             icon={<Coins className="h-4 w-4" />}
             label="Cost"
@@ -400,9 +399,9 @@ function RaffleCard({
           />
         </div>
 
-        <div className="mt-4 flex items-center justify-between text-xs text-white/55">
-          <span>You have {raffle.currentUserEntries} entries</span>
-          <span>{limitText} used</span>
+        <div className="mt-4 flex min-w-0 flex-col gap-1 text-xs text-white/55 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
+          <span className="truncate">You have {raffle.currentUserEntries} entries</span>
+          <span className="truncate sm:text-right">{limitText} used</span>
         </div>
 
         <RaffleEntryButton
@@ -435,19 +434,21 @@ function InfoTile({
 }) {
   return (
     <div
-      className="rounded-2xl border px-4 py-3"
+      className="min-w-0 rounded-2xl border px-4 py-3"
       style={{
         borderColor: "rgba(255,255,255,0.08)",
         background: "rgba(255,255,255,0.03)",
       }}
     >
-      <div className="flex items-center gap-2 text-white/44">
-        {icon}
-        <span className="text-[11px] font-semibold uppercase tracking-[0.18em]">
+      <div className="flex min-w-0 items-center gap-2 text-white/44">
+        <span className="shrink-0">{icon}</span>
+        <span className="truncate text-[11px] font-semibold uppercase tracking-[0.18em]">
           {label}
         </span>
       </div>
-      <div className="mt-2 text-base font-bold text-white">{value}</div>
+      <div className="mt-2 overflow-hidden text-ellipsis whitespace-nowrap text-base font-bold text-white">
+        {value}
+      </div>
     </div>
   );
 }
@@ -468,8 +469,10 @@ function EmptyState({
           "linear-gradient(180deg, rgba(12,18,34,0.94) 0%, rgba(7,12,24,0.98) 100%)",
       }}
     >
-      <div className="text-xl font-bold text-white">{title}</div>
-      <div className="mt-2 text-sm text-white/55">{description}</div>
+      <div className="truncate text-xl font-bold text-white">{title}</div>
+      <div className="mx-auto mt-2 max-w-[38rem] text-sm text-white/55">
+        {description}
+      </div>
     </div>
   );
 }

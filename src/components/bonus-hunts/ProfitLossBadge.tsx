@@ -1,5 +1,4 @@
 // FILE: src/components/bonus-hunts/ProfitLossBadge.tsx
-
 import { cn } from "@/lib/utils/cn";
 
 function formatSignedCurrency(value: number) {
@@ -17,13 +16,13 @@ export function ProfitLossBadge({ value }: { value: number }) {
   return (
     <div
       className={cn(
-        "inline-flex rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em]",
+        "inline-flex max-w-full items-center rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] sm:text-xs sm:tracking-[0.25em]",
         positive
           ? "bg-emerald-500/15 text-emerald-300"
           : "bg-danger/15 text-red-300",
       )}
     >
-      {formatSignedCurrency(value)}
+      <span className="truncate whitespace-nowrap">{formatSignedCurrency(value)}</span>
     </div>
   );
 }

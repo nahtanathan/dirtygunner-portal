@@ -1,3 +1,4 @@
+// FILE: src/components/profile/profile-page-client.tsx
 "use client";
 
 import Image from "next/image";
@@ -80,7 +81,7 @@ export function ProfilePageClient() {
       boxShadow: `0 0 0 1px ${accentColor}20 inset`,
       borderColor: `${accentColor}33`,
     }),
-    [accentColor]
+    [accentColor],
   );
 
   async function handleSave() {
@@ -132,25 +133,25 @@ export function ProfilePageClient() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 md:px-6">
-      <div className="mb-8 flex items-center justify-between">
+      <div className="mb-8 flex min-w-0 items-center justify-between gap-4">
         <Link
           href="/"
-          className="inline-flex h-10 items-center gap-2 rounded-full border border-white/10 bg-[#0d0d11] px-4 text-sm font-semibold text-white transition hover:border-white/20 hover:bg-[#121218]"
+          className="inline-flex h-10 max-w-full items-center gap-2 whitespace-nowrap rounded-full border border-white/10 bg-[#0d0d11] px-4 text-sm font-semibold text-white transition hover:border-white/20 hover:bg-[#121218]"
         >
           <span className="text-white/60">←</span>
-          Home
+          <span className="truncate">Home</span>
         </Link>
 
-        <div className="text-sm text-zinc-500">Profile</div>
+        <div className="shrink-0 whitespace-nowrap text-sm text-zinc-500">Profile</div>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[380px_minmax(0,1fr)]">
         <section
-          className="rounded-3xl border bg-black/30 p-6 backdrop-blur-xl"
+          className="min-w-0 rounded-3xl border bg-black/30 p-5 backdrop-blur-xl sm:p-6"
           style={accentStyle}
         >
-          <div className="flex items-start gap-4">
-            <div className="relative h-20 w-20 overflow-hidden rounded-2xl ring-1 ring-white/10">
+          <div className="flex min-w-0 items-start gap-4">
+            <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl ring-1 ring-white/10">
               {user.avatar ? (
                 <Image
                   src={user.avatar}
@@ -166,7 +167,7 @@ export function ProfilePageClient() {
               )}
             </div>
 
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <h1 className="truncate text-2xl font-bold text-white">
                 {user.display_name || user.kick_username || "User"}
               </h1>
@@ -176,58 +177,40 @@ export function ProfilePageClient() {
 
               <div className="mt-3 flex flex-wrap gap-2">
                 {user.isAdmin ? (
-                  <span className="rounded-full border border-amber-400/20 bg-amber-400/10 px-3 py-1 text-xs font-semibold text-amber-200">
-                    Admin
+                  <span className="inline-flex max-w-full rounded-full border border-amber-400/20 bg-amber-400/10 px-3 py-1 text-xs font-semibold text-amber-200">
+                    <span className="truncate whitespace-nowrap">Admin</span>
                   </span>
                 ) : null}
 
                 {user.isKickBroadcaster ? (
-                  <span className="rounded-full border border-violet-400/20 bg-violet-400/10 px-3 py-1 text-xs font-semibold text-violet-200">
-                    Broadcaster
+                  <span className="inline-flex max-w-full rounded-full border border-violet-400/20 bg-violet-400/10 px-3 py-1 text-xs font-semibold text-violet-200">
+                    <span className="truncate whitespace-nowrap">Broadcaster</span>
                   </span>
                 ) : null}
 
-                <span className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs font-semibold text-emerald-200">
-                  {user.points.toLocaleString()} Bullets
+                <span className="inline-flex max-w-full rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs font-semibold text-emerald-200">
+                  <span className="truncate whitespace-nowrap">
+                    {user.points.toLocaleString()} Bullets
+                  </span>
                 </span>
               </div>
             </div>
           </div>
 
           <div className="mt-6 space-y-4 text-sm">
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-              <div className="text-xs uppercase tracking-[0.2em] text-zinc-500">
-                Kick User ID
-              </div>
-              <div className="mt-1 font-medium text-white">
-                {user.kick_user_id || "Not connected"}
-              </div>
-            </div>
-
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-              <div className="text-xs uppercase tracking-[0.2em] text-zinc-500">
-                Email
-              </div>
-              <div className="mt-1 font-medium text-white">
-                {user.email || "No email available"}
-              </div>
-            </div>
-
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-              <div className="text-xs uppercase tracking-[0.2em] text-zinc-500">
-                Joined
-              </div>
-              <div className="mt-1 font-medium text-white">
-                {new Date(user.createdAt).toLocaleDateString()}
-              </div>
-            </div>
+            <ProfileInfoCard label="Kick User ID" value={user.kick_user_id || "Not connected"} />
+            <ProfileInfoCard label="Email" value={user.email || "No email available"} />
+            <ProfileInfoCard
+              label="Joined"
+              value={new Date(user.createdAt).toLocaleDateString()}
+            />
           </div>
         </section>
 
-        <section className="rounded-3xl border border-white/10 bg-black/30 p-6 backdrop-blur-xl">
-          <div className="mb-6">
-            <h2 className="text-xl font-bold text-white">Profile Settings</h2>
-            <p className="mt-1 text-sm text-zinc-400">
+        <section className="min-w-0 rounded-3xl border border-white/10 bg-black/30 p-5 backdrop-blur-xl sm:p-6">
+          <div className="mb-6 min-w-0">
+            <h2 className="truncate text-xl font-bold text-white">Profile Settings</h2>
+            <p className="truncate-3 mt-1 text-sm leading-6 text-zinc-400">
               Edit your local profile details. Your Kick username and Kick avatar
               stay synced from Kick login.
             </p>
@@ -271,7 +254,7 @@ export function ProfilePageClient() {
                 Accent color
               </label>
 
-              <div className="flex items-center gap-3">
+              <div className="flex min-w-0 items-center gap-3">
                 <input
                   type="color"
                   value={accentColor}
@@ -281,7 +264,7 @@ export function ProfilePageClient() {
                       profile_accent: e.target.value,
                     }))
                   }
-                  className="h-12 w-16 cursor-pointer rounded-xl border border-white/10 bg-transparent p-1"
+                  className="h-12 w-16 shrink-0 cursor-pointer rounded-xl border border-white/10 bg-transparent p-1"
                 />
 
                 <input
@@ -292,7 +275,7 @@ export function ProfilePageClient() {
                       profile_accent: e.target.value,
                     }))
                   }
-                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition placeholder:text-zinc-500 focus:border-white/20"
+                  className="min-w-0 flex-1 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition placeholder:text-zinc-500 focus:border-white/20"
                   placeholder="#7d5cff"
                 />
               </div>
@@ -302,13 +285,13 @@ export function ProfilePageClient() {
               <div className="mb-3 text-sm font-medium text-zinc-300">Preview</div>
 
               <div
-                className="inline-flex items-center gap-3 rounded-full border bg-[#0d0d11] px-3 pr-4 text-white"
+                className="inline-flex max-w-full min-w-0 items-center gap-3 rounded-full border bg-[#0d0d11] px-3 pr-4 text-white"
                 style={{
                   borderColor: `${accentColor}55`,
                   boxShadow: `0 0 0 1px ${accentColor}20 inset`,
                 }}
               >
-                <span className="relative block h-7 w-7 overflow-hidden rounded-full ring-1 ring-white/10">
+                <span className="relative block h-7 w-7 shrink-0 overflow-hidden rounded-full ring-1 ring-white/10">
                   {user.avatar ? (
                     <Image
                       src={user.avatar}
@@ -324,35 +307,48 @@ export function ProfilePageClient() {
                   )}
                 </span>
 
-                <span className="max-w-[120px] truncate text-sm font-semibold text-white">
+                <span className="min-w-0 max-w-[140px] truncate text-sm font-semibold text-white sm:max-w-[180px]">
                   {form.display_name || user.kick_username || "Connected"}
                 </span>
               </div>
             </div>
 
-            <div className="flex items-center gap-3 pt-2">
+            <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:items-center">
               <button
                 type="button"
                 onClick={() => void handleSave()}
                 disabled={saving}
-                className="inline-flex h-12 items-center justify-center rounded-full bg-white px-5 text-sm font-semibold text-black transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex h-12 max-w-full items-center justify-center whitespace-nowrap rounded-full bg-white px-5 text-sm font-semibold text-black transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {saving ? "Saving..." : "Save profile"}
+                <span className="truncate">{saving ? "Saving..." : "Save profile"}</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => void loadProfile()}
                 disabled={saving}
-                className="inline-flex h-12 items-center justify-center rounded-full border border-white/10 bg-white/5 px-5 text-sm font-semibold text-white transition hover:border-white/20 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex h-12 max-w-full items-center justify-center whitespace-nowrap rounded-full border border-white/10 bg-white/5 px-5 text-sm font-semibold text-white transition hover:border-white/20 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                Reset
+                <span className="truncate">Reset</span>
               </button>
 
-              {message ? <span className="text-sm text-zinc-300">{message}</span> : null}
+              {message ? (
+                <span className="truncate-2 text-sm text-zinc-300">{message}</span>
+              ) : null}
             </div>
           </div>
         </section>
+      </div>
+    </div>
+  );
+}
+
+function ProfileInfoCard({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="min-w-0 rounded-2xl border border-white/10 bg-white/5 p-4">
+      <div className="text-xs uppercase tracking-[0.2em] text-zinc-500">{label}</div>
+      <div className="mt-1 truncate text-sm font-medium text-white sm:text-base">
+        {value}
       </div>
     </div>
   );

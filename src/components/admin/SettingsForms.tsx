@@ -1,3 +1,4 @@
+// FILE: src/components/admin/SettingsForms.tsx
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -13,6 +14,9 @@ const EMPTY_SETTINGS: SiteSettingsShape = {
   discordUrl: "",
   youtubeUrl: "",
 };
+
+const inputClassName =
+  "h-12 w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 text-sm text-white outline-none transition placeholder:text-white/30 focus:border-white/20 focus:bg-white/[0.05]";
 
 export function SiteSettingsForm() {
   const [form, setForm] = useState<SiteSettingsShape>(EMPTY_SETTINGS);
@@ -53,7 +57,7 @@ export function SiteSettingsForm() {
       } catch (error) {
         if (!mounted) return;
         setMessage(
-          error instanceof Error ? error.message : "Failed to load site settings"
+          error instanceof Error ? error.message : "Failed to load site settings",
         );
       } finally {
         if (mounted) setLoading(false);
@@ -105,7 +109,7 @@ export function SiteSettingsForm() {
       setMessage("Site settings saved.");
     } catch (error) {
       setMessage(
-        error instanceof Error ? error.message : "Failed to save site settings"
+        error instanceof Error ? error.message : "Failed to save site settings",
       );
     } finally {
       setSaving(false);
@@ -123,12 +127,12 @@ export function SiteSettingsForm() {
       discordUrl: form.discordUrl.trim(),
       youtubeUrl: form.youtubeUrl.trim(),
     }),
-    [form]
+    [form],
   );
 
   if (loading) {
     return (
-      <div className="rounded-3xl border border-white/10 bg-black/30 p-6 backdrop-blur-xl">
+      <div className="rounded-3xl border border-white/10 bg-black/30 p-5 backdrop-blur-xl sm:p-6">
         <div className="h-40 animate-pulse rounded-2xl bg-white/5" />
       </div>
     );
@@ -136,112 +140,149 @@ export function SiteSettingsForm() {
 
   return (
     <div className="grid gap-6">
-      <section className="rounded-3xl border border-white/10 bg-black/30 p-6 backdrop-blur-xl">
-        <div className="mb-6">
-          <h2 className="text-xl font-bold text-white">Social & Stream Links</h2>
-          <p className="mt-1 text-sm text-zinc-400">
-            These control the sidebar stream button and social links.
-          </p>
+      <section className="rounded-3xl border border-white/10 bg-black/30 p-5 backdrop-blur-xl sm:p-6">
+        <div className="mb-6 flex min-w-0 flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <div className="min-w-0">
+            <h2 className="truncate text-xl font-bold text-white sm:text-2xl">
+              Social & Stream Links
+            </h2>
+            <p className="truncate-3 mt-1 max-w-2xl text-sm leading-6 text-zinc-400">
+              These control the sidebar stream button and public social links.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:items-center">
+            <button
+              type="button"
+              onClick={() => void handleSave()}
+              disabled={saving}
+              className="inline-flex h-12 min-w-0 items-center justify-center rounded-full bg-white px-5 text-sm font-semibold text-black transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              <span className="truncate whitespace-nowrap">
+                {saving ? "Saving..." : "Save settings"}
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={handleReset}
+              disabled={saving}
+              className="inline-flex h-12 min-w-0 items-center justify-center rounded-full border border-white/10 bg-white/5 px-5 text-sm font-semibold text-white transition hover:border-white/20 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              <span className="truncate whitespace-nowrap">Reset</span>
+            </button>
+          </div>
         </div>
 
         <div className="grid gap-5">
-          <div>
-            <label className="mb-2 block text-sm font-medium text-zinc-300">
-              Kick URL
-            </label>
+          <Field label="Kick URL">
             <input
               value={form.kickUrl}
               onChange={(e) => updateField("kickUrl", e.target.value)}
-              className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition placeholder:text-zinc-500 focus:border-white/20"
+              className={inputClassName}
               placeholder="https://kick.com/dirtygunner"
             />
-          </div>
+          </Field>
 
-          <div>
-            <label className="mb-2 block text-sm font-medium text-zinc-300">
-              Discord URL
-            </label>
+          <Field label="Discord URL">
             <input
               value={form.discordUrl}
               onChange={(e) => updateField("discordUrl", e.target.value)}
-              className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition placeholder:text-zinc-500 focus:border-white/20"
+              className={inputClassName}
               placeholder="https://discord.gg/your-invite"
             />
-          </div>
+          </Field>
 
-          <div>
-            <label className="mb-2 block text-sm font-medium text-zinc-300">
-              YouTube URL
-            </label>
+          <Field label="YouTube URL">
             <input
               value={form.youtubeUrl}
               onChange={(e) => updateField("youtubeUrl", e.target.value)}
-              className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition placeholder:text-zinc-500 focus:border-white/20"
+              className={inputClassName}
               placeholder="https://youtube.com/@dirtygunner"
             />
-          </div>
+          </Field>
         </div>
       </section>
 
-      <section className="rounded-3xl border border-white/10 bg-black/30 p-6 backdrop-blur-xl">
-        <div className="mb-4">
-          <h3 className="text-lg font-semibold text-white">Preview</h3>
-          <p className="mt-1 text-sm text-zinc-400">
-            These are the live values the site will use.
+      <section className="rounded-3xl border border-white/10 bg-black/30 p-5 backdrop-blur-xl sm:p-6">
+        <div className="mb-4 min-w-0">
+          <h3 className="truncate text-lg font-semibold text-white sm:text-xl">
+            Preview
+          </h3>
+          <p className="truncate-3 mt-1 text-sm leading-6 text-zinc-400">
+            These are the exact values the site will use. Long URLs now truncate
+            cleanly instead of wrapping across the card.
           </p>
         </div>
 
-        <div className="grid gap-3 text-sm">
-          <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
-            <div className="text-xs uppercase tracking-[0.2em] text-zinc-500">
-              Kick
-            </div>
-            <div className="mt-1 break-all text-white">
-              {preview.kickUrl || "Not set"}
-            </div>
-          </div>
-
-          <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
-            <div className="text-xs uppercase tracking-[0.2em] text-zinc-500">
-              Discord
-            </div>
-            <div className="mt-1 break-all text-white">
-              {preview.discordUrl || "Not set"}
-            </div>
-          </div>
-
-          <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
-            <div className="text-xs uppercase tracking-[0.2em] text-zinc-500">
-              YouTube
-            </div>
-            <div className="mt-1 break-all text-white">
-              {preview.youtubeUrl || "Not set"}
-            </div>
-          </div>
+        <div className="grid gap-3 text-sm md:grid-cols-3">
+          <PreviewCard label="Kick" value={preview.kickUrl || "Not set"} />
+          <PreviewCard label="Discord" value={preview.discordUrl || "Not set"} />
+          <PreviewCard label="YouTube" value={preview.youtubeUrl || "Not set"} />
         </div>
 
-        <div className="mt-6 flex flex-wrap items-center gap-3">
+        <div className="mt-6 flex min-w-0 flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
           <button
             type="button"
             onClick={() => void handleSave()}
             disabled={saving}
-            className="inline-flex h-12 items-center justify-center rounded-full bg-white px-5 text-sm font-semibold text-black transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex h-12 min-w-0 items-center justify-center rounded-full bg-white px-5 text-sm font-semibold text-black transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {saving ? "Saving..." : "Save settings"}
+            <span className="truncate whitespace-nowrap">
+              {saving ? "Saving..." : "Save settings"}
+            </span>
           </button>
 
           <button
             type="button"
             onClick={handleReset}
             disabled={saving}
-            className="inline-flex h-12 items-center justify-center rounded-full border border-white/10 bg-white/5 px-5 text-sm font-semibold text-white transition hover:border-white/20 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex h-12 min-w-0 items-center justify-center rounded-full border border-white/10 bg-white/5 px-5 text-sm font-semibold text-white transition hover:border-white/20 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            Reset
+            <span className="truncate whitespace-nowrap">Reset</span>
           </button>
 
-          {message ? <span className="text-sm text-zinc-300">{message}</span> : null}
+          {message ? (
+            <span className="truncate-2 text-sm text-zinc-300">{message}</span>
+          ) : null}
         </div>
       </section>
+    </div>
+  );
+}
+
+function Field({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <label className="block min-w-0 space-y-2">
+      <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-zinc-400">
+        {label}
+      </span>
+      {children}
+    </label>
+  );
+}
+
+function PreviewCard({
+  label,
+  value,
+}: {
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="min-w-0 rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
+      <div className="text-xs uppercase tracking-[0.2em] text-zinc-500">
+        {label}
+      </div>
+      <div className="mt-2 truncate text-sm font-medium text-white sm:text-base">
+        {value}
+      </div>
     </div>
   );
 }

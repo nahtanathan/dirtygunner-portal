@@ -1,3 +1,4 @@
+// FILE: src/components/challenges/PublicChallengesClient.tsx
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -85,8 +86,21 @@ export function PublicChallengesClient({
   return (
     <div className="space-y-10">
       <section className="space-y-6">
+        <div className="flex min-w-0 items-end justify-between gap-4">
+          <div className="min-w-0">
+            <div className="text-label-tight text-electric/70">Live Challenges</div>
+            <h2 className="mt-2 truncate text-responsive-heading font-display font-bold uppercase tracking-wide text-white">
+              Active Runs
+            </h2>
+          </div>
+
+          <div className="shrink-0 whitespace-nowrap text-sm text-white/45">
+            {activeChallenges.length} live
+          </div>
+        </div>
+
         {activeChallenges.length > 0 ? (
-          <div className="grid gap-6">
+          <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
             {activeChallenges.map((challenge) => (
               <ChallengeCard
                 key={challenge.id}
@@ -103,8 +117,21 @@ export function PublicChallengesClient({
       </section>
 
       <section className="space-y-6">
+        <div className="flex min-w-0 items-end justify-between gap-4">
+          <div className="min-w-0">
+            <div className="text-label-tight text-white/40">Archive</div>
+            <h2 className="mt-2 truncate text-responsive-heading font-display font-bold uppercase tracking-wide text-white">
+              Completed Challenges
+            </h2>
+          </div>
+
+          <div className="shrink-0 whitespace-nowrap text-sm text-white/45">
+            {completedChallenges.length} done
+          </div>
+        </div>
+
         {completedChallenges.length > 0 ? (
-          <div className="grid gap-6">
+          <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
             {completedChallenges.map((challenge) => (
               <ChallengeCard
                 key={challenge.id}

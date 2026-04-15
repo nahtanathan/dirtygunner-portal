@@ -1,3 +1,4 @@
+// FILE: src/app/(public)/challenges/page.tsx
 import { unstable_noStore as noStore } from "next/cache";
 
 import { ChallengeCard } from "@/components/challenges/ChallengeCard";
@@ -54,30 +55,12 @@ export default async function ChallengesPage() {
         description="Compact, claimable slot challenges built for quick browsing. Open a challenge, upload proof, and keep the main grid clean."
         aside={
           <PremiumPanel className="grid gap-4 border border-white/10 bg-white/[0.03] p-5 sm:grid-cols-3">
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/45">
-                Live now
-              </p>
-              <p className="mt-2 text-2xl font-semibold text-white">
-                {activeChallenges.length}
-              </p>
-            </div>
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/45">
-                Approved
-              </p>
-              <p className="mt-2 text-2xl font-semibold text-white">
-                {approvedClaims}
-              </p>
-            </div>
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/45">
-                Remaining
-              </p>
-              <p className="mt-2 text-2xl font-semibold text-white">
-                {remainingClaims || pendingClaims || 0}
-              </p>
-            </div>
+            <MetricBlock label="Live now" value={String(activeChallenges.length)} />
+            <MetricBlock label="Approved" value={String(approvedClaims)} />
+            <MetricBlock
+              label="Remaining"
+              value={String(remainingClaims || pendingClaims || 0)}
+            />
           </PremiumPanel>
         }
       />
@@ -122,6 +105,23 @@ export default async function ChallengesPage() {
           </PremiumPanel>
         )}
       </section>
+    </div>
+  );
+}
+
+function MetricBlock({
+  label,
+  value,
+}: {
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="min-w-0">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/45">
+        {label}
+      </p>
+      <p className="mt-2 truncate text-2xl font-semibold text-white">{value}</p>
     </div>
   );
 }

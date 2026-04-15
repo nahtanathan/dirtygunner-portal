@@ -1,5 +1,4 @@
 // FILE: src/app/(public)/bonus-hunts/page.tsx
-
 import { unstable_noStore as noStore } from "next/cache";
 
 import { BonusHuntCard } from "@/components/bonus-hunts/BonusHuntCard";
@@ -46,44 +45,34 @@ export default async function BonusHuntsPage() {
         description="Track the current opening session, review finished hunt performance, and keep the DirtyGunner bonus hunt feed clean, premium, and readable without clutter."
         aside={
           <PremiumPanel className="grid gap-4 border border-white/10 bg-white/[0.03] p-5 sm:grid-cols-3">
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/45">
-                Live hunts
-              </p>
-              <p className="mt-2 text-2xl font-semibold text-white">
-                {data.activeHunts ?? liveHunts.length}
-              </p>
-            </div>
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/45">
-                Archived
-              </p>
-              <p className="mt-2 text-2xl font-semibold text-white">
-                {data.completedHunts ?? previousHunts.length}
-              </p>
-            </div>
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/45">
-                Total bonuses
-              </p>
-              <p className="mt-2 text-2xl font-semibold text-white">
-                {data.totalBonuses ?? "—"}
-              </p>
-            </div>
+            <MetricBlock
+              label="Live hunts"
+              value={String(data.activeHunts ?? liveHunts.length)}
+            />
+            <MetricBlock
+              label="Archived"
+              value={String(data.completedHunts ?? previousHunts.length)}
+            />
+            <MetricBlock
+              label="Total bonuses"
+              value={String(data.totalBonuses ?? "—")}
+            />
           </PremiumPanel>
         }
       />
 
       {data.message ? (
         <PremiumPanel className="border border-white/10 bg-white/[0.03] p-5">
-          <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-            <div>
+          <div className="flex min-w-0 flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div className="min-w-0">
               <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/45">
                 Data source
               </p>
-              <p className="mt-2 text-sm leading-7 text-white/70">{data.message}</p>
+              <p className="truncate-3 mt-2 text-sm leading-7 text-white/70">
+                {data.message}
+              </p>
             </div>
-            <div className="text-xs uppercase tracking-[0.24em] text-white/40">
+            <div className="shrink-0 whitespace-nowrap text-xs uppercase tracking-[0.24em] text-white/40">
               {data.source === "bonushunt" ? "BonusHunt.gg" : "Local fallback"} ·{" "}
               {new Intl.DateTimeFormat("en-US", {
                 month: "short",
@@ -135,6 +124,23 @@ export default async function BonusHuntsPage() {
           </PremiumPanel>
         )}
       </section>
+    </div>
+  );
+}
+
+function MetricBlock({
+  label,
+  value,
+}: {
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="min-w-0">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/45">
+        {label}
+      </p>
+      <p className="mt-2 truncate text-2xl font-semibold text-white">{value}</p>
     </div>
   );
 }

@@ -1,5 +1,4 @@
 // FILE: src/app/(public)/raffles/page.tsx
-
 import { unstable_noStore as noStore } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
@@ -84,7 +83,7 @@ export default async function RafflesPage() {
   });
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 md:space-y-10">
       <PageHero
         eyebrow="Raffles"
         title="Community Raffles"

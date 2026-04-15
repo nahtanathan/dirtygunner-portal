@@ -1,3 +1,4 @@
+// FILE: src/components/challenges/ChallengeCard.tsx
 "use client";
 
 import Image from "next/image";
@@ -206,10 +207,13 @@ export function ChallengeCard({
     }
   }
 
+  const targetLabel = formatTarget(rich);
+  const minBetLabel = getMinBet(rich);
+
   return (
     <>
-      <PremiumPanel className="group overflow-hidden border border-white/10 bg-[linear-gradient(180deg,rgba(36,24,42,0.88),rgba(19,24,35,0.96))] p-0 shadow-[0_20px_60px_rgba(0,0,0,0.30)]">
-        <div className="relative">
+      <PremiumPanel className="group flex h-full min-w-0 flex-col overflow-hidden border border-white/10 bg-[linear-gradient(180deg,rgba(36,24,42,0.88),rgba(19,24,35,0.96))] p-0 shadow-[0_20px_60px_rgba(0,0,0,0.30)]">
+        <div className="relative flex h-full min-w-0 flex-col">
           <div className="relative h-[180px] overflow-hidden bg-[linear-gradient(180deg,rgba(33,23,38,0.95),rgba(19,24,35,1))]">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.06),transparent_55%)]" />
 
@@ -231,68 +235,82 @@ export function ChallengeCard({
 
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(17,13,22,0.10),rgba(17,13,22,0.55))]" />
 
-            <div className="absolute left-4 top-4">
-              <span className="inline-flex rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.24em] text-amber-100">
-                {getStatusLabel(rich)}
+            <div className="absolute left-4 top-4 max-w-[calc(100%-2rem)]">
+              <span className="inline-flex max-w-full rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.24em] text-amber-100 sm:text-[11px]">
+                <span className="truncate whitespace-nowrap">{getStatusLabel(rich)}</span>
               </span>
             </div>
           </div>
 
-          <div className="space-y-4 p-4">
-            <div>
-              <h3 className="line-clamp-2 text-xl font-bold leading-tight text-white">
+          <div className="flex min-w-0 flex-1 flex-col space-y-4 p-4 sm:p-5">
+            <div className="min-w-0">
+              <h3 className="truncate-3 text-[1.15rem] font-bold leading-tight text-white sm:text-[1.25rem] md:text-[1.35rem]">
                 {getSlotLabel(rich)}
-                {rich.challengeType === "multiplier" &&
-                typeof rich.targetValue === "number"
+                {rich.challengeType === "multiplier" && typeof rich.targetValue === "number"
                   ? ` ${rich.targetValue.toLocaleString()}x`
                   : ""}
-                {rich.challengeType === "win_amount" &&
-                typeof rich.targetValue === "number"
+                {rich.challengeType === "win_amount" && typeof rich.targetValue === "number"
                   ? ` ${formatCurrency(rich.targetValue)}`
                   : ""}
-                {getMinBet(rich) ? ` with min ${getMinBet(rich)} bet` : ""}
+                {minBetLabel ? ` with min ${minBetLabel} bet` : ""}
               </h3>
 
               {rich.provider ? (
-                <p className="mt-2 text-sm text-white/52">{rich.provider}</p>
+                <p className="mt-2 truncate text-sm text-white/52">{rich.provider}</p>
               ) : null}
             </div>
 
-            <div className="rounded-2xl border border-white/10 bg-[#2b4771]/80 px-4 py-3 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
-              <div className="flex items-center justify-center gap-2 text-white">
-                <Trophy className="h-4 w-4 text-slate-200" />
-                <span className="text-2xl font-black">
-                  {rich.reward || getClaimSummary(rich)}
-                </span>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="min-w-0 rounded-2xl border border-white/10 bg-[#2b4771]/80 px-4 py-3 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] sm:text-left">
+                <div className="flex min-w-0 items-center justify-center gap-2 text-white sm:justify-start">
+                  <Trophy className="h-4 w-4 shrink-0 text-slate-200" />
+                  <span className="overflow-hidden text-ellipsis whitespace-nowrap text-xl font-black sm:text-2xl">
+                    {rich.reward || getClaimSummary(rich)}
+                  </span>
+                </div>
+              </div>
+
+              <div className="min-w-0 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3">
+                <div className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/42 sm:text-[11px]">
+                  Target
+                </div>
+                <div className="mt-2 overflow-hidden text-ellipsis whitespace-nowrap text-base font-semibold text-white sm:text-lg">
+                  {targetLabel}
+                </div>
+                <div className="mt-1 truncate text-xs text-white/45">
+                  Ends {formatDate(rich.endDate)}
+                </div>
               </div>
             </div>
 
-            <button
-              type="button"
-              onClick={() => setIsModalOpen(true)}
-              className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-[linear-gradient(180deg,#3f86e8,#2f6dca)] text-sm font-bold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_10px_24px_rgba(47,109,202,0.26)] transition hover:brightness-110"
-            >
-              <ImagePlus className="h-4 w-4" />
-              Provide Proof
-            </button>
+            <div className="mt-auto flex min-w-0 flex-col gap-3 sm:flex-row">
+              <button
+                type="button"
+                onClick={() => setIsModalOpen(true)}
+                className="inline-flex h-12 min-w-0 flex-1 items-center justify-center gap-2 rounded-2xl bg-[linear-gradient(180deg,#3f86e8,#2f6dca)] px-4 text-sm font-bold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_10px_24px_rgba(47,109,202,0.26)] transition hover:brightness-110"
+              >
+                <ImagePlus className="h-4 w-4 shrink-0" />
+                <span className="truncate whitespace-nowrap">Provide Proof</span>
+              </button>
+            </div>
           </div>
         </div>
       </PremiumPanel>
 
       {isModalOpen ? (
         <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-xl rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(20,24,32,0.98),rgba(12,16,22,0.99))] p-5 shadow-[0_24px_80px_rgba(0,0,0,0.42)]">
-            <div className="mb-5 flex items-start justify-between gap-4">
-              <div>
+          <div className="w-full max-w-xl rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(20,24,32,0.98),rgba(12,16,22,0.99))] p-5 shadow-[0_24px_80px_rgba(0,0,0,0.42)] sm:p-6">
+            <div className="mb-5 flex min-w-0 items-start justify-between gap-4">
+              <div className="min-w-0">
                 <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/42">
                   Challenge Proof
                 </div>
-                <h3 className="mt-2 text-2xl font-bold text-white">
+                <h3 className="mt-2 truncate-2 text-xl font-bold text-white sm:text-2xl">
                   {rich.title}
                 </h3>
-                <p className="mt-2 text-sm leading-6 text-white/62">
-                  Target {formatTarget(rich)} ·
-                  {getMinBet(rich) ? ` Minimum bet ${getMinBet(rich)} ·` : ""}
+                <p className="truncate-3 mt-2 text-sm leading-6 text-white/62">
+                  Target {targetLabel} ·
+                  {minBetLabel ? ` Minimum bet ${minBetLabel} ·` : ""}
                   Ends {formatDate(rich.endDate)}
                 </p>
               </div>
@@ -300,7 +318,7 @@ export function ChallengeCard({
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.03] text-white/70 transition hover:bg-white/[0.06] hover:text-white"
+                className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.03] text-white/70 transition hover:bg-white/[0.06] hover:text-white"
                 aria-label="Close"
               >
                 <X className="h-4 w-4" />
@@ -312,7 +330,7 @@ export function ChallengeCard({
                 <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/42">
                   Rules
                 </p>
-                <p className="mt-3 text-sm leading-6 text-white/68">
+                <p className="truncate-3 mt-3 text-sm leading-6 text-white/68">
                   {rich.rules}
                 </p>
               </div>
@@ -370,7 +388,7 @@ export function ChallengeCard({
                     onChange={(event) =>
                       setProofFile(event.target.files?.[0] ?? null)
                     }
-                    className="block w-full text-sm text-white/72 file:mr-4 file:rounded-xl file:border-0 file:bg-white/10 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white"
+                    className="block w-full min-w-0 text-sm text-white/72 file:mr-4 file:max-w-full file:rounded-xl file:border-0 file:bg-white/10 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white"
                   />
                 </div>
 
@@ -386,21 +404,23 @@ export function ChallengeCard({
                   />
                 </div>
 
-                <div className="flex gap-3">
+                <div className="flex flex-col gap-3 sm:flex-row">
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="inline-flex h-12 items-center justify-center rounded-2xl bg-white px-5 text-sm font-bold text-black transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="inline-flex h-12 min-w-0 items-center justify-center rounded-2xl bg-white px-5 text-sm font-bold text-black transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
                   >
-                    {isSubmitting ? "Submitting..." : "Submit Proof"}
+                    <span className="truncate whitespace-nowrap">
+                      {isSubmitting ? "Submitting..." : "Submit Proof"}
+                    </span>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => setIsModalOpen(false)}
-                    className="inline-flex h-12 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.03] px-5 text-sm font-semibold text-white transition hover:bg-white/[0.06]"
+                    className="inline-flex h-12 min-w-0 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.03] px-5 text-sm font-semibold text-white transition hover:bg-white/[0.06]"
                   >
-                    Cancel
+                    <span className="truncate whitespace-nowrap">Cancel</span>
                   </button>
                 </div>
               </form>

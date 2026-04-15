@@ -1,9 +1,9 @@
 // FILE: src/app/(public)/page.tsx
-
 import Image from "next/image";
 
 import { HomeClient } from "@/components/home/HomeClient";
 import { CTAButton } from "@/components/ui/CTAButton";
+import { PremiumPanel } from "@/components/ui/PremiumPanel";
 import { dataRepository } from "@/lib/data/repository";
 import { prisma } from "@/lib/prisma";
 import { getRoobetLeaderboard } from "@/lib/roobet";
@@ -55,33 +55,46 @@ export default async function HomePage() {
   const bonusHunts = await dataRepository.getBonusHunts();
 
   return (
-    <div className="space-y-6 md:space-y-8">
-      <div className="mx-auto flex w-full max-w-[1200px] flex-col items-center px-4 pt-2 text-center md:px-6 md:pt-6">
-        <div className="mb-6 flex w-full justify-center">
-          <Image
-            src="/images/dirty-gunner-gaming.png"
-            alt="Dirty Gunner Gaming"
-            width={1600}
-            height={800}
-            priority
-            className="h-auto w-full max-w-[900px] object-contain"
+    <div className="space-y-8 md:space-y-10">
+      <section className="mx-auto w-full max-w-[1280px] px-4 pt-2 md:px-6 md:pt-4">
+        <PremiumPanel className="overflow-hidden p-5 text-center sm:p-6 md:p-8 xl:p-10">
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(circle at top center, rgba(109,143,179,0.12), transparent 34%), linear-gradient(180deg, rgba(255,255,255,0.03), transparent 38%)",
+            }}
           />
-        </div>
 
-        <p className="max-w-2xl text-sm text-zinc-400 md:text-base">
-          Weekly leaderboard races, raffles, challenges, and bonus hunt tracking.
-        </p>
+          <div className="relative mx-auto flex min-w-0 max-w-[980px] flex-col items-center">
+            <div className="mb-5 flex w-full justify-center sm:mb-6">
+              <Image
+                src="/images/dirty-gunner-gaming.png"
+                alt="Dirty Gunner Gaming"
+                width={1600}
+                height={800}
+                priority
+                className="h-auto w-full max-w-[920px] object-contain"
+              />
+            </div>
 
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-          <CTAButton href="/leaderboard">View Leaderboard</CTAButton>
-          <CTAButton href="/bonus-hunts" variant="secondary">
-            View Bonus Hunts
-          </CTAButton>
-          <CTAButton href={kickUrl} variant="secondary">
-            Watch Stream
-          </CTAButton>
-        </div>
-      </div>
+            <p className="max-w-2xl text-sm leading-6 text-zinc-400 md:text-base md:leading-7">
+              Weekly leaderboard races, raffles, challenges, and bonus hunt
+              tracking.
+            </p>
+
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+              <CTAButton href="/leaderboard">View Leaderboard</CTAButton>
+              <CTAButton href="/bonus-hunts" variant="secondary">
+                View Bonus Hunts
+              </CTAButton>
+              <CTAButton href={kickUrl} variant="secondary">
+                Watch Stream
+              </CTAButton>
+            </div>
+          </div>
+        </PremiumPanel>
+      </section>
 
       <HomeClient
         leaderboard={leaderboard}

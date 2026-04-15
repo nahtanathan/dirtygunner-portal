@@ -1,3 +1,4 @@
+// FILE: src/components/admin/AdminShell.tsx
 "use client";
 
 import Link from "next/link";
@@ -48,7 +49,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   return (
-    <div className="mx-auto flex w-full max-w-[1600px] gap-6 px-4 py-6 md:px-6">
+    <div className="mx-auto flex w-full max-w-[1600px] min-w-0 gap-6 px-4 py-6 md:px-6">
       <aside className="hidden w-[280px] shrink-0 lg:block">
         <div className="sticky top-6">
           <div className="rounded-3xl border border-white/10 bg-black/30 p-4 backdrop-blur-xl">
@@ -56,10 +57,10 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
               <div className="text-xs font-semibold uppercase tracking-[0.26em] text-zinc-500">
                 Admin Panel
               </div>
-              <div className="mt-2 text-xl font-bold text-white">
+              <div className="mt-2 truncate text-xl font-bold text-white">
                 DirtyGunner
               </div>
-              <div className="mt-1 text-sm text-zinc-400">
+              <div className="mt-1 truncate-3 text-sm leading-6 text-zinc-400">
                 Control panel for site content and leaderboard settings.
               </div>
             </div>
@@ -76,33 +77,33 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
                     key={item.href}
                     href={item.href}
                     className={clsx(
-                      "group flex items-center gap-3 rounded-2xl border px-4 py-3 transition-all duration-200",
+                      "group flex min-w-0 items-center gap-3 rounded-2xl border px-4 py-3 transition-all duration-200",
                       isActive
                         ? "border-white/15 bg-white/10"
-                        : "border-transparent bg-transparent hover:border-white/10 hover:bg-white/5"
+                        : "border-transparent bg-transparent hover:border-white/10 hover:bg-white/5",
                     )}
                   >
                     <div
                       className={clsx(
-                        "flex h-10 w-10 items-center justify-center rounded-xl border transition-all duration-200",
+                        "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border transition-all duration-200",
                         isActive
                           ? "border-white/15 bg-white/10 text-white"
-                          : "border-white/10 bg-white/5 text-zinc-400 group-hover:text-white"
+                          : "border-white/10 bg-white/5 text-zinc-400 group-hover:text-white",
                       )}
                     >
                       <Icon size={18} />
                     </div>
 
-                    <div className="min-w-0">
+                    <div className="min-w-0 flex-1">
                       <div
                         className={clsx(
-                          "text-sm font-semibold",
-                          isActive ? "text-white" : "text-zinc-200"
+                          "truncate whitespace-nowrap text-sm font-semibold",
+                          isActive ? "text-white" : "text-zinc-200",
                         )}
                       >
                         {item.name}
                       </div>
-                      <div className="text-xs text-zinc-500">
+                      <div className="truncate text-xs text-zinc-500">
                         {item.description}
                       </div>
                     </div>

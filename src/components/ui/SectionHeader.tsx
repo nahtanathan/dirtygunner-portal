@@ -1,3 +1,4 @@
+// FILE: src/components/ui/SectionHeader.tsx
 import { ReactNode } from "react";
 
 export function SectionHeader({
@@ -12,11 +13,11 @@ export function SectionHeader({
   action?: ReactNode;
 }) {
   return (
-    <div className="mb-6 flex flex-col gap-4 md:mb-8 md:flex-row md:items-end md:justify-between">
-      <div className="max-w-2xl">
+    <div className="mb-6 flex min-w-0 flex-col gap-4 md:mb-8 md:flex-row md:items-end md:justify-between">
+      <div className="min-w-0 max-w-2xl">
         {eyebrow ? (
           <div
-            className="mb-2 text-sm font-semibold uppercase tracking-[0.35em]"
+            className="mb-2 text-label-tight"
             style={{ color: "#60A5FA" }}
           >
             {eyebrow}
@@ -24,7 +25,7 @@ export function SectionHeader({
         ) : null}
 
         <h2
-          className="text-3xl font-bold tracking-wide md:text-4xl"
+          className="truncate-2 text-responsive-heading font-bold tracking-wide"
           style={{ color: "var(--text-primary)" }}
         >
           {title}
@@ -32,7 +33,7 @@ export function SectionHeader({
 
         {description ? (
           <p
-            className="mt-3 text-sm leading-7 md:text-base"
+            className="truncate-3 mt-3 max-w-[42rem] text-responsive-body"
             style={{ color: "var(--text-secondary)" }}
           >
             {description}
@@ -40,7 +41,7 @@ export function SectionHeader({
         ) : null}
       </div>
 
-      {action}
+      {action ? <div className="shrink-0">{action}</div> : null}
     </div>
   );
 }

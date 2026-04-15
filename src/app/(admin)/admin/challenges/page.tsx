@@ -1,3 +1,4 @@
+// FILE: src/app/(admin)/admin/challenges/page.tsx
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -149,7 +150,7 @@ function Field({
   children: React.ReactNode;
 }) {
   return (
-    <label className="block space-y-2">
+    <label className="block min-w-0 space-y-2">
       <span className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/45">
         {label}
       </span>
@@ -169,7 +170,9 @@ export default function AdminChallengesPage() {
   const [loadingChallenges, setLoadingChallenges] = useState(true);
   const [loadingClaims, setLoadingClaims] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [actionChallengeId, setActionChallengeId] = useState<string | null>(null);
+  const [actionChallengeId, setActionChallengeId] = useState<string | null>(
+    null,
+  );
   const [reviewClaimId, setReviewClaimId] = useState<string | null>(null);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -205,7 +208,9 @@ export default function AdminChallengesPage() {
         cache: "no-store",
       });
 
-      const data = await readApiResponse<ChallengeItem[] | { error?: string }>(res);
+      const data = await readApiResponse<ChallengeItem[] | { error?: string }>(
+        res,
+      );
 
       if (!res.ok || !Array.isArray(data)) {
         throw new Error(
@@ -446,7 +451,10 @@ export default function AdminChallengesPage() {
   ) {
     const rejectionReason =
       action === "reject"
-        ? window.prompt("Reason for rejection:", "Proof did not meet challenge rules.")
+        ? window.prompt(
+            "Reason for rejection:",
+            "Proof did not meet challenge rules.",
+          )
         : null;
 
     if (action === "reject" && rejectionReason === null) {
@@ -519,16 +527,16 @@ export default function AdminChallengesPage() {
 
   return (
     <div className="space-y-8">
-      <section className="rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(12,18,34,0.96),rgba(7,12,24,0.98))] px-6 py-7 shadow-[0_18px_70px_rgba(0,0,0,0.34)] backdrop-blur-xl">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-          <div>
+      <section className="rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(12,18,34,0.96),rgba(7,12,24,0.98))] px-5 py-6 shadow-[0_18px_70px_rgba(0,0,0,0.34)] backdrop-blur-xl sm:px-6 sm:py-7">
+        <div className="flex min-w-0 flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+          <div className="min-w-0">
             <div className="text-xs font-semibold uppercase tracking-[0.28em] text-white/42">
               Admin
             </div>
-            <h1 className="mt-2 text-3xl font-black tracking-tight text-white">
+            <h1 className="mt-2 truncate text-2xl font-black tracking-tight text-white sm:text-3xl">
               Challenges Control
             </h1>
-            <p className="mt-3 max-w-3xl text-sm leading-7 text-white/65">
+            <p className="truncate-3 mt-3 max-w-3xl text-sm leading-7 text-white/65">
               Create slot challenges, auto-fill slot art when available, and review
               proof submissions from users.
             </p>
@@ -555,7 +563,7 @@ export default function AdminChallengesPage() {
 
         {message ? (
           <div className="mt-5 rounded-2xl border border-emerald-400/20 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-100">
-            {message}
+            <span className="truncate-2">{message}</span>
           </div>
         ) : null}
 
@@ -567,13 +575,13 @@ export default function AdminChallengesPage() {
       </section>
 
       <div className="grid gap-8 xl:grid-cols-[430px,minmax(0,1fr)]">
-        <section className="rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(12,18,34,0.96),rgba(7,12,24,0.98))] p-6 shadow-[0_18px_70px_rgba(0,0,0,0.34)] backdrop-blur-xl">
-          <div className="mb-6 flex items-center justify-between gap-3">
-            <div>
+        <section className="rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(12,18,34,0.96),rgba(7,12,24,0.98))] p-5 shadow-[0_18px_70px_rgba(0,0,0,0.34)] backdrop-blur-xl sm:p-6">
+          <div className="mb-6 flex min-w-0 items-start justify-between gap-3">
+            <div className="min-w-0">
               <div className="text-xs font-semibold uppercase tracking-[0.26em] text-white/42">
                 Editor
               </div>
-              <h2 className="mt-2 text-2xl font-bold text-white">
+              <h2 className="mt-2 truncate text-xl font-bold text-white sm:text-2xl">
                 {editingId ? "Edit Challenge" : "Create Challenge"}
               </h2>
             </div>
@@ -581,10 +589,10 @@ export default function AdminChallengesPage() {
             <button
               type="button"
               onClick={startCreate}
-              className="inline-flex h-11 items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.03] px-4 text-sm font-semibold text-white transition-all duration-200 hover:bg-white/[0.05]"
+              className="inline-flex h-11 min-w-0 items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.03] px-4 text-sm font-semibold text-white transition-all duration-200 hover:bg-white/[0.05]"
             >
-              <Plus className="h-4 w-4" />
-              New
+              <Plus className="h-4 w-4 shrink-0" />
+              <span className="truncate whitespace-nowrap">New</span>
             </button>
           </div>
 
@@ -617,7 +625,7 @@ export default function AdminChallengesPage() {
               />
             </Field>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Status">
                 <select
                   value={form.status}
@@ -651,7 +659,7 @@ export default function AdminChallengesPage() {
               </Field>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Target Value">
                 <input
                   type="number"
@@ -693,7 +701,7 @@ export default function AdminChallengesPage() {
               />
             </Field>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Slot Name">
                 <input
                   value={form.slotName}
@@ -722,7 +730,7 @@ export default function AdminChallengesPage() {
               />
             </Field>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Claim Limit">
                 <input
                   type="number"
@@ -747,7 +755,7 @@ export default function AdminChallengesPage() {
               </Field>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Start Date">
                 <input
                   type="datetime-local"
@@ -767,11 +775,11 @@ export default function AdminChallengesPage() {
               </Field>
             </div>
 
-            <div className="flex gap-3 pt-2">
+            <div className="flex min-w-0 flex-col gap-3 pt-2 sm:flex-row">
               <button
                 type="submit"
                 disabled={isSaving}
-                className="inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-2xl text-sm font-extrabold uppercase tracking-[0.08em] text-white disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex h-12 min-w-0 flex-1 items-center justify-center gap-2 rounded-2xl text-sm font-extrabold uppercase tracking-[0.08em] text-white disabled:cursor-not-allowed disabled:opacity-60"
                 style={{
                   background:
                     "linear-gradient(180deg, rgba(59,130,246,0.96), rgba(37,99,235,0.96))",
@@ -780,37 +788,39 @@ export default function AdminChallengesPage() {
                 }}
               >
                 {isSaving ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2 className="h-4 w-4 animate-spin shrink-0" />
                 ) : editingId ? (
-                  <Pencil className="h-4 w-4" />
+                  <Pencil className="h-4 w-4 shrink-0" />
                 ) : (
-                  <Plus className="h-4 w-4" />
+                  <Plus className="h-4 w-4 shrink-0" />
                 )}
-                {isSaving
-                  ? "Saving..."
-                  : editingId
-                    ? "Update Challenge"
-                    : "Create Challenge"}
+                <span className="truncate whitespace-nowrap">
+                  {isSaving
+                    ? "Saving..."
+                    : editingId
+                      ? "Update Challenge"
+                      : "Create Challenge"}
+                </span>
               </button>
 
               <button
                 type="button"
                 onClick={resetForm}
-                className="inline-flex h-12 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.02] px-4 text-sm font-semibold text-white/80 transition-all duration-200 hover:bg-white/[0.05]"
+                className="inline-flex h-12 min-w-0 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.02] px-4 text-sm font-semibold text-white/80 transition-all duration-200 hover:bg-white/[0.05]"
               >
-                Reset
+                <span className="truncate whitespace-nowrap">Reset</span>
               </button>
             </div>
           </form>
         </section>
 
         <section className="space-y-8">
-          <div className="flex items-center justify-between gap-3">
-            <div>
+          <div className="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div className="min-w-0">
               <div className="text-xs font-semibold uppercase tracking-[0.26em] text-white/42">
                 Live Data
               </div>
-              <h2 className="mt-2 text-2xl font-bold text-white">
+              <h2 className="mt-2 truncate text-xl font-bold text-white sm:text-2xl">
                 Manage Challenges
               </h2>
             </div>
@@ -821,10 +831,10 @@ export default function AdminChallengesPage() {
                 void loadChallenges();
                 void loadClaims();
               }}
-              className="inline-flex h-11 items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.03] px-4 text-sm font-semibold text-white transition-all duration-200 hover:bg-white/[0.05]"
+              className="inline-flex h-11 min-w-0 items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.03] px-4 text-sm font-semibold text-white transition-all duration-200 hover:bg-white/[0.05]"
             >
-              <RefreshCw className="h-4 w-4" />
-              Refresh
+              <RefreshCw className="h-4 w-4 shrink-0" />
+              <span className="truncate whitespace-nowrap">Refresh</span>
             </button>
           </div>
 
@@ -842,31 +852,39 @@ export default function AdminChallengesPage() {
                   key={challenge.id}
                   className="rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(12,18,34,0.96),rgba(7,12,24,0.98))] p-5 shadow-[0_18px_70px_rgba(0,0,0,0.26)]"
                 >
-                  <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
+                  <div className="flex min-w-0 flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
                     <div className="min-w-0 flex-1">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="inline-flex rounded-full border border-white/8 bg-white/[0.03] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/60">
-                          {challenge.challengeType === "win_amount" ? "Win Amount" : "Multiplier"}
+                      <div className="flex min-w-0 flex-wrap items-center gap-2">
+                        <span className="inline-flex max-w-full rounded-full border border-white/8 bg-white/[0.03] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/60">
+                          <span className="truncate whitespace-nowrap">
+                            {challenge.challengeType === "win_amount"
+                              ? "Win Amount"
+                              : "Multiplier"}
+                          </span>
                         </span>
-                        <span className="inline-flex rounded-full border border-white/8 bg-white/[0.03] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/60">
-                          {challenge.status}
+                        <span className="inline-flex max-w-full rounded-full border border-white/8 bg-white/[0.03] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/60">
+                          <span className="truncate whitespace-nowrap">
+                            {challenge.status}
+                          </span>
                         </span>
-                        <span className="inline-flex rounded-full border border-white/8 bg-white/[0.03] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/60">
-                          {challenge.approvedClaims}/{challenge.claimLimit} claimed
+                        <span className="inline-flex max-w-full rounded-full border border-white/8 bg-white/[0.03] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/60">
+                          <span className="truncate whitespace-nowrap">
+                            {challenge.approvedClaims}/{challenge.claimLimit} claimed
+                          </span>
                         </span>
                       </div>
 
-                      <h3 className="mt-3 text-xl font-bold text-white">
+                      <h3 className="mt-3 truncate text-xl font-bold text-white">
                         {challenge.title}
                       </h3>
 
                       {challenge.description ? (
-                        <p className="mt-2 max-w-3xl text-sm leading-6 text-white/65">
+                        <p className="truncate-3 mt-2 max-w-3xl text-sm leading-6 text-white/65">
                           {challenge.description}
                         </p>
                       ) : null}
 
-                      <div className="mt-4 grid gap-3 sm:grid-cols-4">
+                      <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
                         <MiniStat
                           icon={<Target className="h-4 w-4" />}
                           label="Target"
@@ -897,35 +915,37 @@ export default function AdminChallengesPage() {
                           href={challenge.imageUrl}
                           target="_blank"
                           rel="noreferrer"
-                          className="mt-4 inline-flex text-sm font-medium text-white/70 underline-offset-4 hover:text-white hover:underline"
+                          className="mt-4 inline-flex max-w-full text-sm font-medium text-white/70 underline-offset-4 hover:text-white hover:underline"
                         >
-                          Open current challenge image
+                          <span className="truncate whitespace-nowrap">
+                            Open current challenge image
+                          </span>
                         </a>
                       ) : null}
                     </div>
 
-                    <div className="flex shrink-0 gap-2">
+                    <div className="grid gap-2 sm:grid-cols-2 xl:w-[220px] xl:grid-cols-1">
                       <button
                         type="button"
                         onClick={() => startEdit(challenge)}
-                        className="inline-flex h-11 items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.03] px-4 text-sm font-semibold text-white transition-all duration-200 hover:bg-white/[0.05]"
+                        className="inline-flex h-11 min-w-0 items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.03] px-4 text-sm font-semibold text-white transition-all duration-200 hover:bg-white/[0.05]"
                       >
-                        <Pencil className="h-4 w-4" />
-                        Edit
+                        <Pencil className="h-4 w-4 shrink-0" />
+                        <span className="truncate whitespace-nowrap">Edit</span>
                       </button>
 
                       <button
                         type="button"
                         onClick={() => void handleDelete(challenge.id)}
                         disabled={actionChallengeId === challenge.id}
-                        className="inline-flex h-11 items-center gap-2 rounded-2xl border border-red-400/20 bg-red-500/10 px-4 text-sm font-semibold text-red-100 transition-all duration-200 hover:bg-red-500/15 disabled:cursor-not-allowed disabled:opacity-60"
+                        className="inline-flex h-11 min-w-0 items-center justify-center gap-2 rounded-2xl border border-red-400/20 bg-red-500/10 px-4 text-sm font-semibold text-red-100 transition-all duration-200 hover:bg-red-500/15 disabled:cursor-not-allowed disabled:opacity-60"
                       >
                         {actionChallengeId === challenge.id ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
+                          <Loader2 className="h-4 w-4 animate-spin shrink-0" />
                         ) : (
-                          <Trash2 className="h-4 w-4" />
+                          <Trash2 className="h-4 w-4 shrink-0" />
                         )}
-                        Delete
+                        <span className="truncate whitespace-nowrap">Delete</span>
                       </button>
                     </div>
                   </div>
@@ -935,11 +955,11 @@ export default function AdminChallengesPage() {
           )}
 
           <div className="space-y-4">
-            <div>
+            <div className="min-w-0">
               <div className="text-xs font-semibold uppercase tracking-[0.26em] text-white/42">
                 Review Queue
               </div>
-              <h2 className="mt-2 text-2xl font-bold text-white">
+              <h2 className="mt-2 truncate text-xl font-bold text-white sm:text-2xl">
                 Challenge Claims
               </h2>
             </div>
@@ -962,18 +982,22 @@ export default function AdminChallengesPage() {
                     key={claim.id}
                     className="rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(12,18,34,0.96),rgba(7,12,24,0.98))] p-5 shadow-[0_18px_70px_rgba(0,0,0,0.26)]"
                   >
-                    <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
+                    <div className="flex min-w-0 flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
                       <div className="min-w-0 flex-1">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className="inline-flex rounded-full border border-white/8 bg-white/[0.03] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/60">
-                            {claim.status}
+                        <div className="flex min-w-0 flex-wrap items-center gap-2">
+                          <span className="inline-flex max-w-full rounded-full border border-white/8 bg-white/[0.03] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/60">
+                            <span className="truncate whitespace-nowrap">
+                              {claim.status}
+                            </span>
                           </span>
-                          <span className="inline-flex rounded-full border border-white/8 bg-white/[0.03] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/60">
-                            {claim.userLabel}
+                          <span className="inline-flex max-w-full rounded-full border border-white/8 bg-white/[0.03] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/60">
+                            <span className="truncate whitespace-nowrap">
+                              {claim.userLabel}
+                            </span>
                           </span>
                         </div>
 
-                        <h3 className="mt-3 text-xl font-bold text-white">
+                        <h3 className="mt-3 truncate text-xl font-bold text-white">
                           {claim.challengeTitle}
                         </h3>
 
@@ -982,14 +1006,14 @@ export default function AdminChallengesPage() {
                         </div>
 
                         {claim.note ? (
-                          <p className="mt-3 text-sm leading-6 text-white/65">
+                          <p className="truncate-3 mt-3 text-sm leading-6 text-white/65">
                             {claim.note}
                           </p>
                         ) : null}
 
                         {claim.rejectionReason ? (
                           <div className="mt-3 rounded-2xl border border-red-400/20 bg-red-500/10 px-4 py-3 text-sm text-red-100">
-                            {claim.rejectionReason}
+                            <span className="truncate-3">{claim.rejectionReason}</span>
                           </div>
                         ) : null}
 
@@ -997,44 +1021,46 @@ export default function AdminChallengesPage() {
                           href={claim.proofImageUrl}
                           target="_blank"
                           rel="noreferrer"
-                          className="mt-4 inline-flex text-sm font-medium text-white/80 underline-offset-4 hover:text-white hover:underline"
+                          className="mt-4 inline-flex max-w-full text-sm font-medium text-white/80 underline-offset-4 hover:text-white hover:underline"
                         >
-                          Open proof image
+                          <span className="truncate whitespace-nowrap">
+                            Open proof image
+                          </span>
                         </a>
                       </div>
 
                       {claim.status === "pending" ? (
-                        <div className="flex shrink-0 gap-2">
+                        <div className="grid gap-2 sm:grid-cols-2 xl:w-[220px] xl:grid-cols-1">
                           <button
                             type="button"
                             disabled={reviewClaimId === claim.id}
                             onClick={() => void handleReview(claim.id, "approve")}
-                            className="inline-flex h-11 items-center gap-2 rounded-2xl border border-emerald-400/20 bg-emerald-400/10 px-4 text-sm font-semibold text-emerald-100 transition-all duration-200 hover:bg-emerald-400/15 disabled:cursor-not-allowed disabled:opacity-60"
+                            className="inline-flex h-11 min-w-0 items-center justify-center gap-2 rounded-2xl border border-emerald-400/20 bg-emerald-400/10 px-4 text-sm font-semibold text-emerald-100 transition-all duration-200 hover:bg-emerald-400/15 disabled:cursor-not-allowed disabled:opacity-60"
                           >
                             {reviewClaimId === claim.id ? (
-                              <Loader2 className="h-4 w-4 animate-spin" />
+                              <Loader2 className="h-4 w-4 animate-spin shrink-0" />
                             ) : (
-                              <CheckCircle2 className="h-4 w-4" />
+                              <CheckCircle2 className="h-4 w-4 shrink-0" />
                             )}
-                            Approve
+                            <span className="truncate whitespace-nowrap">Approve</span>
                           </button>
 
                           <button
                             type="button"
                             disabled={reviewClaimId === claim.id}
                             onClick={() => void handleReview(claim.id, "reject")}
-                            className="inline-flex h-11 items-center gap-2 rounded-2xl border border-red-400/20 bg-red-500/10 px-4 text-sm font-semibold text-red-100 transition-all duration-200 hover:bg-red-500/15 disabled:cursor-not-allowed disabled:opacity-60"
+                            className="inline-flex h-11 min-w-0 items-center justify-center gap-2 rounded-2xl border border-red-400/20 bg-red-500/10 px-4 text-sm font-semibold text-red-100 transition-all duration-200 hover:bg-red-500/15 disabled:cursor-not-allowed disabled:opacity-60"
                           >
                             {reviewClaimId === claim.id ? (
-                              <Loader2 className="h-4 w-4 animate-spin" />
+                              <Loader2 className="h-4 w-4 animate-spin shrink-0" />
                             ) : (
-                              <XCircle className="h-4 w-4" />
+                              <XCircle className="h-4 w-4 shrink-0" />
                             )}
-                            Reject
+                            <span className="truncate whitespace-nowrap">Reject</span>
                           </button>
                         </div>
                       ) : (
-                        <div className="text-sm text-white/55">
+                        <div className="shrink-0 text-sm text-white/55">
                           {claim.reviewedByLabel
                             ? `Reviewed by ${claim.reviewedByLabel}`
                             : "Reviewed"}
@@ -1062,12 +1088,14 @@ function StatCard({
   value: string;
 }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
-      <div className="flex items-center gap-2 text-white/45">{icon}</div>
+    <div className="min-w-0 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
+      <div className="flex items-center gap-2 text-white/45">
+        <span className="shrink-0">{icon}</span>
+      </div>
       <div className="mt-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-white/45">
         {label}
       </div>
-      <div className="mt-1 text-xl font-bold text-white">{value}</div>
+      <div className="mt-1 truncate text-xl font-bold text-white">{value}</div>
     </div>
   );
 }
@@ -1082,14 +1110,14 @@ function MiniStat({
   value: string;
 }) {
   return (
-    <div className="rounded-2xl border border-white/8 bg-black/20 p-3">
-      <div className="flex items-center gap-2 text-white/45">{icon}</div>
-      <div className="mt-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/45">
-        {label}
+    <div className="min-w-0 rounded-2xl border border-white/8 bg-black/20 p-3">
+      <div className="flex min-w-0 items-center gap-2 text-white/45">
+        <span className="shrink-0">{icon}</span>
+        <span className="truncate text-[11px] font-semibold uppercase tracking-[0.22em] text-white/45">
+          {label}
+        </span>
       </div>
-      <div className="mt-1 truncate text-sm font-semibold text-white">
-        {value}
-      </div>
+      <div className="mt-1 truncate text-sm font-semibold text-white">{value}</div>
     </div>
   );
 }

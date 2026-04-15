@@ -1,5 +1,4 @@
 // FILE: src/app/(admin)/admin/bonus-hunts/page.tsx
-
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -77,6 +76,52 @@ const EMPTY_SNAPSHOT: BonusHuntSnapshot = {
   source: "fallback",
   fetchedAt: new Date().toISOString(),
 };
+
+function formatAdminDate(value?: string) {
+  if (!value) return "—";
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "Invalid date";
+  }
+
+  return new Intl.DateTimeFormat(undefined, {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(date);
+}
+
+function formatMoney(value?: number) {
+  if (value === undefined || value === null) {
+    return "—";
+  }
+
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 2,
+  }).format(value);
+}
+
+function formatSignedPercent(value?: number) {
+  if (value === undefined || value === null) {
+    return "—";
+  }
+
+  const sign = value > 0 ? "+" : value < 0 ? "" : "";
+  return `${sign}${value.toFixed(2)}%`;
+}
+
+function formatCount(value?: number) {
+  if (value === undefined || value === null) {
+    return "—";
+  }
+
+  return new Intl.NumberFormat("en-US", {
+    maximumFractionDigits: 0,
+  }).format(value);
+}
 
 export default function AdminBonusHuntsPage() {
   const [me, setMe] = useState<AdminUser | null>(null);
@@ -196,7 +241,7 @@ export default function AdminBonusHuntsPage() {
   return (
     <div className="mx-auto w-full max-w-[1360px] space-y-6">
       <section
-        className="rounded-[30px] border p-6 md:p-8"
+        className="rounded-[30px] border p-5 sm:p-6 md:p-8"
         style={{
           borderColor: "rgba(255,255,255,0.08)",
           background:
@@ -205,15 +250,15 @@ export default function AdminBonusHuntsPage() {
             "0 0 0 1px rgba(255,255,255,0.02), 0 24px 70px rgba(2,8,23,0.45)",
         }}
       >
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div>
+        <div className="flex min-w-0 flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+          <div className="min-w-0">
             <div className="text-xs font-semibold uppercase tracking-[0.3em] text-sky-300/85">
               Admin
             </div>
-            <h1 className="mt-2 text-3xl font-bold text-white md:text-4xl">
+            <h1 className="mt-2 truncate text-2xl font-bold text-white sm:text-3xl md:text-4xl">
               Bonus Hunts Monitor
             </h1>
-            <p className="mt-3 max-w-3xl text-sm leading-7 text-white/58">
+            <p className="truncate-3 mt-3 max-w-3xl text-sm leading-7 text-white/58">
               Read-only BonusHunt.gg monitoring for the public portal. This phase
               tracks live openings, archive history, upstream availability, and
               fallback state without adding local hunt CRUD.
@@ -244,13 +289,13 @@ export default function AdminBonusHuntsPage() {
       </section>
 
       {message ? (
-        <Notice tone="warning" icon={<AlertTriangle className="h-4 w-4" />}>
+        <Notice tone="info" icon={<CheckCircle2 className="h-4 w-4" />}>
           {message}
         </Notice>
       ) : null}
 
       {error ? (
-        <Notice tone="error" icon={<AlertTriangle className="h-4 w-4" />}>
+        <Notice tone="warning" icon={<AlertTriangle className="h-4 w-4" />}>
           {error}
         </Notice>
       ) : null}
@@ -302,15 +347,15 @@ export default function AdminBonusHuntsPage() {
             "linear-gradient(180deg, rgba(12,18,34,0.96) 0%, rgba(7,12,24,0.98) 100%)",
         }}
       >
-        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div>
+        <div className="flex min-w-0 flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div className="min-w-0">
             <div className="text-xs font-semibold uppercase tracking-[0.26em] text-white/42">
               External Feed
             </div>
-            <h2 className="mt-2 text-2xl font-bold text-white">
+            <h2 className="mt-2 truncate text-2xl font-bold text-white">
               Public Data Sync
             </h2>
-            <p className="mt-2 text-sm leading-7 text-white/55">
+            <p className="truncate-3 mt-2 text-sm leading-7 text-white/55">
               Refresh the external feed and verify what the public bonus hunts page
               is currently receiving.
             </p>
@@ -320,28 +365,32 @@ export default function AdminBonusHuntsPage() {
             type="button"
             onClick={() => void loadBonusHunts({ silent: true })}
             disabled={refreshing}
-            className="inline-flex h-11 items-center gap-2 rounded-2xl border px-4 text-sm font-semibold text-white transition-all duration-200 hover:bg-white/[0.05] disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex h-11 min-w-0 items-center gap-2 rounded-2xl border px-4 text-sm font-semibold text-white transition-all duration-200 hover:bg-white/[0.05] disabled:cursor-not-allowed disabled:opacity-60"
             style={{
               borderColor: "rgba(255,255,255,0.08)",
               background: "rgba(255,255,255,0.02)",
             }}
           >
             {refreshing ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <Loader2 className="h-4 w-4 animate-spin shrink-0" />
             ) : (
-              <RefreshCw className="h-4 w-4" />
+              <RefreshCw className="h-4 w-4 shrink-0" />
             )}
-            {refreshing ? "Refreshing..." : "Refresh Feed"}
+            <span className="truncate whitespace-nowrap">
+              {refreshing ? "Refreshing..." : "Refresh Feed"}
+            </span>
           </button>
         </div>
       </section>
 
       <section className="space-y-4">
-        <div>
+        <div className="min-w-0">
           <div className="text-xs font-semibold uppercase tracking-[0.26em] text-white/42">
             Live
           </div>
-          <h2 className="mt-2 text-2xl font-bold text-white">Current Hunt</h2>
+          <h2 className="mt-2 truncate text-2xl font-bold text-white">
+            Current Hunt
+          </h2>
         </div>
 
         {loadingData ? (
@@ -358,11 +407,13 @@ export default function AdminBonusHuntsPage() {
       </section>
 
       <section className="space-y-4">
-        <div>
+        <div className="min-w-0">
           <div className="text-xs font-semibold uppercase tracking-[0.26em] text-white/42">
             Archive
           </div>
-          <h2 className="mt-2 text-2xl font-bold text-white">Previous Hunts</h2>
+          <h2 className="mt-2 truncate text-2xl font-bold text-white">
+            Previous Hunts
+          </h2>
         </div>
 
         {loadingData ? (
@@ -395,13 +446,15 @@ function HuntCard({ hunt }: { hunt: BonusHuntItem }) {
           "0 0 0 1px rgba(255,255,255,0.02), 0 18px 44px rgba(2,8,23,0.35)",
       }}
     >
-      <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
+      <div className="flex min-w-0 flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
         <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-3">
-            <h3 className="truncate text-2xl font-bold text-white">{hunt.title}</h3>
+          <div className="flex min-w-0 flex-wrap items-center gap-3">
+            <h3 className="truncate text-xl font-bold text-white sm:text-2xl">
+              {hunt.title}
+            </h3>
 
             <span
-              className="inline-flex h-8 items-center rounded-full border px-3 text-xs font-semibold uppercase tracking-[0.16em]"
+              className="inline-flex h-8 max-w-full items-center rounded-full border px-3 text-xs font-semibold uppercase tracking-[0.16em]"
               style={{
                 borderColor:
                   hunt.status === "opening" || hunt.status === "active"
@@ -414,22 +467,24 @@ function HuntCard({ hunt }: { hunt: BonusHuntItem }) {
                 color: "rgba(255,255,255,0.82)",
               }}
             >
-              {hunt.status}
+              <span className="truncate whitespace-nowrap">{hunt.status}</span>
             </span>
           </div>
 
-          <div className="mt-2 text-sm text-white/58">
+          <div className="mt-2 truncate text-sm text-white/58">
             {hunt.casino || hunt.provider || "BonusHunt.gg"}
           </div>
 
           {hunt.currentOpeningSlot ? (
-            <div className="mt-2 text-sm text-emerald-300/85">
+            <div className="mt-2 truncate text-sm text-emerald-300/85">
               Opening now: {hunt.currentOpeningSlot}
             </div>
           ) : null}
 
           {hunt.notes ? (
-            <div className="mt-2 text-sm leading-6 text-white/52">{hunt.notes}</div>
+            <div className="truncate-3 mt-2 text-sm leading-6 text-white/52">
+              {hunt.notes}
+            </div>
           ) : null}
 
           <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
@@ -480,7 +535,7 @@ function HuntCard({ hunt }: { hunt: BonusHuntItem }) {
 
           {rows.length > 0 ? (
             <div className="mt-5 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02]">
-              <div className="grid grid-cols-[minmax(0,1.6fr)_minmax(0,0.8fr)_80px_100px_80px] gap-3 border-b border-white/10 px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-white/42">
+              <div className="hidden grid-cols-[minmax(0,1.6fr)_minmax(0,0.8fr)_80px_100px_80px] gap-3 border-b border-white/10 px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-white/42 md:grid">
                 <div>Game</div>
                 <div>Provider</div>
                 <div className="text-right">Bet</div>
@@ -490,24 +545,37 @@ function HuntCard({ hunt }: { hunt: BonusHuntItem }) {
 
               <div className="divide-y divide-white/6">
                 {rows.map((row) => (
-                  <div
-                    key={row.id}
-                    className="grid grid-cols-[minmax(0,1.6fr)_minmax(0,0.8fr)_80px_100px_80px] gap-3 px-4 py-3 text-sm"
-                  >
-                    <div className="truncate text-white">{row.slotName}</div>
-                    <div className="truncate text-white/55">
-                      {row.provider || "—"}
-                    </div>
-                    <div className="text-right text-white/70">
-                      {formatMoney(row.betSize)}
-                    </div>
-                    <div className="text-right text-white">
-                      {formatMoney(row.payout)}
-                    </div>
-                    <div className="text-right text-white/70">
-                      {row.multiplier !== undefined
-                        ? `${row.multiplier.toFixed(1)}x`
-                        : "—"}
+                  <div key={row.id} className="px-4 py-3 text-sm">
+                    <div className="grid gap-2 md:grid-cols-[minmax(0,1.6fr)_minmax(0,0.8fr)_80px_100px_80px] md:items-center md:gap-3">
+                      <div className="min-w-0">
+                        <div className="truncate text-white">{row.slotName}</div>
+                        <div className="mt-1 truncate text-xs text-white/50 md:hidden">
+                          {row.provider || "—"}
+                        </div>
+                      </div>
+
+                      <div className="hidden truncate text-white/55 md:block">
+                        {row.provider || "—"}
+                      </div>
+
+                      <div className="flex items-center justify-between gap-3 text-white/70 md:block md:text-right">
+                        <span className="shrink-0 text-white/45 md:hidden">Bet</span>
+                        <span className="whitespace-nowrap">{formatMoney(row.betSize)}</span>
+                      </div>
+
+                      <div className="flex items-center justify-between gap-3 text-white md:block md:text-right">
+                        <span className="shrink-0 text-white/45 md:hidden">Payout</span>
+                        <span className="whitespace-nowrap">{formatMoney(row.payout)}</span>
+                      </div>
+
+                      <div className="flex items-center justify-between gap-3 text-white/70 md:block md:text-right">
+                        <span className="shrink-0 text-white/45 md:hidden">Multi</span>
+                        <span className="whitespace-nowrap">
+                          {row.multiplier !== undefined
+                            ? `${row.multiplier.toFixed(1)}x`
+                            : "—"}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -520,18 +588,56 @@ function HuntCard({ hunt }: { hunt: BonusHuntItem }) {
   );
 }
 
-function TopStat({ value, label }: { value: string; label: string }) {
+function TopStat({
+  value,
+  label,
+}: {
+  value: string;
+  label: string;
+}) {
   return (
     <div
-      className="rounded-2xl border px-4 py-3"
+      className="min-w-0 rounded-2xl border px-4 py-3"
       style={{
         borderColor: "rgba(255,255,255,0.08)",
         background: "rgba(255,255,255,0.03)",
       }}
     >
-      <div className="text-lg font-bold text-white">{value}</div>
+      <div className="truncate text-lg font-bold text-white">{value}</div>
       <div className="mt-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-white/42">
         {label}
+      </div>
+    </div>
+  );
+}
+
+function Notice({
+  tone,
+  icon,
+  children,
+}: {
+  tone: "info" | "warning";
+  icon: React.ReactNode;
+  children: React.ReactNode;
+}) {
+  const warning = tone === "warning";
+
+  return (
+    <div
+      className="rounded-2xl border px-4 py-3 text-sm"
+      style={{
+        borderColor: warning
+          ? "rgba(245,158,11,0.18)"
+          : "rgba(255,255,255,0.08)",
+        background: warning
+          ? "rgba(245,158,11,0.10)"
+          : "rgba(255,255,255,0.03)",
+        color: "rgba(255,255,255,0.82)",
+      }}
+    >
+      <div className="flex min-w-0 items-center gap-2">
+        <span className="shrink-0">{icon}</span>
+        <span className="truncate-2">{children}</span>
       </div>
     </div>
   );
@@ -550,53 +656,21 @@ function MiniPanel({
 }) {
   return (
     <div
-      className="rounded-[24px] border p-4"
+      className="min-w-0 rounded-[24px] border p-4"
       style={{
         borderColor: "rgba(255,255,255,0.08)",
         background:
           "linear-gradient(180deg, rgba(12,18,34,0.96) 0%, rgba(7,12,24,0.98) 100%)",
       }}
     >
-      <div className="flex items-center gap-2 text-white/45">
-        {icon}
-        <span className="text-[11px] font-semibold uppercase tracking-[0.18em]">
+      <div className="flex items-center gap-2 text-white/48">
+        <span className="shrink-0">{icon}</span>
+        <span className="truncate text-[11px] font-semibold uppercase tracking-[0.2em]">
           {label}
         </span>
       </div>
-      <div className="mt-3 text-xl font-bold text-white">{value}</div>
-      <div className="mt-2 text-sm leading-6 text-white/52">{subtext}</div>
-    </div>
-  );
-}
-
-function Notice({
-  tone,
-  icon,
-  children,
-}: {
-  tone: "warning" | "error";
-  icon: React.ReactNode;
-  children: React.ReactNode;
-}) {
-  const isWarning = tone === "warning";
-
-  return (
-    <div
-      className="rounded-2xl border px-4 py-3 text-sm"
-      style={{
-        borderColor: isWarning
-          ? "rgba(245,158,11,0.18)"
-          : "rgba(239,68,68,0.18)",
-        background: isWarning
-          ? "rgba(245,158,11,0.08)"
-          : "rgba(239,68,68,0.08)",
-        color: "rgba(255,255,255,0.86)",
-      }}
-    >
-      <div className="flex items-center gap-2">
-        {icon}
-        <span>{children}</span>
-      </div>
+      <div className="mt-2 truncate text-lg font-bold text-white">{value}</div>
+      <div className="truncate-2 mt-1 text-sm text-white/50">{subtext}</div>
     </div>
   );
 }
@@ -612,15 +686,15 @@ function MiniStat({
 }) {
   return (
     <div
-      className="rounded-2xl border px-4 py-3"
+      className="min-w-0 rounded-2xl border px-4 py-3"
       style={{
         borderColor: "rgba(255,255,255,0.08)",
         background: "rgba(255,255,255,0.03)",
       }}
     >
-      <div className="flex items-center gap-2 text-white/44">
-        {icon}
-        <span className="text-[11px] font-semibold uppercase tracking-[0.18em]">
+      <div className="flex min-w-0 items-center gap-2 text-white/44">
+        <span className="shrink-0">{icon}</span>
+        <span className="truncate text-[11px] font-semibold uppercase tracking-[0.18em]">
           {label}
         </span>
       </div>
@@ -640,18 +714,18 @@ function MetaRow({
 }) {
   return (
     <div
-      className="flex items-center gap-3 rounded-2xl border px-4 py-3"
+      className="flex min-w-0 items-center gap-3 rounded-2xl border px-4 py-3"
       style={{
         borderColor: "rgba(255,255,255,0.08)",
         background: "rgba(255,255,255,0.02)",
       }}
     >
-      <div className="text-white/45">{icon}</div>
-      <div>
+      <div className="shrink-0 text-white/45">{icon}</div>
+      <div className="min-w-0">
         <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/42">
           {label}
         </div>
-        <div className="mt-1 text-sm font-medium text-white">{value}</div>
+        <div className="mt-1 truncate text-sm font-medium text-white">{value}</div>
       </div>
     </div>
   );
@@ -678,62 +752,14 @@ function LoadingPanel({ label }: { label: string }) {
 function EmptyPanel({ label }: { label: string }) {
   return (
     <div
-      className="rounded-[28px] border px-6 py-10 text-center"
+      className="rounded-[28px] border px-6 py-10 text-center text-white/65"
       style={{
         borderColor: "rgba(255,255,255,0.08)",
         background:
           "linear-gradient(180deg, rgba(12,18,34,0.96) 0%, rgba(7,12,24,0.98) 100%)",
       }}
     >
-      <div className="text-xl font-bold text-white">{label}</div>
+      {label}
     </div>
   );
-}
-
-function formatAdminDate(value?: string) {
-  if (!value) {
-    return "—";
-  }
-
-  const date = new Date(value);
-
-  if (Number.isNaN(date.getTime())) {
-    return "Invalid date";
-  }
-
-  return new Intl.DateTimeFormat(undefined, {
-    dateStyle: "medium",
-    timeStyle: "short",
-  }).format(date);
-}
-
-function formatMoney(value?: number) {
-  if (value === undefined || value === null) {
-    return "—";
-  }
-
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    maximumFractionDigits: 2,
-  }).format(value);
-}
-
-function formatCount(value?: number) {
-  if (value === undefined || value === null) {
-    return "—";
-  }
-
-  return new Intl.NumberFormat("en-US", {
-    maximumFractionDigits: 0,
-  }).format(value);
-}
-
-function formatSignedPercent(value?: number) {
-  if (value === undefined || value === null) {
-    return "—";
-  }
-
-  const sign = value > 0 ? "+" : value < 0 ? "" : "";
-  return `${sign}${value.toFixed(2)}%`;
 }

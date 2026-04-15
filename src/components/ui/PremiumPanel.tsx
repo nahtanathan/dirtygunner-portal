@@ -1,12 +1,19 @@
-import { cn } from '@/lib/utils/cn';
+// FILE: src/components/ui/PremiumPanel.tsx
 import { ReactNode } from 'react';
+import { cn } from '@/lib/utils/cn';
 
-export function PremiumPanel({ children, className }: { children: ReactNode; className?: string }) {
+export function PremiumPanel({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
   return (
     <div
       className={cn(
-        'panel-shell metal-border relative overflow-hidden rounded-[28px] p-5 md:p-6',
-        'before:absolute before:inset-0 before:bg-[linear-gradient(180deg,rgba(255,255,255,0.06),transparent_30%)] before:pointer-events-none',
+        'panel-shell metal-border relative min-w-0 overflow-hidden rounded-[24px] p-4 sm:rounded-[26px] sm:p-5 md:rounded-[28px] md:p-6',
+        'before:pointer-events-none before:absolute before:inset-0 before:bg-[linear-gradient(180deg,rgba(255,255,255,0.06),transparent_30%)]',
         className,
       )}
     >

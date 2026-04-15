@@ -1,9 +1,15 @@
+// FILE: src/app/(admin)/admin/kick-rewards/page.tsx
+import { PageHero } from "@/components/ui/PageHero";
 import { KickRewardsManager } from "@/components/admin/kick-rewards-manager";
 
 export default function AdminKickRewardsPage() {
   return (
-    <div className="mx-auto max-w-5xl p-6">
-      <h1 className="mb-6 text-2xl font-bold text-white">Kick Rewards Admin</h1>
+    <div className="space-y-8">
+      <PageHero
+        eyebrow="Admin"
+        title="Kick Rewards Control"
+        description="Create, enable, disable, and clean up Kick channel point rewards with a cleaner admin layout and tighter responsive behavior."
+      />
       <KickRewardsManager />
     </div>
   );

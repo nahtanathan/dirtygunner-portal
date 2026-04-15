@@ -1,5 +1,4 @@
 // FILE: src/app/(public)/leaderboard/page.tsx
-
 import { PageHero } from "@/components/ui/PageHero";
 import { CountdownTimer } from "@/components/leaderboard/CountdownTimer";
 import { TopThreeCards } from "@/components/leaderboard/TopThreeCards";
@@ -66,7 +65,7 @@ export default async function LeaderboardPage() {
       .slice(0, 16);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 md:space-y-10">
       <PageHero
         eyebrow="Leaderboard"
         title={title}
@@ -79,18 +78,24 @@ export default async function LeaderboardPage() {
 
       <TopThreeCards entries={topThree} />
 
-      <section className="rounded-3xl border border-white/10 bg-black/30 p-5 backdrop-blur-xl">
-        <div className="mb-4 flex items-center justify-between">
-          <div>
-            <h2 className="text-xl font-bold text-white">Full Leaderboard</h2>
-            <p className="mt-1 text-sm text-zinc-400">
+      <section className="rounded-3xl border border-white/10 bg-black/30 p-5 backdrop-blur-xl sm:p-6">
+        <div className="mb-5 flex min-w-0 flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div className="min-w-0">
+            <h2 className="truncate text-xl font-bold text-white sm:text-2xl">
+              Full Leaderboard
+            </h2>
+            <p className="truncate-2 mt-1 text-sm leading-6 text-zinc-400">
               Current ranked positions for this cycle.
             </p>
+          </div>
+
+          <div className="shrink-0 whitespace-nowrap text-sm text-zinc-500">
+            {remaining.length} entries
           </div>
         </div>
 
         <div className="overflow-hidden rounded-2xl border border-white/10">
-          <div className="grid grid-cols-[80px_minmax(0,1fr)_180px] bg-white/5 px-4 py-3 text-xs uppercase tracking-[0.18em] text-zinc-500">
+          <div className="grid grid-cols-[68px_minmax(0,1fr)_110px] gap-3 bg-white/5 px-4 py-3 text-[11px] uppercase tracking-[0.18em] text-zinc-500 sm:grid-cols-[80px_minmax(0,1fr)_180px]">
             <div>Rank</div>
             <div>User</div>
             <div className="text-right">Wager</div>
@@ -101,9 +106,11 @@ export default async function LeaderboardPage() {
               remaining.map((entry) => (
                 <div
                   key={`${entry.rank}-${entry.username}`}
-                  className="grid grid-cols-[80px_minmax(0,1fr)_180px] items-center px-4 py-4 text-sm"
+                  className="grid grid-cols-[68px_minmax(0,1fr)_110px] items-center gap-3 px-4 py-4 text-sm sm:grid-cols-[80px_minmax(0,1fr)_180px]"
                 >
-                  <div className="font-semibold text-white">#{entry.rank}</div>
+                  <div className="whitespace-nowrap font-semibold text-white">
+                    #{entry.rank}
+                  </div>
 
                   <div className="min-w-0">
                     <div className="truncate font-semibold text-white">
@@ -111,7 +118,7 @@ export default async function LeaderboardPage() {
                     </div>
                   </div>
 
-                  <div className="text-right font-semibold text-zinc-200">
+                  <div className="whitespace-nowrap text-right font-semibold text-zinc-200">
                     ${entry.wageredTotal.toLocaleString()}
                   </div>
                 </div>

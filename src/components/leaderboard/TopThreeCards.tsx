@@ -1,3 +1,4 @@
+// FILE: src/components/leaderboard/TopThreeCards.tsx
 "use client";
 
 import Image from "next/image";
@@ -95,8 +96,10 @@ function PlaceCard({
         onMouseMove={handleMove}
         onMouseLeave={handleLeave}
         className={clsx(
-          "relative flex overflow-hidden rounded-[28px] border",
-          featured ? "min-h-[420px] p-7 md:min-h-[460px]" : "min-h-[380px] p-6",
+          "relative flex min-w-0 overflow-hidden rounded-[28px] border",
+          featured
+            ? "min-h-[360px] p-5 sm:min-h-[390px] sm:p-6 md:min-h-[460px] md:p-7"
+            : "min-h-[330px] p-5 sm:min-h-[350px] sm:p-6 md:min-h-[380px]",
         )}
         style={{
           borderColor: "var(--border-subtle)",
@@ -149,9 +152,12 @@ function PlaceCard({
           #{place}
         </div>
 
-        <div className="pointer-events-none absolute left-1/2 top-8 z-20 -translate-x-1/2">
+        <div className="pointer-events-none absolute left-1/2 top-7 z-20 -translate-x-1/2 sm:top-8">
           <div
-            className={clsx("relative", featured ? "h-40 w-40" : "h-32 w-32")}
+            className={clsx(
+              "relative",
+              featured ? "h-32 w-32 sm:h-36 sm:w-36 md:h-40 md:w-40" : "h-24 w-24 sm:h-28 sm:w-28 md:h-32 md:w-32",
+            )}
             style={{
               filter: featured
                 ? "drop-shadow(0 0 22px rgba(109,143,179,0.20))"
@@ -173,17 +179,17 @@ function PlaceCard({
         <div
           className="pointer-events-none absolute left-1/2 z-20 -translate-x-1/2"
           style={{
-            top: place === 1 ? "170px" : "142px",
+            top: featured ? "140px" : "120px",
           }}
         >
           <div className="text-center">
-            <div className="text-[10px] font-bold uppercase tracking-[0.26em] text-white/40">
+            <div className="text-[10px] font-bold uppercase tracking-[0.26em] text-white/40 sm:text-[11px]">
               Payout
             </div>
             <div
               className={clsx(
-                "mt-1 font-black leading-none",
-                featured ? "text-[24px]" : "text-[20px]",
+                "mt-1 whitespace-nowrap font-black leading-none",
+                featured ? "text-[20px] sm:text-[22px] md:text-[24px]" : "text-[18px] sm:text-[19px] md:text-[20px]",
               )}
               style={{
                 color: place === 1 ? "#c7d3df" : "#e6eaf2",
@@ -196,7 +202,7 @@ function PlaceCard({
           </div>
         </div>
 
-        <div className="relative z-10 flex w-full flex-col justify-end">
+        <div className="relative z-10 flex w-full min-w-0 flex-col justify-end">
           <div
             className="pointer-events-none absolute inset-x-0 bottom-0 h-[60%]"
             style={{
@@ -206,30 +212,30 @@ function PlaceCard({
           />
 
           <div
-            className="relative z-10 w-full pt-[180px]"
+            className="relative z-10 w-full pt-[155px] sm:pt-[170px] md:pt-[180px]"
             style={{
               transform: "translateZ(24px)",
               marginTop: "auto",
             }}
           >
-            <div className="pb-2">
+            <div className="pb-2 min-w-0">
               <div
                 className={clsx(
-                  "font-black uppercase text-white",
-                  featured ? "text-[36px]" : "text-[30px]",
+                  "truncate font-black uppercase text-white",
+                  featured ? "text-[26px] sm:text-[30px] md:text-[36px]" : "text-[22px] sm:text-[26px] md:text-[30px]",
                 )}
               >
                 {player.username}
               </div>
 
-              <div className="mt-3 text-xs uppercase tracking-[0.3em] text-white/40">
+              <div className="mt-3 text-[10px] uppercase tracking-[0.3em] text-white/40 sm:text-xs">
                 Wagered
               </div>
 
               <div
                 className={clsx(
-                  "mt-1 font-black",
-                  featured ? "text-[36px]" : "text-[30px]",
+                  "mt-1 whitespace-nowrap font-black",
+                  featured ? "text-[26px] sm:text-[30px] md:text-[36px]" : "text-[22px] sm:text-[26px] md:text-[30px]",
                 )}
                 style={{
                   color: "#aebdcb",
