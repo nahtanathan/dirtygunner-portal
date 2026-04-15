@@ -22,6 +22,7 @@ import {
   X,
 } from "lucide-react";
 import { useAdminStore } from "@/store/admin-store";
+import { HeaderAuth } from "@/components/layout/header-auth";
 
 type MeUser = {
   isAdmin: boolean;
@@ -115,23 +116,27 @@ export default function MobileNav() {
         }}
       >
         <div className="flex items-center justify-between gap-3">
-          <Link href="/" className="min-w-0">
+          <Link href="/" className="min-w-0 flex-1 overflow-hidden">
             <SidebarBrandMark />
           </Link>
 
-          <button
-            type="button"
-            onClick={() => setOpen((value) => !value)}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border transition-all duration-200"
-            style={{
-              borderColor: "rgba(255,255,255,0.08)",
-              background: "rgba(255,255,255,0.04)",
-              color: "rgba(255,255,255,0.92)",
-            }}
-            aria-label={open ? "Close menu" : "Open menu"}
-          >
-            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
+          <div className="flex shrink-0 items-center gap-2">
+            <HeaderAuth mobileCompact />
+
+            <button
+              type="button"
+              onClick={() => setOpen((value) => !value)}
+              className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border transition-all duration-200"
+              style={{
+                borderColor: "rgba(255,255,255,0.08)",
+                background: "rgba(255,255,255,0.04)",
+                color: "rgba(255,255,255,0.92)",
+              }}
+              aria-label={open ? "Close menu" : "Open menu"}
+            >
+              {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -329,8 +334,8 @@ export default function MobileNav() {
 
 function SidebarBrandMark() {
   return (
-    <div className="flex items-center gap-3">
-      <div className="relative h-10 w-10">
+    <div className="flex min-w-0 items-center gap-3">
+      <div className="relative h-10 w-10 shrink-0">
         <Image
           src="/brand/logo-mark.png"
           alt="DirtyGunner"
@@ -339,11 +344,11 @@ function SidebarBrandMark() {
         />
       </div>
 
-      <div className="flex flex-col leading-tight">
-        <span className="text-sm font-semibold tracking-wide text-white">
+      <div className="flex min-w-0 flex-col leading-tight">
+        <span className="truncate text-sm font-semibold tracking-wide text-white">
           DIRTYGUNNER
         </span>
-        <span className="text-[10px] tracking-widest text-zinc-400">
+        <span className="truncate text-[10px] tracking-widest text-zinc-400">
           CONTROL PANEL
         </span>
       </div>
