@@ -121,9 +121,33 @@ export type BonusHunt = {
   totalCost?: number;
   totalReturn?: number;
   profitLoss?: number;
+  profitLossPercentage?: number;
   startCost?: number;
   totalWinnings?: number;
   bonusCount?: number;
   currentOpeningSlot?: string | null;
+  notes?: string;
+  items?: string;
   bonuses?: BonusHuntBonus[];
+};
+
+export type BonusHuntSnapshot = {
+  liveHunts: BonusHunt[];
+  previousHunts: BonusHunt[];
+  totalHunts?: number;
+  activeHunts?: number;
+  completedHunts?: number;
+  totalBonuses?: number;
+  totalInvested?: number;
+  totalWinnings?: number;
+  totalProfitLoss?: number;
+  totalProfitLossPercentage?: number;
+  source: "bonushunt" | "fallback";
+  fetchedAt: string;
+  message?: string;
+  rateLimit?: {
+    limit?: number;
+    remaining?: number;
+    reset?: number;
+  };
 };
