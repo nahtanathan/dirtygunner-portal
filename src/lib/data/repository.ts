@@ -41,14 +41,20 @@ async function getBaseUrl() {
 async function fetchJson(
   path: string,
   fallback: JsonValue = null,
-  revalidate = 60
+  options?: {
+    revalidate?: number;
+    noStore?: boolean;
+  },
 ): Promise<JsonValue> {
   try {
     const baseUrl = await getBaseUrl();
     const url = `${baseUrl}${path}`;
 
     const res = await fetch(url, {
-      next: { revalidate },
+      cache: options?.noStore ? "no-store" : undefined,
+      next: options?.noStore
+        ? undefined
+        : { revalidate: options?.revalidate ?? 60 },
     });
 
     if (!res.ok) {
@@ -58,7 +64,7 @@ async function fetchJson(
 
       const body = await res.text().catch(() => "");
       throw new Error(
-        `Request failed for ${path}: ${res.status} ${res.statusText} ${body}`
+        `Request failed for ${path}: ${res.status} ${res.statusText} ${body}`,
       );
     }
 
@@ -74,23 +80,23 @@ async function fetchJson(
 
 export const dataRepository = {
   getSiteSettings: async () => {
-    return fetchJson("/api/site-settings", {}, 300);
+    return fetchJson("/api/site-settings", {}, { noStore: true });
   },
 
   getLeaderboardSettings: async () => {
-    return fetchJson("/api/leaderboard-settings", {}, 300);
+    return fetchJson("/api/leaderboard-settings", {}, { noStore: true });
   },
 
   getLeaderboardEntries: async () => {
-    return fetchJson("/api/leaderboard", [], 60);
+    return fetchJson("/api/leaderboard", [], { revalidate: 60 });
   },
 
   getRaffles: async () => {
-    return fetchJson("/api/raffles", [], 60);
+    return fetchJson("/api/raffles", [], { noStore: true });
   },
 
   getChallenges: async () => {
-    return fetchJson("/api/challenges", [], 60);
+    return fetchJson("/api/challenges", [], { noStore: true });
   },
 
   getBonusHunts: async () => {
@@ -103,7 +109,7 @@ export const dataRepository = {
         fetchedAt: new Date().toISOString(),
         message: "Bonus hunt data is currently unavailable.",
       },
-      60
+      { revalidate: 60 },
     ) as Promise<BonusHuntSnapshot>;
   },
 };
