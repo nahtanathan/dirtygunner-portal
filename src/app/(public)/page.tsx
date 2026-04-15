@@ -56,6 +56,7 @@ export default async function HomePage() {
 
   return (
     <div className="space-y-8 md:space-y-10">
+      {/* HERO */}
       <section className="mx-auto w-full max-w-[1280px] px-4 pt-2 md:px-6 md:pt-4">
         <PremiumPanel className="overflow-hidden p-5 text-center sm:p-6 md:p-8 xl:p-10">
           <div
@@ -96,6 +97,18 @@ export default async function HomePage() {
         </PremiumPanel>
       </section>
 
+      {/* ABOUT LINE */}
+      <section className="mx-auto max-w-[800px] px-4 text-center">
+        <div className="h-px w-full bg-white/10 mb-4" />
+
+        <p className="text-sm md:text-base text-white/60 leading-relaxed">
+          United States Navy Gunner&apos;s Mate 2nd Class active duty from 99-03 reserve from 03-05. Weapons and range instructor 5&quot; gun mechanic.
+        </p>
+
+        <div className="h-px w-full bg-white/10 mt-4" />
+      </section>
+
+      {/* MAIN CONTENT */}
       <HomeClient
         leaderboard={leaderboard}
         countdownTarget={countdownTarget}
