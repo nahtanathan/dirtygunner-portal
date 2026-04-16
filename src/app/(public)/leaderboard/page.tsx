@@ -70,11 +70,7 @@ export default async function LeaderboardPage() {
 
   return (
     <div className="space-y-8 md:space-y-10">
-      <PageHero
-        eyebrow="Leaderboard"
-        title={title}
-        description={subtitle}
-      />
+      <PageHero eyebrow="Leaderboard" title={title} description={subtitle} />
 
       <div className="mx-auto w-full max-w-[1200px]">
         <CountdownTimer target={countdownTarget} />
@@ -125,12 +121,16 @@ export default async function LeaderboardPage() {
 
                   <div className="whitespace-nowrap text-right font-semibold text-zinc-200">
                     {typeof entry.prize === "number"
-                      ? `$${entry.prize.toLocaleString()}`
+                      ? `$${entry.prize.toLocaleString(undefined, {
+                          maximumFractionDigits: 0,
+                        })}`
                       : "—"}
                   </div>
 
                   <div className="whitespace-nowrap text-right font-semibold text-zinc-200">
-                    ${entry.wageredTotal.toLocaleString()}
+                    ${entry.wageredTotal.toLocaleString(undefined, {
+                      maximumFractionDigits: 0,
+                    })}
                   </div>
                 </div>
               ))
