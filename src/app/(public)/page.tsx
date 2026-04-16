@@ -1,14 +1,19 @@
-// FILE: src/app/(public)/page.tsx
 import Image from "next/image";
 
 import { HomeClient } from "@/components/home/HomeClient";
 import { CTAButton } from "@/components/ui/CTAButton";
-import { PremiumPanel } from "@/components/ui/PremiumPanel";
 import { dataRepository } from "@/lib/data/repository";
 import { prisma } from "@/lib/prisma";
 import { getRoobetLeaderboard } from "@/lib/roobet";
 
 export const dynamic = "force-dynamic";
+
+type LeaderboardEntry = {
+  rank: number;
+  username: string;
+  wageredTotal: number;
+  prize?: number;
+};
 
 export default async function HomePage() {
   let kickUrl = "https://kick.com/dirtygunner";
@@ -28,9 +33,16 @@ export default async function HomePage() {
   let countdownTarget =
     new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16);
 
+  let prizeTiers: Array<{ place: number; prize: number }> = [];
+
   try {
     const leaderboardSettings = await prisma.leaderboardSettings.findUnique({
       where: { id: "leaderboard-settings" },
+      include: {
+        prizeTiers: {
+          orderBy: { place: "asc" },
+        },
+      },
     });
 
     if (leaderboardSettings?.countdownTarget) {
@@ -38,15 +50,37 @@ export default async function HomePage() {
         .toISOString()
         .slice(0, 16);
     }
+
+    if (leaderboardSettings?.prizeTiers?.length) {
+      prizeTiers = leaderboardSettings.prizeTiers;
+    }
   } catch (error) {
     console.error("Failed to load leaderboard settings:", error);
   }
 
-  let leaderboard: any[] = [];
+  let leaderboard: LeaderboardEntry[] = [];
 
   try {
     const data = await getRoobetLeaderboard();
-    leaderboard = Array.isArray(data) ? data : [];
+
+    leaderboard = Array.isArray(data)
+      ? data.map((item) => {
+          const settingsPrize = prizeTiers.find(
+            (tier) => tier.place === item.rank,
+          )?.prize;
+
+          const fallbackPrize =
+            typeof item.prize === "number" ? item.prize : undefined;
+
+          return {
+            rank: typeof item.rank === "number" ? item.rank : 0,
+            username: item.username ?? "Unknown",
+            wageredTotal:
+              typeof item.wageredTotal === "number" ? item.wageredTotal : 0,
+            prize: settingsPrize ?? fallbackPrize,
+          };
+        })
+      : [];
   } catch (error) {
     console.error("Roobet leaderboard failed on homepage:", error);
     leaderboard = [];

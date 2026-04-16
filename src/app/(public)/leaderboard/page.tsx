@@ -60,9 +60,7 @@ export default async function LeaderboardPage() {
   const remaining = entries.slice(3);
 
   const title = settings?.title || "Weekly Roobet Race";
-  const subtitle =
-    settings?.subtitle ||
-    " ";
+  const subtitle = settings?.subtitle || " ";
 
   const countdownTarget =
     settings?.countdownTarget?.toISOString().slice(0, 16) ||
@@ -101,9 +99,10 @@ export default async function LeaderboardPage() {
         </div>
 
         <div className="overflow-hidden rounded-2xl border border-white/10">
-          <div className="grid grid-cols-[68px_minmax(0,1fr)_110px] gap-3 bg-white/5 px-4 py-3 text-[11px] uppercase tracking-[0.18em] text-zinc-500 sm:grid-cols-[80px_minmax(0,1fr)_180px]">
+          <div className="grid grid-cols-[68px_minmax(0,1fr)_110px_110px] gap-3 bg-white/5 px-4 py-3 text-[11px] uppercase tracking-[0.18em] text-zinc-500 sm:grid-cols-[80px_minmax(0,1fr)_160px_180px]">
             <div>Rank</div>
             <div>User</div>
+            <div className="text-right">Prize</div>
             <div className="text-right">Wager</div>
           </div>
 
@@ -112,7 +111,7 @@ export default async function LeaderboardPage() {
               remaining.map((entry) => (
                 <div
                   key={`${entry.rank}-${entry.username}`}
-                  className="grid grid-cols-[68px_minmax(0,1fr)_110px] items-center gap-3 px-4 py-4 text-sm sm:grid-cols-[80px_minmax(0,1fr)_180px]"
+                  className="grid grid-cols-[68px_minmax(0,1fr)_110px_110px] items-center gap-3 px-4 py-4 text-sm sm:grid-cols-[80px_minmax(0,1fr)_160px_180px]"
                 >
                   <div className="whitespace-nowrap font-semibold text-white">
                     #{entry.rank}
@@ -122,6 +121,12 @@ export default async function LeaderboardPage() {
                     <div className="truncate font-semibold text-white">
                       {entry.username}
                     </div>
+                  </div>
+
+                  <div className="whitespace-nowrap text-right font-semibold text-zinc-200">
+                    {typeof entry.prize === "number"
+                      ? `$${entry.prize.toLocaleString()}`
+                      : "—"}
                   </div>
 
                   <div className="whitespace-nowrap text-right font-semibold text-zinc-200">

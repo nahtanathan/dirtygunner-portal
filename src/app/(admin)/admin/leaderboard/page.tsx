@@ -1,4 +1,3 @@
-// FILE: src/app/(admin)/admin/leaderboard/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -126,6 +125,19 @@ export default function AdminLeaderboardPage() {
       prizeTiers: updated,
     }));
     setMessage("");
+  }
+
+  function updatePrizeFromInput(index: number, rawValue: string) {
+    if (rawValue.trim() === "") {
+      updatePrize(index, 0);
+      return;
+    }
+
+    const numeric = Number(rawValue.replace(/[^\d.]/g, ""));
+
+    if (Number.isFinite(numeric) && numeric >= 0) {
+      updatePrize(index, numeric);
+    }
   }
 
   function addPrizeTier() {
@@ -371,10 +383,9 @@ export default function AdminLeaderboardPage() {
                 <input
                   type="number"
                   min={0}
-                  value={tier.prize}
-                  onChange={(e) =>
-                    updatePrize(index, Number(e.target.value) || 0)
-                  }
+                  inputMode="numeric"
+                  value={tier.prize === 0 ? "" : String(tier.prize)}
+                  onChange={(e) => updatePrizeFromInput(index, e.target.value)}
                   className="h-11 w-full rounded-xl border border-white/10 bg-white/5 px-4 text-white outline-none transition placeholder:text-zinc-500 focus:border-white/20"
                   placeholder="0"
                 />
