@@ -59,6 +59,19 @@ type BonusHuntSnapshot = {
   };
 };
 
+function isBonusHuntSnapshot(value: unknown): value is BonusHuntSnapshot {
+  if (!value || typeof value !== "object") return false;
+
+  const maybe = value as Partial<BonusHuntSnapshot>;
+
+  return (
+    Array.isArray(maybe.liveHunts) &&
+    Array.isArray(maybe.previousHunts) &&
+    typeof maybe.source === "string" &&
+    typeof maybe.fetchedAt === "string"
+  );
+}
+
 function formatMoney(value?: number) {
   if (value === undefined || value === null) return "—";
 
@@ -192,10 +205,17 @@ export default function AdminBonusHuntsPage() {
         return;
       }
 
-      if (!res.ok || !data || "error" in data) {
-        throw new Error(
-          (data && "error" in data && data.error) || "Failed to load bonus hunts",
-        );
+      if (!res.ok) {
+        const apiError =
+          data && typeof data === "object" && "error" in data
+            ? data.error
+            : undefined;
+
+        throw new Error(apiError || "Failed to load bonus hunts");
+      }
+
+      if (!isBonusHuntSnapshot(data)) {
+        throw new Error("Invalid bonus hunt response");
       }
 
       setUnauthorized(false);
