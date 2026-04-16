@@ -70,7 +70,11 @@ export default async function LeaderboardPage() {
 
   return (
     <div className="space-y-8 md:space-y-10">
-      <PageHero eyebrow="Leaderboard" title={title} description={subtitle} />
+      <PageHero
+        eyebrow="Leaderboard"
+        title={title}
+        description={subtitle}
+      />
 
       <div className="mx-auto w-full max-w-[1200px]">
         <CountdownTimer target={countdownTarget} />
@@ -82,10 +86,10 @@ export default async function LeaderboardPage() {
         <div className="mb-5 flex min-w-0 flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div className="min-w-0">
             <h2 className="truncate text-xl font-bold text-white sm:text-2xl">
-              Standings
+              Full Leaderboard
             </h2>
             <p className="truncate-2 mt-1 text-sm leading-6 text-zinc-400">
-              Current standings for this round.
+              Current ranked positions for this cycle.
             </p>
           </div>
 
@@ -136,7 +140,7 @@ export default async function LeaderboardPage() {
               ))
             ) : (
               <div className="px-4 py-8 text-center text-sm text-zinc-400">
-                No leaderboard entries right now.
+                No leaderboard entries available right now.
               </div>
             )}
           </div>

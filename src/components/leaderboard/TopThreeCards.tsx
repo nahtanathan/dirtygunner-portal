@@ -119,7 +119,7 @@ function PlaceCard({
               backgroundImage: `url(${getCardArt(place)})`,
               backgroundSize: "cover",
               backgroundPosition: "center",
-              opacity: place === 1 ? 0.30 : 0.22,
+              opacity: place === 1 ? 0.3 : 0.22,
               filter: "saturate(0.62) brightness(0.82) blur(0.2px)",
               transform: "scale(1.02)",
             }}
@@ -207,7 +207,10 @@ function PlaceCard({
                   place === 1 ? "0 0 10px rgba(199,211,223,0.18)" : "none",
               }}
             >
-              ${prizeValue.toLocaleString()}
+              $
+              {prizeValue.toLocaleString(undefined, {
+                maximumFractionDigits: 0,
+              })}
             </div>
           </div>
         </div>
@@ -256,7 +259,10 @@ function PlaceCard({
                   textShadow: "0 0 12px rgba(174,189,203,0.10)",
                 }}
               >
-                ${wagerValue.toLocaleString()}
+                $
+                {wagerValue.toLocaleString(undefined, {
+                  maximumFractionDigits: 0,
+                })}
               </div>
             </div>
           </div>
@@ -266,14 +272,14 @@ function PlaceCard({
   );
 }
 
-function getCardArt(place: number) {
-  if (place === 1) return "/art/top1.jpg";
-  if (place === 2) return "/art/top2.jpg";
-  return "/art/top3.jpg";
-}
-
 function getPrizeForPlace(place: Place) {
   if (place === 1) return 300;
   if (place === 2) return 200;
   return 150;
+}
+
+function getCardArt(place: Place) {
+  if (place === 1) return "/images/leaderboard/top1-card-art.png";
+  if (place === 2) return "/images/leaderboard/top2-card-art.png";
+  return "/images/leaderboard/top3-card-art.png";
 }
