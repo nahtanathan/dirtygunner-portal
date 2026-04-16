@@ -216,7 +216,7 @@ export default function AdminChallengesPage() {
         throw new Error(
           !Array.isArray(data) && typeof data?.error === "string"
             ? data.error
-            : "Failed to load challenges",
+            : "Could not load challenges",
         );
       }
 
@@ -225,7 +225,7 @@ export default function AdminChallengesPage() {
       setError(
         fetchError instanceof Error
           ? fetchError.message
-          : "Failed to load challenges",
+          : "Could not load challenges",
       );
     } finally {
       setLoadingChallenges(false);
@@ -247,7 +247,7 @@ export default function AdminChallengesPage() {
         throw new Error(
           !Array.isArray(data) && typeof data?.error === "string"
             ? data.error
-            : "Failed to load claims",
+            : "Could not load claims",
         );
       }
 
@@ -256,7 +256,7 @@ export default function AdminChallengesPage() {
       setError(
         fetchError instanceof Error
           ? fetchError.message
-          : "Failed to load claims",
+          : "Could not load claims",
       );
     } finally {
       setLoadingClaims(false);
@@ -384,7 +384,7 @@ export default function AdminChallengesPage() {
       const data = await readApiResponse<{ error?: string }>(res);
 
       if (!res.ok) {
-        throw new Error(data.error || "Failed to save challenge");
+        throw new Error(data.error || "Could not save challenge");
       }
 
       setMessage(editingId ? "Challenge updated." : "Challenge created.");
@@ -397,7 +397,7 @@ export default function AdminChallengesPage() {
       setError(
         saveError instanceof Error
           ? saveError.message
-          : "Failed to save challenge",
+          : "Could not save challenge",
       );
     } finally {
       setIsSaving(false);
@@ -425,7 +425,7 @@ export default function AdminChallengesPage() {
       const data = await readApiResponse<{ error?: string }>(res);
 
       if (!res.ok) {
-        throw new Error(data.error || "Failed to delete challenge");
+        throw new Error(data.error || "Could not delete challenge");
       }
 
       if (editingId === challengeId) {
@@ -438,7 +438,7 @@ export default function AdminChallengesPage() {
       setError(
         deleteError instanceof Error
           ? deleteError.message
-          : "Failed to delete challenge",
+          : "Could not delete challenge",
       );
     } finally {
       setActionChallengeId(null);
@@ -453,7 +453,7 @@ export default function AdminChallengesPage() {
       action === "reject"
         ? window.prompt(
             "Reason for rejection:",
-            "Proof did not meet challenge rules.",
+            "Proof did not match the challenge rules.",
           )
         : null;
 
@@ -480,7 +480,7 @@ export default function AdminChallengesPage() {
       const data = await readApiResponse<{ error?: string }>(res);
 
       if (!res.ok) {
-        throw new Error(data.error || "Failed to review claim");
+        throw new Error(data.error || "Could not review claim");
       }
 
       setMessage(action === "approve" ? "Claim approved." : "Claim rejected.");
@@ -489,7 +489,7 @@ export default function AdminChallengesPage() {
       setError(
         reviewError instanceof Error
           ? reviewError.message
-          : "Failed to review claim",
+          : "Could not review claim",
       );
     } finally {
       setReviewClaimId(null);
@@ -534,7 +534,7 @@ export default function AdminChallengesPage() {
               Admin
             </div>
             <h1 className="mt-2 truncate text-2xl font-black tracking-tight text-white sm:text-3xl">
-              Challenges Control
+              Challenges
             </h1>
             <p className="truncate-3 mt-3 max-w-3xl text-sm leading-7 text-white/65">
               Create slot challenges, auto-fill slot art when available, and review
@@ -582,7 +582,7 @@ export default function AdminChallengesPage() {
                 Editor
               </div>
               <h2 className="mt-2 truncate text-xl font-bold text-white sm:text-2xl">
-                {editingId ? "Edit Challenge" : "Create Challenge"}
+                {editingId ? "Edit challenge" : "New challenge"}
               </h2>
             </div>
 
@@ -697,7 +697,7 @@ export default function AdminChallengesPage() {
                 value={form.rules}
                 onChange={(event) => setField("rules", event.target.value)}
                 className={textareaClassName}
-                placeholder="Proof must show slot name, bet size, and result clearly."
+                placeholder="Proof must clearly show the slot, bet size, and result."
               />
             </Field>
 
@@ -726,7 +726,7 @@ export default function AdminChallengesPage() {
                 value={form.imageUrl}
                 onChange={(event) => setField("imageUrl", event.target.value)}
                 className={inputClassName}
-                placeholder="Leave blank to auto-lookup from slot name"
+                placeholder="Leave blank to auto-find from slot name"
               />
             </Field>
 
@@ -741,7 +741,7 @@ export default function AdminChallengesPage() {
                 />
               </Field>
 
-              <Field label="Requires Proof">
+              <Field label="Requires proof">
                 <select
                   value={form.requiresProof ? "yes" : "no"}
                   onChange={(event) =>
@@ -798,8 +798,8 @@ export default function AdminChallengesPage() {
                   {isSaving
                     ? "Saving..."
                     : editingId
-                      ? "Update Challenge"
-                      : "Create Challenge"}
+                      ? "Save challenge"
+                      : "New challenge"}
                 </span>
               </button>
 

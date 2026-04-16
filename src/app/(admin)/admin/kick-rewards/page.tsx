@@ -7,8 +7,8 @@ export default function AdminKickRewardsPage() {
     <div className="space-y-8">
       <PageHero
         eyebrow="Admin"
-        title="Kick Rewards Control"
-        description="Create, enable, disable, and clean up Kick channel point rewards with a cleaner admin layout and tighter responsive behavior."
+        title="Kick Rewards"
+        description="Create, enable, disable, and clean up Kick channel point rewards."
       />
       <KickRewardsManager />
     </div>

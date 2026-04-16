@@ -150,8 +150,8 @@ export default function AdminPage() {
         return updatedCurrent ?? current;
       });
     } catch (error) {
-      console.error("Failed to load raffles:", error);
-      setMessage("Failed to load raffles");
+      console.error("Could not load raffles:", error);
+      setMessage("Could not load raffles");
       setForm(createEmptyRaffle());
     } finally {
       setIsLoading(false);
@@ -233,11 +233,11 @@ export default function AdminPage() {
 
       await loadRaffles();
       setForm(createEmptyRaffle());
-      setMessage("Raffle saved");
+      setMessage("Raffle saved.");
     } catch (error) {
-      console.error("Failed to save raffle:", error);
+      console.error("Could not save raffle:", error);
       setMessage(
-        error instanceof Error ? error.message : "Failed to save raffle",
+        error instanceof Error ? error.message : "Could not save raffle",
       );
     } finally {
       setIsSaving(false);
@@ -270,11 +270,11 @@ export default function AdminPage() {
         return current;
       });
 
-      setMessage("Raffle deleted");
+      setMessage("Raffle deleted.");
     } catch (error) {
-      console.error("Failed to delete raffle:", error);
+      console.error("Could not delete raffle:", error);
       setMessage(
-        error instanceof Error ? error.message : "Failed to delete raffle",
+        error instanceof Error ? error.message : "Could not delete raffle",
       );
     } finally {
       setDeletingId(null);
@@ -288,8 +288,8 @@ export default function AdminPage() {
     <div className="space-y-8">
       <PageHero
         eyebrow="Admin"
-        title="DirtyGunner Control Panel"
-        description="Manage raffles, leaderboard settings, and live site content."
+        title="Site Admin"
+        description="Manage raffles and core site settings."
       />
 
       <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
@@ -298,7 +298,7 @@ export default function AdminPage() {
         <AdminStatCard
           label="Backend Status"
           value="Prisma Live"
-          subtext="Raffles save directly into the database."
+          subtext="Raffles save straight to the database."
         />
       </div>
 
@@ -425,7 +425,7 @@ export default function AdminPage() {
                 Editor
               </div>
               <h3 className="mt-2 truncate text-2xl font-bold uppercase tracking-wide text-white">
-                {isEditingExisting ? "Edit Raffle" : "Create Raffle"}
+                {isEditingExisting ? "Edit raffle" : "New raffle"}
               </h3>
             </div>
 
@@ -471,7 +471,7 @@ export default function AdminPage() {
                 </select>
               </Field>
 
-              <Field label="Button Text">
+              <Field label="Entry button text">
                 <input
                   value={currentForm.entryMethod}
                   onChange={(event) => updateField("entryMethod", event.target.value)}
@@ -555,8 +555,8 @@ export default function AdminPage() {
                   {isSaving
                     ? "Saving..."
                     : isEditingExisting
-                      ? "Update Raffle"
-                      : "Create Raffle"}
+                      ? "Save raffle"
+                      : "New raffle"}
                 </span>
               </button>
 

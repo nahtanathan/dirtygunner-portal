@@ -126,7 +126,7 @@ export default function AdminRafflesPage() {
       const data = (await res.json()) as RaffleItem[];
 
       if (!res.ok) {
-        throw new Error("Failed to load raffles");
+        throw new Error("Could not load raffles");
       }
 
       setRaffles(data);
@@ -134,7 +134,7 @@ export default function AdminRafflesPage() {
       setError(
         fetchError instanceof Error
           ? fetchError.message
-          : "Failed to load raffles",
+          : "Could not load raffles",
       );
     } finally {
       setLoadingRaffles(false);
@@ -250,7 +250,7 @@ export default function AdminRafflesPage() {
       const data = (await res.json()) as { error?: string };
 
       if (!res.ok) {
-        throw new Error(data.error || "Failed to save raffle");
+        throw new Error(data.error || "Could not save raffle");
       }
 
       setMessage(editingId ? "Raffle updated." : "Raffle created.");
@@ -261,7 +261,7 @@ export default function AdminRafflesPage() {
       }
     } catch (saveError) {
       setError(
-        saveError instanceof Error ? saveError.message : "Failed to save raffle",
+        saveError instanceof Error ? saveError.message : "Could not save raffle",
       );
     } finally {
       setIsSaving(false);
@@ -289,7 +289,7 @@ export default function AdminRafflesPage() {
       const data = (await res.json()) as { error?: string };
 
       if (!res.ok) {
-        throw new Error(data.error || "Failed to delete raffle");
+        throw new Error(data.error || "Could not delete raffle");
       }
 
       if (editingId === raffleId) {
@@ -302,7 +302,7 @@ export default function AdminRafflesPage() {
       setError(
         deleteError instanceof Error
           ? deleteError.message
-          : "Failed to delete raffle",
+          : "Could not delete raffle",
       );
     } finally {
       setActionRaffleId(null);
@@ -405,7 +405,7 @@ export default function AdminRafflesPage() {
               Admin
             </div>
             <h1 className="mt-2 truncate text-2xl font-bold text-white sm:text-3xl md:text-4xl">
-              Raffles Control
+              Raffles
             </h1>
             <p className="truncate-3 mt-3 max-w-2xl text-sm leading-7 text-white/58">
               Create, edit, delete, pick winners, reroll results, and keep the
@@ -445,10 +445,10 @@ export default function AdminRafflesPage() {
           <div className="flex min-w-0 items-start justify-between gap-3">
             <div className="min-w-0">
               <div className="text-xs font-semibold uppercase tracking-[0.26em] text-white/42">
-                {editingId ? "Edit Raffle" : "Create Raffle"}
+                {editingId ? "Edit raffle" : "New raffle"}
               </div>
               <h2 className="mt-2 truncate text-xl font-bold text-white sm:text-2xl">
-                {editingId ? "Update Details" : "New Raffle"}
+                {editingId ? "Edit details" : "New raffle"}
               </h2>
             </div>
 
@@ -500,7 +500,7 @@ export default function AdminRafflesPage() {
                 value={form.description}
                 onChange={(event) => setField("description", event.target.value)}
                 className={textareaClassName}
-                placeholder="Short description for the public raffle page"
+                placeholder="Short public description"
               />
             </Field>
 
@@ -564,12 +564,12 @@ export default function AdminRafflesPage() {
                     setField("maxEntriesPerUser", event.target.value)
                   }
                   className={inputClassName}
-                  placeholder="Leave blank for unlimited"
+                  placeholder="Leave blank for no limit"
                 />
               </Field>
             </div>
 
-            <Field label="Entry Button Text">
+            <Field label="Entry button text">
               <input
                 value={form.entryMethod}
                 onChange={(event) => setField("entryMethod", event.target.value)}
@@ -603,7 +603,7 @@ export default function AdminRafflesPage() {
                 value={form.winner}
                 onChange={(event) => setField("winner", event.target.value)}
                 className={inputClassName}
-                placeholder="Leave blank to let system pick"
+                placeholder="Leave blank to let the system pick"
               />
             </Field>
 
@@ -630,8 +630,8 @@ export default function AdminRafflesPage() {
                   {isSaving
                     ? "Saving..."
                     : editingId
-                      ? "Update Raffle"
-                      : "Create Raffle"}
+                      ? "Save raffle"
+                      : "New raffle"}
                 </span>
               </button>
 

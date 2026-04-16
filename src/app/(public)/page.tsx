@@ -150,6 +150,56 @@ export default async function HomePage() {
                   Watch Live
                 </CTAButton>
               </div>
+
+              <div className="mt-6 max-w-3xl rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm leading-6 text-white/70 backdrop-blur-md sm:px-5">
+                “Don&apos;t forget to tell someone you love them, you might make their day!”
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto w-full max-w-[980px] px-4 md:px-6">
+        <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(14,18,28,0.92),rgba(9,12,20,0.98))] p-4 shadow-[0_20px_60px_rgba(0,0,0,0.32)] sm:p-5">
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(circle at top left, rgba(109,143,179,0.10), transparent 30%), linear-gradient(180deg, rgba(255,255,255,0.02), transparent 60%)",
+            }}
+          />
+
+          <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center">
+            <div className="flex items-center gap-4">
+              <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04]">
+                <Image
+                  src="/brand/logo-mark.png"
+                  alt="DirtyGunner"
+                  fill
+                  className="object-contain p-2 drop-shadow-[0_0_10px_rgba(139,92,246,0.28)]"
+                />
+              </div>
+
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/55">
+                    Military Background
+                  </span>
+                  <span className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/55">
+                    United States Navy
+                  </span>
+                </div>
+
+                <h2 className="mt-3 text-left text-lg font-bold tracking-tight text-white sm:text-xl">
+                  DirtyGunner
+                </h2>
+
+                <p className="mt-2 max-w-3xl text-left text-sm leading-6 text-white/62 md:text-[15px] md:leading-7">
+                  United States Navy Gunner&apos;s Mate 2nd Class. Active duty
+                  1999–2003, reserve 2003–2005. Weapons and range instructor.
+                  5&quot; gun mechanic.
+                </p>
+              </div>
             </div>
           </div>
         </div>

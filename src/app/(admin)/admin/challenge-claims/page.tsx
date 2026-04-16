@@ -116,7 +116,7 @@ export default function AdminChallengeClaimsPage() {
         throw new Error(
           !Array.isArray(data) && typeof data?.error === "string"
             ? data.error
-            : "Failed to load challenge claims",
+            : "Could not load challenge claims",
         );
       }
 
@@ -125,7 +125,7 @@ export default function AdminChallengeClaimsPage() {
       setError(
         fetchError instanceof Error
           ? fetchError.message
-          : "Failed to load challenge claims",
+          : "Could not load challenge claims",
       );
     } finally {
       setLoadingClaims(false);
@@ -157,7 +157,7 @@ export default function AdminChallengeClaimsPage() {
       action === "reject"
         ? window.prompt(
             "Reason for rejection:",
-            "Proof did not meet challenge rules.",
+            "Proof did not match the challenge rules.",
           )
         : null;
 
@@ -184,7 +184,7 @@ export default function AdminChallengeClaimsPage() {
       const data = await readApiResponse<{ error?: string }>(res);
 
       if (!res.ok) {
-        throw new Error(data.error || "Failed to review claim");
+        throw new Error(data.error || "Could not review claim");
       }
 
       setMessage(action === "approve" ? "Claim approved." : "Claim rejected.");
@@ -193,7 +193,7 @@ export default function AdminChallengeClaimsPage() {
       setError(
         reviewError instanceof Error
           ? reviewError.message
-          : "Failed to review claim",
+          : "Could not review claim",
       );
     } finally {
       setReviewClaimId(null);
@@ -222,20 +222,20 @@ export default function AdminChallengeClaimsPage() {
       const data = await readApiResponse<{ error?: string }>(res);
 
       if (!res.ok) {
-        throw new Error(data.error || "Failed to delete challenge claim");
+        throw new Error(data.error || "Could not delete challenge claim");
       }
 
       if (activeImageUrl === claim.proofImageUrl) {
         setActiveImageUrl(null);
       }
 
-      setMessage("Challenge proof entry deleted.");
+      setMessage("Proof entry deleted.");
       await loadClaims();
     } catch (deleteError) {
       setError(
         deleteError instanceof Error
           ? deleteError.message
-          : "Failed to delete challenge claim",
+          : "Could not delete challenge claim",
       );
     } finally {
       setDeleteClaimId(null);

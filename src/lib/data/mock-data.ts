@@ -17,7 +17,7 @@ export const siteSettings: SiteSettings = {
 
 export const leaderboardSettings: LeaderboardSettings = {
   title: "Weekly Roobet Race",
-  subtitle: "Top grinders earn premium payouts before the weekly reset.",
+  subtitle: "Top grinders get paid at reset.",
   countdownTarget: "2026-04-19T23:59:59.000Z",
   prizeTiers: [
     { place: 1, prize: 300 },
@@ -64,7 +64,7 @@ export const raffles: Raffle[] = [
   {
     id: "raffle-1",
     title: "Weekend Cash Drop",
-    description: "Enter for a shot at the weekly community cash giveaway.",
+    description: "Enter for a shot at the weekly cash giveaway.",
     image: "/images/raffles/weekend-cash-drop.jpg",
     status: "active",
     entryMethod: "Enter Now",
@@ -118,15 +118,11 @@ export const bonusHunts: BonusHunt[] = [
     status: "completed",
     provider: "Mixed",
     casino: "Stake",
-    buyCount: 18,
-    openedBonuses: 18,
-    unopenedBonuses: 0,
-    totalCost: 1800,
-    totalReturn: 2145,
-    profitLoss: 345,
-    startCost: 1800,
-    totalWinnings: 2145,
-    bonusCount: 18,
+    buyCount: 24,
+    totalCost: 1200,
+    totalReturn: 1486.42,
+    profitLoss: 286.42,
+    profitLossPercentage: 23.87,
     currentOpeningSlot: null,
     bonuses: [],
   },

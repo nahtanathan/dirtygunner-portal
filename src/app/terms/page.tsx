@@ -4,94 +4,74 @@ export const dynamic = "force-static";
 
 const sections = [
   {
-    title: "Acceptance of Terms",
+    title: "Acceptance",
     body: [
-      "By accessing or using DirtyGunner.com, you agree to these Terms of Service and any other policies referenced on the site. If you do not agree, do not use the site.",
+      "By using this site, you agree to these terms. If you don’t agree, do not use the site.",
     ],
   },
   {
     title: "Eligibility",
     body: [
-      "You are responsible for making sure your use of the site is legal where you are and that you meet any age or eligibility requirements that apply.",
-      "Do not use the site if doing so would break local law, platform rules, or any third-party restrictions that apply to you.",
+      "You are responsible for making sure your use of this site is legal where you are.",
+      "Do not use the site if you are not allowed to access the services shown.",
     ],
   },
   {
-    title: "Accounts and Access",
+    title: "Accounts",
     body: [
-      "Some features may require login or a connected third-party account. You are responsible for the accuracy of the information you provide and for keeping your account access secure.",
-      "We may suspend, restrict, or terminate access if we believe an account is being used improperly, fraudulently, abusively, or in violation of these terms.",
+      "You are responsible for your account and any activity tied to it.",
+      "Access may be restricted or removed if rules are broken.",
     ],
   },
   {
-    title: "Leaderboards, Challenges, and Raffles",
+    title: "Leaderboards, Raffles, Challenges",
     body: [
-      "Leaderboards, challenges, raffles, prizes, and related promo features are offered as available and may be updated, paused, corrected, or canceled at any time.",
-      "We may review entries, remove invalid activity, correct obvious errors, enforce limits, and disqualify abusive, fraudulent, or manipulated participation.",
-      "Posted prize structures, challenge rules, or event timelines may also be supplemented by rules shown on the relevant page or sent directly to participants.",
+      "All events, prizes, and features can be updated, paused, or canceled at any time.",
+      "We may remove invalid entries, fix errors, or disqualify abuse or manipulation.",
     ],
   },
   {
-    title: "No Guarantee of Availability",
+    title: "Availability",
     body: [
-      "We do not guarantee uninterrupted access to the site or any specific feature. The site may be changed, limited, suspended, or discontinued at any time without notice.",
+      "The site may change, go offline, or be updated at any time without notice.",
     ],
   },
   {
-    title: "Third-Party Platforms and Content",
+    title: "Third-Party Services",
     body: [
-      "The site may reference or integrate with third-party platforms, services, promotions, or content, including streaming, affiliate, analytics, authentication, or gaming-related providers.",
-      "We are not responsible for the availability, actions, content, policies, or performance of third-party services. Use them at your own risk and under their own terms.",
+      "This site may link to or use third-party platforms.",
+      "We are not responsible for their behavior, policies, or performance.",
     ],
   },
   {
-    title: "Prohibited Conduct",
+    title: "Prohibited Use",
     body: [
-      "Do not misuse the site, interfere with normal operation, reverse engineer protected functionality, automate abuse, scrape restricted data, impersonate others, submit false information, exploit bugs, or try to manipulate outcomes or rewards.",
-      "Do not upload unlawful, infringing, harmful, or deceptive content through the site.",
+      "Do not exploit bugs, automate abuse, submit false data, or interfere with the site.",
+      "Do not upload illegal or harmful content.",
     ],
   },
   {
-    title: "Intellectual Property",
+    title: "Ownership",
     body: [
-      "Site content, branding, design, text, graphics, layouts, logos, and custom materials are owned by or licensed to the site operator unless stated otherwise. You may not copy, reproduce, republish, or exploit them without permission.",
+      "All site content, branding, and design belong to the site unless stated otherwise.",
     ],
   },
   {
-    title: "Disclaimers",
+    title: "Disclaimer",
     body: [
-      "The site and all features are provided on an “as is” and “as available” basis, without warranties of any kind, to the fullest extent allowed by law.",
-      "We do not guarantee accuracy, completeness, availability, fitness for a particular purpose, or error-free operation.",
+      "The site is provided as-is with no guarantees.",
     ],
   },
   {
-    title: "Limitation of Liability",
+    title: "Liability",
     body: [
-      "To the fullest extent permitted by law, DirtyGunner.com and its operators will not be liable for any indirect, incidental, special, consequential, exemplary, or punitive damages, or for any loss of profits, data, goodwill, use, or business opportunity arising from or related to your use of the site.",
+      "We are not liable for losses, damages, or issues from using the site.",
     ],
   },
   {
-    title: "Indemnification",
+    title: "Changes",
     body: [
-      "You agree to defend, indemnify, and hold harmless the site operator and related parties from claims, liabilities, damages, losses, and expenses arising out of your use of the site, your violation of these terms, or your violation of another party’s rights.",
-    ],
-  },
-  {
-    title: "Termination",
-    body: [
-      "We may suspend or terminate access to the site or any feature at any time, with or without notice, if we believe you violated these terms or if continued access is not appropriate for legal, operational, or security reasons.",
-    ],
-  },
-  {
-    title: "Changes to Terms",
-    body: [
-      "We may update these Terms of Service at any time. If you keep using the site after updated terms are posted, the revised terms apply.",
-    ],
-  },
-  {
-    title: "Contact",
-    body: [
-      "For questions about these terms or site operations, use the available contact or community channels tied to DirtyGunner.com.",
+      "These terms may change at any time. Continued use means you accept updates.",
     ],
   },
 ];
@@ -102,17 +82,11 @@ export default function TermsPage() {
       <PageHero
         eyebrow="Legal"
         title="Terms of Service"
-        description="Basic rules for using DirtyGunner.com, including community features, leaderboards, raffles, challenges, and connected third-party services."
+        description="Rules for using this site."
       />
 
       <section className="rounded-3xl border border-white/10 bg-black/30 p-5 backdrop-blur-xl sm:p-6 md:p-7">
         <div className="mx-auto max-w-4xl space-y-8">
-          <div className="rounded-2xl border border-blue-500/15 bg-blue-500/5 p-4 text-sm leading-6 text-zinc-300">
-            These terms are a solid starting point for launch. Review them
-            again if you later add purchases, subscriptions, jurisdiction-based
-            sweepstakes rules, or other regulated flows.
-          </div>
-
           {sections.map((section) => (
             <div key={section.title} className="space-y-3">
               <h2 className="text-xl font-bold text-white sm:text-2xl">
@@ -127,7 +101,7 @@ export default function TermsPage() {
             </div>
           ))}
 
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm leading-6 text-zinc-400">
+          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm text-zinc-400">
             Last updated: April 15, 2026
           </div>
         </div>

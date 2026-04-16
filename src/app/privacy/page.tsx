@@ -13,60 +13,53 @@ const sections = [
   {
     title: "How We Use Information",
     body: [
-      "We use this information to run the site, manage accounts, handle leaderboard features, process raffles and challenges, answer support requests, and stop abuse.",
-      "We may also use it for analytics, fraud prevention, moderation, security, and legal compliance.",
+      "We use this information to run the site, manage accounts, handle leaderboard features, process raffles and challenges, answer support requests, and prevent abuse.",
+      "We may also use it for analytics, security, moderation, and legal compliance.",
     ],
   },
   {
-    title: "Kick, Roobet, and Third-Party Services",
+    title: "Third-Party Services",
     body: [
-      "If you connect or use third-party services like Kick, Roobet, Supabase, payment providers, storage providers, or analytics tools, some information may be processed through those services to make site features work.",
-      "We do not control how third-party platforms handle your data. Your use of those services is also subject to their own terms and privacy policies.",
+      "Some features rely on third-party services like Kick, Roobet, Supabase, and other infrastructure providers.",
+      "We do not control how third-party platforms handle your data. Their policies apply when you use them.",
     ],
   },
   {
-    title: "Cookies and Similar Technologies",
+    title: "Cookies",
     body: [
-      "We may use cookies, session storage, and similar tools to keep you signed in, remember settings, improve performance, and understand site usage.",
-      "You can usually control cookies through your browser settings, but disabling them may break parts of the site.",
+      "We may use cookies and similar tools to keep you signed in, remember settings, and improve performance.",
+      "Disabling cookies may break parts of the site.",
     ],
   },
   {
-    title: "How We Share Information",
+    title: "Sharing",
     body: [
-      "We do not sell your personal information. We may share information with service providers and infrastructure partners that help us host, secure, maintain, or run the site.",
-      "We may also disclose information when needed to enforce site rules, investigate abuse, protect users or the public, or comply with legal obligations.",
+      "We do not sell your personal information.",
+      "We may share data with service providers that help run the site, or if required for security, enforcement, or legal reasons.",
     ],
   },
   {
     title: "Data Retention",
     body: [
-      "We keep information for as long as needed to run the site, keep records, resolve disputes, prevent fraud, and meet legal, technical, or business requirements.",
-      "How long we keep data depends on what it is and how it is used.",
+      "We keep data as long as needed to operate the site, prevent abuse, and meet legal or technical requirements.",
     ],
   },
   {
     title: "Security",
     body: [
-      "We use reasonable administrative, technical, and organizational measures to protect information. No method of transmission or storage is completely secure, so we cannot guarantee absolute security.",
+      "We use standard measures to protect data, but no system is completely secure.",
     ],
   },
   {
-    title: "Children",
+    title: "Eligibility",
     body: [
-      "This site is not for children. Do not use it if you are under the minimum legal age required in your area to access the services or content shown here.",
+      "This site is not intended for users below the legal age required in their jurisdiction.",
     ],
   },
   {
-    title: "Your Choices",
+    title: "Changes",
     body: [
-      "You can choose not to provide certain information, but some features may not work without it. You can also request account help or ask data-related questions through the available contact channels.",
-    ],
-  },
-  {
-    title: "Changes to This Policy",
-    body: [
-      "We may update this Privacy Policy from time to time. If you keep using the site after changes are posted, the updated policy applies.",
+      "This policy may be updated. Continued use of the site means you accept any changes.",
     ],
   },
 ];
@@ -77,17 +70,11 @@ export default function PrivacyPage() {
       <PageHero
         eyebrow="Legal"
         title="Privacy Policy"
-        description="How DirtyGunner.com collects, uses, stores, and protects information tied to site access and community features."
+        description="How data is collected and used on this site."
       />
 
       <section className="rounded-3xl border border-white/10 bg-black/30 p-5 backdrop-blur-xl sm:p-6 md:p-7">
         <div className="mx-auto max-w-4xl space-y-8">
-          <div className="rounded-2xl border border-blue-500/15 bg-blue-500/5 p-4 text-sm leading-6 text-zinc-300">
-            This is a base privacy policy for the current site. It should be
-            reviewed again if you later add payments, heavier tracking, direct
-            marketing, or other regulated features.
-          </div>
-
           {sections.map((section) => (
             <div key={section.title} className="space-y-3">
               <h2 className="text-xl font-bold text-white sm:text-2xl">
@@ -102,7 +89,7 @@ export default function PrivacyPage() {
             </div>
           ))}
 
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm leading-6 text-zinc-400">
+          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm text-zinc-400">
             Last updated: April 15, 2026
           </div>
         </div>
