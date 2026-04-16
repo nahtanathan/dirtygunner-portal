@@ -156,7 +156,7 @@ export function SiteSettingsForm() {
               Social & Stream Links
             </h2>
             <p className="truncate-3 mt-1 max-w-2xl text-sm leading-6 text-zinc-400">
-              These control the sidebar stream button and public social links.
+              These links show in the sidebar and footer.
             </p>
           </div>
 
@@ -243,7 +243,7 @@ export function SiteSettingsForm() {
             Preview
           </h3>
           <p className="truncate-3 mt-1 text-sm leading-6 text-zinc-400">
-            These are the exact values the site will use.
+            These are the exact values the site is using.
           </p>
         </div>
 

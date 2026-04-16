@@ -1,11 +1,9 @@
-// FILE: src/app/layout.tsx
-
 import "./globals.css";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "DirtyGunner Portal",
-  description: "Premium streamer portal for DirtyGunner.",
+  description: "DirtyGunner stream site.",
 };
 
 export default function RootLayout({

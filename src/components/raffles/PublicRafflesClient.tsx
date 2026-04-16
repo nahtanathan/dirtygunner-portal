@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -203,8 +202,8 @@ export function PublicRafflesClient({
           </div>
         ) : (
           <EmptyState
-            title="No active raffles"
-            description="Nothing is live right now. New raffles created in admin will appear here automatically."
+            title="No live raffles"
+            description="Nothing is running right now."
           />
         )}
       </section>
@@ -234,8 +233,8 @@ export function PublicRafflesClient({
           </div>
         ) : (
           <EmptyState
-            title="No completed raffles yet"
-            description="Ended raffles and winners will show here once draws close."
+            title="No finished raffles yet"
+            description="Finished raffles and winners will show here after the draw ends."
           />
         )}
       </section>

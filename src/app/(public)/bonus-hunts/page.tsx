@@ -41,7 +41,7 @@ export default async function BonusHuntsPage() {
     <div className="space-y-10">
       <PageHero
         eyebrow="Bonus Hunts"
-        title="Live Hunts and Archive History"
+        title="Bonus Hunts"
         description=" "
         aside={
           <PremiumPanel className="grid gap-4 border border-white/10 bg-white/[0.03] p-5 sm:grid-cols-3">
@@ -73,7 +73,7 @@ export default async function BonusHuntsPage() {
               </p>
             </div>
             <div className="shrink-0 whitespace-nowrap text-xs uppercase tracking-[0.24em] text-white/40">
-              {data.source === "bonushunt" ? "BonusHunt.gg" : "Local fallback"} ·{" "}
+              {data.source === "bonushunt" ? "BonusHunt.gg" : "Local backup"} ·{" "}
               {new Intl.DateTimeFormat("en-US", {
                 month: "short",
                 day: "numeric",
@@ -88,7 +88,7 @@ export default async function BonusHuntsPage() {
       <section className="space-y-6">
         <SectionHeader
           eyebrow="Live"
-          title="Current Hunt"
+          title="Live Hunt"
           description=" "
         />
 
@@ -100,7 +100,7 @@ export default async function BonusHuntsPage() {
           </div>
         ) : (
           <PremiumPanel className="border border-white/10 bg-white/[0.03] p-6 text-sm text-white/65">
-            No live hunt is currently opening.
+            No live hunt right now.
           </PremiumPanel>
         )}
       </section>
@@ -120,7 +120,7 @@ export default async function BonusHuntsPage() {
           </div>
         ) : (
           <PremiumPanel className="border border-white/10 bg-white/[0.03] p-6 text-sm text-white/65">
-            Completed hunts will show here once BonusHunt.gg history is available.
+            Past hunts will show here once history syncs in.
           </PremiumPanel>
         )}
       </section>

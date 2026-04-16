@@ -68,9 +68,9 @@ export function HomeBonusHuntsPreview({
     <section className="mx-auto w-full max-w-[1200px] px-4 md:px-6">
       <SectionHeader
         eyebrow="Bonus Hunts"
-        title="Live Opening Feed"
+        title="Bonus Hunts"
         description=" "
-        action={<CTAButton href="/bonus-hunts">View Bonus Hunts</CTAButton>}
+        action={<CTAButton href="/bonus-hunts">Open Bonus Hunts</CTAButton>}
       />
 
       <div className="grid gap-6 xl:grid-cols-[1.35fr_0.85fr]">
@@ -80,12 +80,12 @@ export function HomeBonusHuntsPreview({
               <div className="min-w-0 flex-1">
                 <div className="mb-3 inline-flex max-w-full rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-emerald-300 sm:text-[11px] sm:tracking-[0.28em]">
                   <span className="truncate whitespace-nowrap">
-                    {liveHunt ? "Live Hunt" : snapshot.source === "fallback" ? "Fallback Feed" : "Standby"}
+                    {liveHunt ? "Live Hunt" : snapshot.source === "fallback" ? "Backup Feed" : "Standby"}
                   </span>
                 </div>
 
                 <h3 className="truncate-2 text-[1.5rem] font-bold uppercase tracking-wide text-white sm:text-[1.8rem] md:text-[2rem]">
-                  {liveHunt?.title || "No hunt currently opening"}
+                  {liveHunt?.title || "No hunt live right now"}
                 </h3>
 
                 <p className="truncate-3 mt-2 text-sm text-white/58 md:text-[15px]">
@@ -93,7 +93,7 @@ export function HomeBonusHuntsPreview({
                     ? `${liveHunt.casino || liveHunt.provider || "BonusHunt.gg"} · updated ${formatDateTime(
                         liveHunt.updatedAt || liveHunt.date,
                       )}`
-                    : snapshot.message || "The feed is online, but no opening hunt is active right now."}
+                    : snapshot.message || "No live hunt right now."}
                 </p>
 
                 {liveHunt?.currentOpeningSlot ? (
@@ -108,7 +108,7 @@ export function HomeBonusHuntsPreview({
                   Source
                 </div>
                 <div className="mt-2 truncate text-sm font-semibold text-white">
-                  {snapshot.source === "bonushunt" ? "BonusHunt.gg" : "Local fallback"}
+                  {snapshot.source === "bonushunt" ? "BonusHunt.gg" : "Local backup"}
                 </div>
               </div>
             </div>
@@ -157,8 +157,8 @@ export function HomeBonusHuntsPreview({
             ) : (
               <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-sm text-white/60">
                 {liveHunt
-                  ? "Detailed bonus rows will appear here when the upstream hunt returns bonus data."
-                  : "Once a live hunt is opening, the homepage will surface the current hunt summary here."}
+                  ? "Bonus rows will show here when the hunt feed returns them."
+                  : "When a hunt goes live, the current summary will show here."}
               </div>
             )}
           </div>
@@ -195,9 +195,9 @@ export function HomeBonusHuntsPreview({
             <div className="mb-4 flex min-w-0 items-center justify-between gap-3">
               <div className="min-w-0">
                 <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/42">
-                  Recent Archive
+                  Recent Hunts
                 </div>
-                <h3 className="mt-2 truncate text-xl font-bold text-white">Completed Hunts</h3>
+                <h3 className="mt-2 truncate text-xl font-bold text-white">Past Hunts</h3>
               </div>
 
               <Link
@@ -240,7 +240,7 @@ export function HomeBonusHuntsPreview({
               </div>
             ) : (
               <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-sm text-white/60">
-                Archived bonus hunts will appear here after completed sessions are synced.
+                Past bonus hunts will show here after completed sessions sync.
               </div>
             )}
           </PremiumPanel>

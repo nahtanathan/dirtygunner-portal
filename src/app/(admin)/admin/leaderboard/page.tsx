@@ -127,15 +127,17 @@ export default function AdminLeaderboardPage() {
     setMessage("");
   }
 
-  function updatePrizeFromInput(index: number, rawValue: string) {
-    if (rawValue.trim() === "") {
+  function updatePrizeFromInput(index: number, value: string) {
+    const trimmed = value.trim();
+
+    if (!trimmed) {
       updatePrize(index, 0);
       return;
     }
 
-    const numeric = Number(rawValue.replace(/[^\d.]/g, ""));
+    const numeric = Number(trimmed);
 
-    if (Number.isFinite(numeric) && numeric >= 0) {
+    if (Number.isFinite(numeric)) {
       updatePrize(index, numeric);
     }
   }
@@ -233,8 +235,8 @@ export default function AdminLeaderboardPage() {
       <div className="space-y-8">
         <PageHero
           eyebrow="Admin"
-          title="Leaderboard Control"
-          description="Edit title, timing, and prize values."
+          title="Leaderboard Settings"
+          description="Edit the title, timing, and prize values."
         />
         <div className="rounded-3xl border border-white/10 bg-black/30 p-5 backdrop-blur-xl sm:p-6">
           <div className="h-48 animate-pulse rounded-2xl bg-white/5" />
@@ -247,19 +249,19 @@ export default function AdminLeaderboardPage() {
     <div className="space-y-8">
       <PageHero
         eyebrow="Admin"
-        title="Leaderboard Control"
-        description="Edit title, start time, end time, and payout structure."
+        title="Leaderboard Settings"
+        description="Edit the title, start time, end time, and payouts."
       />
 
       <section className="rounded-3xl border border-white/10 bg-black/30 p-5 backdrop-blur-xl sm:p-6">
         <div className="mb-6 flex min-w-0 flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div className="min-w-0">
             <h2 className="truncate text-xl font-bold text-white sm:text-2xl">
-              Event Copy & Timing
+              Title & Timing
             </h2>
             <p className="truncate-3 mt-1 max-w-2xl text-sm leading-6 text-zinc-400">
-              These values drive the public leaderboard heading and countdown.
-              The countdown target always follows the end time.
+              These values control the public leaderboard header and countdown.
+              The countdown always follows the end time.
             </p>
           </div>
 
@@ -302,7 +304,7 @@ export default function AdminLeaderboardPage() {
                 value={form.subtitle}
                 onChange={(e) => updateField("subtitle", e.target.value)}
                 className={inputClassName}
-                placeholder="Top grinders earn premium payouts before the weekly reset."
+                placeholder="Top grinders get paid at reset."
               />
             </Field>
 
@@ -335,8 +337,8 @@ export default function AdminLeaderboardPage() {
             </div>
 
             <p className="truncate-3 mt-3 text-sm leading-6 text-zinc-400">
-              This display is locked to the end time so the public countdown
-              never drifts from the configured event end.
+              This is locked to the end time so the public countdown stays in
+              sync.
             </p>
 
             {message ? (
@@ -355,8 +357,7 @@ export default function AdminLeaderboardPage() {
               Prize Tiers
             </h2>
             <p className="truncate-3 mt-1 max-w-2xl text-sm leading-6 text-zinc-400">
-              Add as many payout positions as needed. Values stay aligned and
-              stop reflowing awkwardly across widths.
+              Add as many payout spots as you need.
             </p>
           </div>
 

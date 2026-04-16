@@ -51,7 +51,7 @@ export default async function ChallengesPage() {
     <div className="space-y-10">
       <PageHero
         eyebrow="Challenges"
-        title="Slot Challenge Drops"
+        title="Challenges"
         description=" "
         aside={
           <PremiumPanel className="grid gap-4 border border-white/10 bg-white/[0.03] p-5 sm:grid-cols-3">
@@ -68,7 +68,7 @@ export default async function ChallengesPage() {
       <section className="space-y-6">
         <SectionHeader
           eyebrow="Active"
-          title="Live Challenges"
+          title="Open Challenges"
           description=" "
         />
 
@@ -80,8 +80,7 @@ export default async function ChallengesPage() {
           </div>
         ) : (
           <PremiumPanel className="border border-white/10 bg-white/[0.03] p-6 text-sm text-white/65">
-            No live challenges have been created yet. Add them in admin first so
-            users can submit proof against real database-backed challenges.
+            No open challenges right now.
           </PremiumPanel>
         )}
       </section>
@@ -101,7 +100,7 @@ export default async function ChallengesPage() {
           </div>
         ) : (
           <PremiumPanel className="border border-white/10 bg-white/[0.03] p-6 text-sm text-white/65">
-            Completed challenges will show here once they wrap.
+            Finished challenges will show here once they close.
           </PremiumPanel>
         )}
       </section>

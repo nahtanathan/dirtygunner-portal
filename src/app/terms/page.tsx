@@ -6,61 +6,61 @@ const sections = [
   {
     title: "Acceptance of Terms",
     body: [
-      "By accessing or using DirtyGunner.com, you agree to be bound by these Terms of Service and any applicable policies referenced on the site. If you do not agree, do not use the site.",
+      "By accessing or using DirtyGunner.com, you agree to these Terms of Service and any other policies referenced on the site. If you do not agree, do not use the site.",
     ],
   },
   {
     title: "Eligibility",
     body: [
-      "You are responsible for ensuring that your use of the site is lawful in your location and that you meet any applicable age or eligibility requirements.",
-      "You must not use the site if doing so would violate local law, platform rules, or any applicable third-party restrictions.",
+      "You are responsible for making sure your use of the site is legal where you are and that you meet any age or eligibility requirements that apply.",
+      "Do not use the site if doing so would break local law, platform rules, or any third-party restrictions that apply to you.",
     ],
   },
   {
     title: "Accounts and Access",
     body: [
-      "Some features may require login or a connected third-party account. You are responsible for the accuracy of the information you provide and for maintaining the security of your account access.",
+      "Some features may require login or a connected third-party account. You are responsible for the accuracy of the information you provide and for keeping your account access secure.",
       "We may suspend, restrict, or terminate access if we believe an account is being used improperly, fraudulently, abusively, or in violation of these terms.",
     ],
   },
   {
     title: "Leaderboards, Challenges, and Raffles",
     body: [
-      "Leaderboard standings, community challenges, raffles, prizes, and related promotional features are offered on an as-available basis and may be updated, paused, corrected, or canceled at any time.",
-      "We reserve the right to review entries, remove invalid activity, correct obvious errors, enforce limits, and disqualify abusive, fraudulent, or manipulated participation.",
-      "Any posted prize structure, challenge rule, or event timeline may be supplemented by additional rules shown on the relevant page or communicated directly to participants.",
+      "Leaderboards, challenges, raffles, prizes, and related promo features are offered as available and may be updated, paused, corrected, or canceled at any time.",
+      "We may review entries, remove invalid activity, correct obvious errors, enforce limits, and disqualify abusive, fraudulent, or manipulated participation.",
+      "Posted prize structures, challenge rules, or event timelines may also be supplemented by rules shown on the relevant page or sent directly to participants.",
     ],
   },
   {
     title: "No Guarantee of Availability",
     body: [
-      "We do not guarantee uninterrupted access to the site or any specific feature. The site may be changed, suspended, limited, or discontinued at any time without notice.",
+      "We do not guarantee uninterrupted access to the site or any specific feature. The site may be changed, limited, suspended, or discontinued at any time without notice.",
     ],
   },
   {
     title: "Third-Party Platforms and Content",
     body: [
       "The site may reference or integrate with third-party platforms, services, promotions, or content, including streaming, affiliate, analytics, authentication, or gaming-related providers.",
-      "We are not responsible for the availability, actions, content, policies, or performance of third-party services. Your use of them is at your own risk and subject to their own terms.",
+      "We are not responsible for the availability, actions, content, policies, or performance of third-party services. Use them at your own risk and under their own terms.",
     ],
   },
   {
     title: "Prohibited Conduct",
     body: [
-      "You agree not to misuse the site, interfere with normal operation, reverse engineer protected functionality, automate abuse, scrape restricted data, impersonate others, submit false information, exploit bugs, or attempt to manipulate outcomes or rewards.",
-      "You also agree not to upload unlawful, infringing, harmful, or deceptive content through the site.",
+      "Do not misuse the site, interfere with normal operation, reverse engineer protected functionality, automate abuse, scrape restricted data, impersonate others, submit false information, exploit bugs, or try to manipulate outcomes or rewards.",
+      "Do not upload unlawful, infringing, harmful, or deceptive content through the site.",
     ],
   },
   {
     title: "Intellectual Property",
     body: [
-      "Site content, branding, design, text, graphics, layouts, logos, and custom materials are owned by or licensed to the site operator unless otherwise stated. You may not copy, reproduce, republish, or exploit them without permission.",
+      "Site content, branding, design, text, graphics, layouts, logos, and custom materials are owned by or licensed to the site operator unless stated otherwise. You may not copy, reproduce, republish, or exploit them without permission.",
     ],
   },
   {
     title: "Disclaimers",
     body: [
-      "The site and all features are provided on an 'as is' and 'as available' basis without warranties of any kind, whether express or implied, to the fullest extent allowed by law.",
+      "The site and all features are provided on an “as is” and “as available” basis, without warranties of any kind, to the fullest extent allowed by law.",
       "We do not guarantee accuracy, completeness, availability, fitness for a particular purpose, or error-free operation.",
     ],
   },
@@ -73,25 +73,25 @@ const sections = [
   {
     title: "Indemnification",
     body: [
-      "You agree to defend, indemnify, and hold harmless the site operator and related parties from claims, liabilities, damages, losses, and expenses arising out of your use of the site, your violation of these terms, or your violation of any rights of another party.",
+      "You agree to defend, indemnify, and hold harmless the site operator and related parties from claims, liabilities, damages, losses, and expenses arising out of your use of the site, your violation of these terms, or your violation of another party’s rights.",
     ],
   },
   {
     title: "Termination",
     body: [
-      "We may suspend or terminate access to the site or any feature at any time, with or without notice, if we believe you violated these terms or if continued access is not desirable for legal, operational, or security reasons.",
+      "We may suspend or terminate access to the site or any feature at any time, with or without notice, if we believe you violated these terms or if continued access is not appropriate for legal, operational, or security reasons.",
     ],
   },
   {
     title: "Changes to Terms",
     body: [
-      "We may revise these Terms of Service at any time. Continued use of the site after updated terms are posted means the revised terms will apply going forward.",
+      "We may update these Terms of Service at any time. If you keep using the site after updated terms are posted, the revised terms apply.",
     ],
   },
   {
     title: "Contact",
     body: [
-      "For questions about these terms or site operations, use the available contact or community channels associated with DirtyGunner.com.",
+      "For questions about these terms or site operations, use the available contact or community channels tied to DirtyGunner.com.",
     ],
   },
 ];
@@ -102,16 +102,15 @@ export default function TermsPage() {
       <PageHero
         eyebrow="Legal"
         title="Terms of Service"
-        description="Basic terms governing access to DirtyGunner.com, including community features, leaderboards, raffles, challenge participation, and connected third-party services."
+        description="Basic rules for using DirtyGunner.com, including community features, leaderboards, raffles, challenges, and connected third-party services."
       />
 
       <section className="rounded-3xl border border-white/10 bg-black/30 p-5 backdrop-blur-xl sm:p-6 md:p-7">
         <div className="mx-auto max-w-4xl space-y-8">
           <div className="rounded-2xl border border-blue-500/15 bg-blue-500/5 p-4 text-sm leading-6 text-zinc-300">
-            These terms are a practical starting point for launch. They should
-            be reviewed and tightened further if you later add purchases,
-            subscriptions, sweepstakes rules by jurisdiction, or other
-            regulated flows.
+            These terms are a solid starting point for launch. Review them
+            again if you later add purchases, subscriptions, jurisdiction-based
+            sweepstakes rules, or other regulated flows.
           </div>
 
           {sections.map((section) => (

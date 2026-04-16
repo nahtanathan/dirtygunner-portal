@@ -86,8 +86,8 @@ export default async function RafflesPage() {
     <div className="space-y-8 md:space-y-10">
       <PageHero
         eyebrow="Raffles"
-        title="Community Raffles"
-        description="Enter live draws, track your entries, and watch each raffle close in real time."
+        title="Raffles"
+        description="Enter live raffles, check your entries, and see who won."
       />
 
       <PublicRafflesClient initialRaffles={raffles} />

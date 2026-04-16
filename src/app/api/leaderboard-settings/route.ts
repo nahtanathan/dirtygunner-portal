@@ -1,5 +1,3 @@
-// FILE: src/app/api/leaderboard-settings/route.ts
-
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
@@ -45,7 +43,7 @@ async function ensureLeaderboardSettings() {
     data: {
       id: "leaderboard-settings",
       title: "Weekly Roobet Race",
-      subtitle: "Top grinders earn premium payouts before the weekly reset.",
+      subtitle: "Top grinders get paid at reset.",
       countdownTarget: weekFromNow,
       startDate: now,
       endDate: weekFromNow,

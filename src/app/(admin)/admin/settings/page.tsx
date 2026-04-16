@@ -1,4 +1,3 @@
-// FILE: src/app/(admin)/admin/settings/page.tsx
 import { PageHero } from "@/components/ui/PageHero";
 import { SiteSettingsForm } from "@/components/admin/SettingsForms";
 
@@ -7,8 +6,8 @@ export default function AdminSettingsPage() {
     <div className="space-y-8">
       <PageHero
         eyebrow="Admin Settings"
-        title="Site-Level Brand Controls"
-        description="Edit channel URLs, branded copy, countdown defaults, and core portal presentation settings."
+        title="Site Links"
+        description="Edit the channel and social links used across the site."
       />
       <SiteSettingsForm />
     </div>

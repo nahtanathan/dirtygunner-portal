@@ -86,10 +86,10 @@ export default async function LeaderboardPage() {
         <div className="mb-5 flex min-w-0 flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div className="min-w-0">
             <h2 className="truncate text-xl font-bold text-white sm:text-2xl">
-              Full Leaderboard
+              Standings
             </h2>
             <p className="truncate-2 mt-1 text-sm leading-6 text-zinc-400">
-              Current ranked positions for this cycle.
+              Current standings for this round.
             </p>
           </div>
 
@@ -136,7 +136,7 @@ export default async function LeaderboardPage() {
               ))
             ) : (
               <div className="px-4 py-8 text-center text-sm text-zinc-400">
-                No leaderboard entries available right now.
+                No leaderboard entries right now.
               </div>
             )}
           </div>

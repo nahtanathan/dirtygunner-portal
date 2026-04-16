@@ -1,4 +1,3 @@
-// FILE: src/components/layout/SiteFooter.tsx
 "use client";
 
 import { useEffect, useMemo, useState, type ReactNode } from "react";
@@ -193,7 +192,7 @@ export default function SiteFooter() {
                   DirtyGunner
                 </div>
                 <div className="truncate text-xs font-medium uppercase tracking-[0.22em] text-white/58 sm:text-sm">
-                  Portal
+                  Site
                 </div>
               </div>
             </div>
@@ -207,10 +206,9 @@ export default function SiteFooter() {
               >
                 GambleAware
               </Link>{" "}
-              provides support and information for safer gambling. We do not take
-              responsibility for losses from gambling on third-party sites or
-              services linked or referenced on this website. Please play
-              responsibly.
+              offers help and info for safer gambling. We are not responsible
+              for losses from gambling on third-party sites or services linked
+              on this website. Play responsibly.
             </div>
 
             {hasSocialLinks ? (
@@ -227,11 +225,11 @@ export default function SiteFooter() {
             ) : null}
           </div>
 
-          <FooterColumn title="Explore" links={exploreLinks} />
+          <FooterColumn title="Pages" links={exploreLinks} />
 
           {hasSocialLinks ? (
             <FooterColumn
-              title="Social Media"
+              title="Socials"
               links={socialLinks.map((link) => ({
                 href: link.href,
                 label: link.label,
@@ -248,7 +246,7 @@ export default function SiteFooter() {
             borderColor: "rgba(255,255,255,0.08)",
           }}
         >
-          <div className="truncate">© 2026 DirtyGunner. All Rights Reserved.</div>
+          <div className="truncate">© 2026 DirtyGunner. All rights reserved.</div>
 
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
             <Link href="/terms" className="whitespace-nowrap transition hover:text-white">

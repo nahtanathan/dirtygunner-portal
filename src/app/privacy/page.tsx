@@ -6,67 +6,67 @@ const sections = [
   {
     title: "Information We Collect",
     body: [
-      "We may collect information you choose to provide directly, such as account details, profile information, challenge submissions, raffle entries, and messages you send through the site.",
-      "We may also collect technical information automatically, including browser type, device details, IP address, pages viewed, referral information, and general usage analytics used to improve site performance and security.",
+      "We may collect information you give us directly, like account details, profile info, challenge submissions, raffle entries, and messages sent through the site.",
+      "We may also collect technical data automatically, including browser type, device details, IP address, pages viewed, referral data, and basic usage analytics used for performance and security.",
     ],
   },
   {
     title: "How We Use Information",
     body: [
-      "We use collected information to operate the site, manage accounts, run leaderboard features, process raffles and challenges, respond to support requests, prevent abuse, and improve the overall user experience.",
-      "We may also use information for internal analytics, fraud prevention, moderation, security monitoring, and compliance with applicable laws or platform requirements.",
+      "We use this information to run the site, manage accounts, handle leaderboard features, process raffles and challenges, answer support requests, and stop abuse.",
+      "We may also use it for analytics, fraud prevention, moderation, security, and legal compliance.",
     ],
   },
   {
     title: "Kick, Roobet, and Third-Party Services",
     body: [
-      "If you connect or interact with third-party services, including Kick, Roobet, Supabase, payment, storage, or analytics providers, certain information may be processed through those services in order to power features on the site.",
-      "We do not control the privacy practices of third-party platforms. Your use of those services is also subject to their own terms and privacy policies.",
+      "If you connect or use third-party services like Kick, Roobet, Supabase, payment providers, storage providers, or analytics tools, some information may be processed through those services to make site features work.",
+      "We do not control how third-party platforms handle your data. Your use of those services is also subject to their own terms and privacy policies.",
     ],
   },
   {
     title: "Cookies and Similar Technologies",
     body: [
-      "We may use cookies, session storage, and similar technologies to keep you signed in, remember preferences, improve performance, and understand how the site is being used.",
-      "You can usually control cookies through your browser settings, but disabling them may affect certain parts of the site.",
+      "We may use cookies, session storage, and similar tools to keep you signed in, remember settings, improve performance, and understand site usage.",
+      "You can usually control cookies through your browser settings, but disabling them may break parts of the site.",
     ],
   },
   {
     title: "How We Share Information",
     body: [
-      "We do not sell your personal information. We may share information with service providers and infrastructure partners that help us host, secure, maintain, or operate the site.",
-      "We may also disclose information when reasonably necessary to enforce our rules, investigate abuse, protect users or the public, or comply with legal obligations.",
+      "We do not sell your personal information. We may share information with service providers and infrastructure partners that help us host, secure, maintain, or run the site.",
+      "We may also disclose information when needed to enforce site rules, investigate abuse, protect users or the public, or comply with legal obligations.",
     ],
   },
   {
     title: "Data Retention",
     body: [
-      "We keep information for as long as reasonably necessary to operate the site, maintain records, resolve disputes, prevent fraud, and meet legal, technical, or business requirements.",
-      "Retention periods may vary depending on the type of information and how it is used.",
+      "We keep information for as long as needed to run the site, keep records, resolve disputes, prevent fraud, and meet legal, technical, or business requirements.",
+      "How long we keep data depends on what it is and how it is used.",
     ],
   },
   {
     title: "Security",
     body: [
-      "We use reasonable administrative, technical, and organizational measures to protect information. However, no method of transmission or storage is completely secure, and we cannot guarantee absolute security.",
+      "We use reasonable administrative, technical, and organizational measures to protect information. No method of transmission or storage is completely secure, so we cannot guarantee absolute security.",
     ],
   },
   {
     title: "Children",
     body: [
-      "This site is not intended for children. Do not use the site if you are under the minimum legal age required in your jurisdiction to access the services or content presented here.",
+      "This site is not for children. Do not use it if you are under the minimum legal age required in your area to access the services or content shown here.",
     ],
   },
   {
     title: "Your Choices",
     body: [
-      "You may choose not to provide certain information, but some features may not function properly without it. You may also request account-related help or data questions by contacting the site operator through the available support channels.",
+      "You can choose not to provide certain information, but some features may not work without it. You can also request account help or ask data-related questions through the available contact channels.",
     ],
   },
   {
     title: "Changes to This Policy",
     body: [
-      "We may update this Privacy Policy from time to time. Continued use of the site after changes are posted means the updated policy will apply going forward.",
+      "We may update this Privacy Policy from time to time. If you keep using the site after changes are posted, the updated policy applies.",
     ],
   },
 ];
@@ -77,16 +77,15 @@ export default function PrivacyPage() {
       <PageHero
         eyebrow="Legal"
         title="Privacy Policy"
-        description="Basic terms covering how DirtyGunner.com collects, uses, stores, and protects information connected to site access and community features."
+        description="How DirtyGunner.com collects, uses, stores, and protects information tied to site access and community features."
       />
 
       <section className="rounded-3xl border border-white/10 bg-black/30 p-5 backdrop-blur-xl sm:p-6 md:p-7">
         <div className="mx-auto max-w-4xl space-y-8">
           <div className="rounded-2xl border border-blue-500/15 bg-blue-500/5 p-4 text-sm leading-6 text-zinc-300">
-            This page is a general baseline policy for the site and community
-            features. It should be reviewed and adjusted if you later add
-            payments, more advanced tracking, direct marketing flows, or other
-            regulated features.
+            This is a base privacy policy for the current site. It should be
+            reviewed again if you later add payments, heavier tracking, direct
+            marketing, or other regulated features.
           </div>
 
           {sections.map((section) => (
