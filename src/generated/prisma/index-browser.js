@@ -160,10 +160,10 @@ exports.Prisma.SiteSettingsScalarFieldEnum = {
   kickUrl: 'kickUrl',
   discordUrl: 'discordUrl',
   youtubeUrl: 'youtubeUrl',
-  xUrl: 'xUrl',
-  instagramUrl: 'instagramUrl',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  instagramUrl: 'instagramUrl',
+  xUrl: 'xUrl'
 };
 
 exports.Prisma.LeaderboardSettingsScalarFieldEnum = {
@@ -191,16 +191,16 @@ exports.Prisma.RaffleScalarFieldEnum = {
   image: 'image',
   status: 'status',
   entryMethod: 'entryMethod',
-  entryCost: 'entryCost',
-  entryCurrency: 'entryCurrency',
-  maxEntriesPerUser: 'maxEntriesPerUser',
   totalEntries: 'totalEntries',
   startDate: 'startDate',
   endDate: 'endDate',
   winner: 'winner',
   prizeDetails: 'prizeDetails',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  entryCost: 'entryCost',
+  entryCurrency: 'entryCurrency',
+  maxEntriesPerUser: 'maxEntriesPerUser'
 };
 
 exports.Prisma.RaffleEntryScalarFieldEnum = {
@@ -217,21 +217,21 @@ exports.Prisma.ChallengeScalarFieldEnum = {
   title: 'title',
   description: 'description',
   status: 'status',
-  challengeType: 'challengeType',
-  targetValue: 'targetValue',
-  minBet: 'minBet',
   reward: 'reward',
-  rules: 'rules',
-  slotName: 'slotName',
-  provider: 'provider',
-  imageUrl: 'imageUrl',
-  imageSource: 'imageSource',
-  claimLimit: 'claimLimit',
-  requiresProof: 'requiresProof',
   startDate: 'startDate',
   endDate: 'endDate',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  challengeType: 'challengeType',
+  claimLimit: 'claimLimit',
+  imageSource: 'imageSource',
+  imageUrl: 'imageUrl',
+  minBet: 'minBet',
+  provider: 'provider',
+  requiresProof: 'requiresProof',
+  rules: 'rules',
+  slotName: 'slotName',
+  targetValue: 'targetValue'
 };
 
 exports.Prisma.ChallengeClaimScalarFieldEnum = {
