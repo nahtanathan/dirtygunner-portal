@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
 import {
@@ -21,31 +21,12 @@ import {
   X,
 } from "lucide-react";
 import { HeaderAuth } from "@/components/layout/header-auth";
-
-type MeUser = {
-  isAdmin: boolean;
-};
-
-type SiteSettings = {
-  kickUrl?: string;
-  discordUrl?: string;
-  youtubeUrl?: string;
-  xUrl?: string;
-  instagramUrl?: string;
-};
+import { useMeUser, useSiteSettings } from "@/lib/client/site-context";
 
 type SocialLinkItem = {
   label: string;
   href: string;
   icon: React.ReactNode;
-};
-
-const EMPTY_SETTINGS: SiteSettings = {
-  kickUrl: "",
-  discordUrl: "",
-  youtubeUrl: "",
-  xUrl: "",
-  instagramUrl: "",
 };
 
 const baseNavItems = [
@@ -74,67 +55,11 @@ function isPathActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-function normalizeHref(value?: string) {
-  const trimmed = value?.trim() ?? "";
-  return trimmed.length > 0 ? trimmed : "";
-}
-
 export default function MobileNav() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const [user, setUser] = useState<MeUser | null>(null);
-  const [siteSettings, setSiteSettings] = useState<SiteSettings>(EMPTY_SETTINGS);
-
-  useEffect(() => {
-    let mounted = true;
-
-    async function loadUser() {
-      try {
-        const res = await fetch("/api/auth/me", {
-          method: "GET",
-          cache: "no-store",
-        });
-
-        const data = await res.json();
-
-        if (!mounted) return;
-        setUser(data?.user ?? null);
-      } catch {
-        if (!mounted) return;
-        setUser(null);
-      }
-    }
-
-    async function loadSiteSettings() {
-      try {
-        const res = await fetch("/api/site-settings", {
-          method: "GET",
-          cache: "no-store",
-        });
-
-        const data = await res.json();
-
-        if (!mounted) return;
-
-        setSiteSettings({
-          kickUrl: normalizeHref(data?.settings?.kickUrl),
-          discordUrl: normalizeHref(data?.settings?.discordUrl),
-          youtubeUrl: normalizeHref(data?.settings?.youtubeUrl),
-          xUrl: normalizeHref(data?.settings?.xUrl),
-          instagramUrl: normalizeHref(data?.settings?.instagramUrl),
-        });
-      } catch {
-        if (!mounted) return;
-        setSiteSettings(EMPTY_SETTINGS);
-      }
-    }
-
-    void Promise.all([loadUser(), loadSiteSettings()]);
-
-    return () => {
-      mounted = false;
-    };
-  }, []);
+  const user = useMeUser();
+  const siteSettings = useSiteSettings();
 
   const navItems = useMemo(() => {
     if (!user?.isAdmin) {
@@ -144,39 +69,39 @@ export default function MobileNav() {
     return [...baseNavItems, { name: "Admin", href: "/admin", icon: Shield }];
   }, [user]);
 
-  const kickUrl = normalizeHref(siteSettings.kickUrl);
+  const kickUrl = siteSettings.kickUrl;
 
   const socialLinks = useMemo<SocialLinkItem[]>(() => {
     const links: SocialLinkItem[] = [];
 
-    if (normalizeHref(siteSettings.discordUrl)) {
+    if (siteSettings.discordUrl) {
       links.push({
         label: "Discord",
-        href: normalizeHref(siteSettings.discordUrl),
+        href: siteSettings.discordUrl,
         icon: <DiscordLogo />,
       });
     }
 
-    if (normalizeHref(siteSettings.youtubeUrl)) {
+    if (siteSettings.youtubeUrl) {
       links.push({
         label: "YouTube",
-        href: normalizeHref(siteSettings.youtubeUrl),
+        href: siteSettings.youtubeUrl,
         icon: <YouTubeLogo />,
       });
     }
 
-    if (normalizeHref(siteSettings.xUrl)) {
+    if (siteSettings.xUrl) {
       links.push({
         label: "X",
-        href: normalizeHref(siteSettings.xUrl),
+        href: siteSettings.xUrl,
         icon: <XLogo />,
       });
     }
 
-    if (normalizeHref(siteSettings.instagramUrl)) {
+    if (siteSettings.instagramUrl) {
       links.push({
         label: "Instagram",
-        href: normalizeHref(siteSettings.instagramUrl),
+        href: siteSettings.instagramUrl,
         icon: <InstagramLogo />,
       });
     }

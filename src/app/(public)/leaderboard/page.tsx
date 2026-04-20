@@ -82,10 +82,13 @@ export default async function LeaderboardPage() {
 
       <TopThreeCards entries={topThree} />
 
-      <section className="rounded-3xl border border-white/10 bg-black/30 p-5 backdrop-blur-xl sm:p-6">
+      <section className="command-card border-white/8 p-5 sm:p-6">
         <div className="mb-5 flex min-w-0 flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div className="min-w-0">
-            <h2 className="truncate text-xl font-bold text-white sm:text-2xl">
+            <div className="blue-data text-[11px] font-semibold uppercase tracking-[0.24em]">
+              Live Standings
+            </div>
+            <h2 className="mt-2 truncate text-xl font-bold uppercase tracking-[0.04em] text-white sm:text-2xl">
               Full Leaderboard
             </h2>
             <p className="truncate-2 mt-1 text-sm leading-6 text-zinc-400">
@@ -98,8 +101,8 @@ export default async function LeaderboardPage() {
           </div>
         </div>
 
-        <div className="overflow-hidden rounded-2xl border border-white/10">
-          <div className="grid grid-cols-[68px_minmax(0,1fr)_110px_110px] gap-3 bg-white/5 px-4 py-3 text-[11px] uppercase tracking-[0.18em] text-zinc-500 sm:grid-cols-[80px_minmax(0,1fr)_160px_180px]">
+        <div className="panel-inset overflow-hidden rounded-[6px]">
+          <div className="grid grid-cols-[68px_minmax(0,1fr)_110px_110px] gap-3 border-b border-white/8 px-4 py-3 text-[11px] uppercase tracking-[0.18em] text-zinc-500 sm:grid-cols-[80px_minmax(0,1fr)_160px_180px]">
             <div>Rank</div>
             <div>User</div>
             <div className="text-right">Prize</div>
@@ -111,7 +114,7 @@ export default async function LeaderboardPage() {
               remaining.map((entry) => (
                 <div
                   key={`${entry.rank}-${entry.username}`}
-                  className="grid grid-cols-[68px_minmax(0,1fr)_110px_110px] items-center gap-3 px-4 py-4 text-sm sm:grid-cols-[80px_minmax(0,1fr)_160px_180px]"
+                  className="grid grid-cols-[68px_minmax(0,1fr)_110px_110px] items-center gap-3 px-4 py-4 text-sm transition-colors duration-200 hover:bg-white/[0.025] sm:grid-cols-[80px_minmax(0,1fr)_160px_180px]"
                 >
                   <div className="whitespace-nowrap font-semibold text-white">
                     #{entry.rank}
@@ -123,7 +126,7 @@ export default async function LeaderboardPage() {
                     </div>
                   </div>
 
-                  <div className="whitespace-nowrap text-right font-semibold text-zinc-200">
+                  <div className="gold-data whitespace-nowrap text-right font-semibold">
                     {typeof entry.prize === "number"
                       ? `$${entry.prize.toLocaleString(undefined, {
                           maximumFractionDigits: 0,
@@ -131,7 +134,7 @@ export default async function LeaderboardPage() {
                       : "—"}
                   </div>
 
-                  <div className="whitespace-nowrap text-right font-semibold text-zinc-200">
+                  <div className="blue-data whitespace-nowrap text-right font-semibold">
                     ${entry.wageredTotal.toLocaleString(undefined, {
                       maximumFractionDigits: 0,
                     })}

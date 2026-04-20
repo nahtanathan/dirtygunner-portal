@@ -18,7 +18,7 @@ export function CTAButton({
     <Link
       href={href}
       className={cn(
-        "inline-flex min-w-0 max-w-full items-center justify-center whitespace-nowrap rounded-2xl px-4 py-3 text-xs font-semibold uppercase tracking-[0.16em] transition-all duration-300 sm:px-5 sm:text-sm",
+        "inline-flex min-w-0 max-w-full items-center justify-center whitespace-nowrap rounded-[8px] px-4 py-3 text-xs font-semibold uppercase tracking-[0.16em] transition-all duration-300 sm:px-5 sm:text-sm",
         variant === "primary"
           ? "text-white hover:-translate-y-[1px]"
           : "border hover:-translate-y-[1px]",
@@ -28,12 +28,12 @@ export function CTAButton({
         variant === "primary"
           ? {
               background:
-                "linear-gradient(90deg, var(--accent-primary), var(--accent-secondary))",
-              boxShadow: "0 14px 30px rgba(37,99,235,0.26)",
+                "linear-gradient(90deg, rgba(53,116,202,0.96), rgba(94,164,255,0.92))",
+              boxShadow: "0 10px 24px rgba(37,99,235,0.24)",
             }
           : {
               borderColor: "var(--border-subtle)",
-              background: "rgba(255,255,255,0.03)",
+              background: "rgba(255,255,255,0.022)",
               color: "var(--text-primary)",
               boxShadow: "inset 0 1px 0 rgba(255,255,255,0.03)",
             }

@@ -5,6 +5,7 @@ import { CTAButton } from "@/components/ui/CTAButton";
 import { dataRepository } from "@/lib/data/repository";
 import { prisma } from "@/lib/prisma";
 import { getRoobetLeaderboard } from "@/lib/roobet";
+import type { BonusHuntSnapshot, Challenge, Raffle } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
@@ -86,62 +87,107 @@ export default async function HomePage() {
     leaderboard = [];
   }
 
-  const bonusHunts = await dataRepository.getBonusHunts();
+  const [bonusHunts, raffles, challenges] = await Promise.all([
+    dataRepository.getBonusHunts(),
+    dataRepository.getRaffles(),
+    dataRepository.getChallenges(),
+  ]);
+
+  const typedBonusHunts = bonusHunts as BonusHuntSnapshot;
+  const typedRaffles = Array.isArray(raffles) ? (raffles as Raffle[]) : [];
+  const typedChallenges = Array.isArray(challenges)
+    ? (challenges as Challenge[])
+    : [];
 
   return (
-    <div className="space-y-8 md:space-y-10">
+    <div className="space-y-6 md:space-y-7">
       <section className="mx-auto w-full max-w-[1360px] px-4 pt-2 md:px-6 md:pt-4">
-        <div className="relative overflow-hidden rounded-[32px] border border-white/10 shadow-[0_24px_90px_rgba(0,0,0,0.42)]">
+        <div className="command-card min-h-[360px] border-white/8 lg:min-h-[395px]">
           <div className="absolute inset-0">
             <Image
-              src="/images/home/hero-military-bg.jpg"
-              alt="DirtyGunner background"
+              src="/art/hero-operator.webp"
+              alt="DirtyGunner command hero"
               fill
               priority
-              className="object-cover object-center"
+              className="object-cover object-[77%_center]"
             />
           </div>
 
+          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(4,8,13,0.988)_0%,rgba(4,8,13,0.958)_17%,rgba(4,8,13,0.84)_39%,rgba(4,8,13,0.38)_66%,rgba(4,8,13,0.08)_100%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_17%_18%,rgba(72,143,236,0.13),transparent_18%),radial-gradient(circle_at_72%_14%,rgba(88,141,214,0.22),transparent_14%),radial-gradient(circle_at_84%_27%,rgba(88,141,214,0.15),transparent_12%),linear-gradient(180deg,rgba(255,255,255,0.018),transparent_18%)]" />
+
           <div
-            className="absolute inset-0"
+            className="pointer-events-none absolute inset-0 opacity-[0.14]"
             style={{
-              background:
-                "linear-gradient(180deg, rgba(4,8,14,0.42) 0%, rgba(5,9,16,0.62) 26%, rgba(5,8,14,0.82) 62%, rgba(4,7,12,0.95) 100%)",
+              backgroundImage: "url('/art/bg-grid.png')",
+              backgroundPosition: "center",
+              backgroundRepeat: "repeat",
+              backgroundSize: "1160px auto",
             }}
           />
 
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                "radial-gradient(circle at top center, rgba(109,143,179,0.18), transparent 34%), radial-gradient(circle at center, transparent 38%, rgba(3,6,10,0.44) 100%)",
-            }}
-          />
+          <div className="pointer-events-none absolute inset-0 opacity-[0.08]">
+            <div
+              className="absolute inset-0"
+              style={{
+                backgroundImage: "url('/art/bg-topo.png')",
+                backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
+                backgroundSize: "cover",
+              }}
+            />
+          </div>
 
-          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-b from-transparent to-[#05080d]" />
+          <div className="pointer-events-none absolute left-4 right-4 top-4 hidden h-px hero-frame-line xl:block" />
+          <div className="pointer-events-none absolute bottom-4 left-4 right-4 hidden h-px hero-frame-line xl:block" />
+          <div className="pointer-events-none absolute left-4 top-4 hidden h-4 w-4 border-l border-t border-[#7da4d2]/45 xl:block" />
+          <div className="pointer-events-none absolute right-4 top-4 hidden h-4 w-4 border-r border-t border-[#7da4d2]/45 xl:block" />
+          <div className="pointer-events-none absolute bottom-4 left-4 hidden h-4 w-4 border-b border-l border-[#7da4d2]/45 xl:block" />
+          <div className="pointer-events-none absolute bottom-4 right-4 hidden h-4 w-4 border-b border-r border-[#7da4d2]/45 xl:block" />
 
-          <div className="relative px-5 py-12 text-center sm:px-6 sm:py-14 md:px-8 md:py-16 xl:px-10 xl:py-20">
-            <div className="mx-auto flex min-w-0 max-w-[1040px] flex-col items-center">
-              <div className="mb-6 flex w-full justify-center sm:mb-8">
-                <Image
-                  src="/images/dirty-gunner-gaming.png"
-                  alt="Dirty Gunner"
-                  width={1600}
-                  height={800}
-                  priority
-                  className="h-auto w-full max-w-[760px] object-contain drop-shadow-[0_8px_40px_rgba(0,0,0,0.55)]"
-                />
+          <div className="relative grid min-h-[360px] gap-4 px-5 py-5 sm:px-6 md:px-7 lg:grid-cols-[minmax(0,1.16fr)_minmax(190px,0.42fr)] lg:items-start lg:gap-3 lg:px-8 lg:py-5 xl:min-h-[395px] xl:px-10">
+            <div className="max-w-[590px] pt-0.5">
+              <div className="blue-data flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.22em]">
+                <span className="text-[18px] leading-none">›</span>
+                <span>Mission Control</span>
               </div>
 
-              <div className="rounded-full border border-white/10 bg-black/20 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-white/60 backdrop-blur-md">
-                Live hub
+              <div className="mt-2 h-px w-[168px] bg-[linear-gradient(90deg,rgba(110,169,239,0.78),rgba(110,169,239,0.0))]" />
+
+              <div className="mt-5 flex items-center gap-3">
+                <div className="relative h-10 w-10 overflow-hidden rounded-[5px] border border-white/10 bg-white/[0.04]">
+                  <Image
+                    src="/brand/logo-mark.png"
+                    alt="DirtyGunner"
+                    fill
+                    className="object-contain p-2"
+                  />
+                </div>
+
+                <div>
+                  <div className="text-[11px] font-semibold uppercase tracking-[0.28em] text-white/54">
+                    DirtyGunner
+                  </div>
+                  <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/72">
+                    Command Portal
+                  </div>
+                </div>
               </div>
 
-              <p className="mt-5 max-w-2xl text-sm leading-6 text-white/72 md:text-base md:leading-7">
-                Leaderboards, raffles, challenges, and hunts — all in one spot.
+              <h1 className="mt-4 text-[3.05rem] font-black uppercase leading-[0.82] tracking-[-0.02em] text-white sm:text-[4rem] md:text-[4.7rem] xl:text-[5.25rem]">
+                DirtyGunner
+                <span className="block bg-gradient-to-b from-white to-[#dce8f8] bg-clip-text text-transparent">
+                  Portal
+                </span>
+              </h1>
+
+              <p className="mt-4 text-[0.97rem] font-semibold uppercase leading-[1.48] tracking-[0.09em] text-white/62">
+                Leaderboards. Raffles. Challenges.
+                <br />
+                Bonus Hunts. Community.
               </p>
 
-              <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
+              <div className="mt-5 flex flex-wrap items-center gap-3">
                 <CTAButton href="/leaderboard">Leaderboard</CTAButton>
                 <CTAButton href="/bonus-hunts" variant="secondary">
                   Bonus Hunts
@@ -150,55 +196,16 @@ export default async function HomePage() {
                   Watch Live
                 </CTAButton>
               </div>
-
-              <div className="mt-6 max-w-3xl rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm leading-6 text-white/70 backdrop-blur-md sm:px-5">
-                “Don&apos;t forget to tell someone you love them, you might make their day!”
-              </div>
             </div>
-          </div>
-        </div>
-      </section>
 
-      <section className="mx-auto w-full max-w-[980px] px-4 md:px-6">
-        <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(14,18,28,0.92),rgba(9,12,20,0.98))] p-4 shadow-[0_20px_60px_rgba(0,0,0,0.32)] sm:p-5">
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                "radial-gradient(circle at top left, rgba(109,143,179,0.10), transparent 30%), linear-gradient(180deg, rgba(255,255,255,0.02), transparent 60%)",
-            }}
-          />
-
-          <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center">
-            <div className="flex items-center gap-4">
-              <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04]">
-                <Image
-                  src="/brand/logo-mark.png"
-                  alt="DirtyGunner"
-                  fill
-                  className="object-contain p-2 drop-shadow-[0_0_10px_rgba(139,92,246,0.28)]"
-                />
-              </div>
-
-              <div className="min-w-0">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/55">
-                    Military Background
-                  </span>
-                  <span className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/55">
-                    United States Navy
-                  </span>
+            <div className="relative hidden lg:block">
+              <div className="absolute right-4 top-4 text-right">
+                <div className="space-y-1.5 text-[10px] font-semibold uppercase tracking-[0.28em] leading-[1.8] drop-shadow-[0_0_10px_rgba(0,0,0,0.28)]">
+                  <div className="text-white/78">GRID: 7A-23</div>
+                  <div className="text-white/78">ZONE: BRAVO</div>
+                  <div className="blue-data">STATUS: ONLINE</div>
+                  <div className="text-white/78">TIME: 14:32:18</div>
                 </div>
-
-                <h2 className="mt-3 text-left text-lg font-bold tracking-tight text-white sm:text-xl">
-                  DirtyGunner
-                </h2>
-
-                <p className="mt-2 max-w-3xl text-left text-sm leading-6 text-white/62 md:text-[15px] md:leading-7">
-                  United States Navy Gunner&apos;s Mate 2nd Class. Active duty
-                  1999–2003, reserve 2003–2005. Weapons and range instructor.
-                  5&quot; gun mechanic.
-                </p>
               </div>
             </div>
           </div>
@@ -208,7 +215,9 @@ export default async function HomePage() {
       <HomeClient
         leaderboard={leaderboard}
         countdownTarget={countdownTarget}
-        bonusHunts={bonusHunts}
+        bonusHunts={typedBonusHunts}
+        raffles={typedRaffles}
+        challenges={typedChallenges}
       />
     </div>
   );

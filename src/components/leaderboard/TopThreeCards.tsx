@@ -96,7 +96,7 @@ function PlaceCard({
         onMouseMove={handleMove}
         onMouseLeave={handleLeave}
         className={clsx(
-          "relative flex min-w-0 overflow-hidden rounded-[28px] border",
+          "relative flex min-w-0 overflow-hidden rounded-[10px] border",
           featured
             ? "min-h-[360px] p-5 sm:min-h-[390px] sm:p-6 md:min-h-[460px] md:p-7"
             : "min-h-[330px] p-5 sm:min-h-[350px] sm:p-6 md:min-h-[380px]",

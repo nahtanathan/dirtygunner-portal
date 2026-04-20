@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import clsx from "clsx";
 import {
   ChevronRight,
@@ -18,31 +18,12 @@ import {
   Target,
   Trophy,
 } from "lucide-react";
-
-type MeUser = {
-  isAdmin: boolean;
-};
-
-type SiteSettings = {
-  kickUrl?: string;
-  discordUrl?: string;
-  youtubeUrl?: string;
-  xUrl?: string;
-  instagramUrl?: string;
-};
+import { useMeUser, useSiteSettings } from "@/lib/client/site-context";
 
 type SocialLinkItem = {
   label: string;
   href: string;
   icon: React.ReactNode;
-};
-
-const EMPTY_SETTINGS: SiteSettings = {
-  kickUrl: "",
-  discordUrl: "",
-  youtubeUrl: "",
-  xUrl: "",
-  instagramUrl: "",
 };
 
 const baseNavItems = [
@@ -71,66 +52,10 @@ function isPathActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-function normalizeHref(value?: string) {
-  const trimmed = value?.trim() ?? "";
-  return trimmed.length > 0 ? trimmed : "";
-}
-
 export default function AppSidebar() {
   const pathname = usePathname();
-  const [user, setUser] = useState<MeUser | null>(null);
-  const [siteSettings, setSiteSettings] = useState<SiteSettings>(EMPTY_SETTINGS);
-
-  useEffect(() => {
-    let mounted = true;
-
-    async function loadUser() {
-      try {
-        const res = await fetch("/api/auth/me", {
-          method: "GET",
-          cache: "no-store",
-        });
-
-        const data = await res.json();
-
-        if (!mounted) return;
-        setUser(data?.user ?? null);
-      } catch {
-        if (!mounted) return;
-        setUser(null);
-      }
-    }
-
-    async function loadSiteSettings() {
-      try {
-        const res = await fetch("/api/site-settings", {
-          method: "GET",
-          cache: "no-store",
-        });
-
-        const data = await res.json();
-
-        if (!mounted) return;
-
-        setSiteSettings({
-          kickUrl: normalizeHref(data?.settings?.kickUrl),
-          discordUrl: normalizeHref(data?.settings?.discordUrl),
-          youtubeUrl: normalizeHref(data?.settings?.youtubeUrl),
-          xUrl: normalizeHref(data?.settings?.xUrl),
-          instagramUrl: normalizeHref(data?.settings?.instagramUrl),
-        });
-      } catch {
-        if (!mounted) return;
-        setSiteSettings(EMPTY_SETTINGS);
-      }
-    }
-
-    void Promise.all([loadUser(), loadSiteSettings()]);
-
-    return () => {
-      mounted = false;
-    };
-  }, []);
+  const user = useMeUser();
+  const siteSettings = useSiteSettings();
 
   const navItems = useMemo(() => {
     if (!user?.isAdmin) {
@@ -144,39 +69,39 @@ export default function AppSidebar() {
   const adminSectionActive =
     pathname === "/admin" || pathname.startsWith("/admin/");
 
-  const kickUrl = normalizeHref(siteSettings.kickUrl);
+  const kickUrl = siteSettings.kickUrl;
 
   const socialLinks = useMemo<SocialLinkItem[]>(() => {
     const links: SocialLinkItem[] = [];
 
-    if (normalizeHref(siteSettings.discordUrl)) {
+    if (siteSettings.discordUrl) {
       links.push({
         label: "Discord",
-        href: normalizeHref(siteSettings.discordUrl),
+        href: siteSettings.discordUrl,
         icon: <DiscordLogo />,
       });
     }
 
-    if (normalizeHref(siteSettings.youtubeUrl)) {
+    if (siteSettings.youtubeUrl) {
       links.push({
         label: "YouTube",
-        href: normalizeHref(siteSettings.youtubeUrl),
+        href: siteSettings.youtubeUrl,
         icon: <YouTubeLogo />,
       });
     }
 
-    if (normalizeHref(siteSettings.xUrl)) {
+    if (siteSettings.xUrl) {
       links.push({
         label: "X",
-        href: normalizeHref(siteSettings.xUrl),
+        href: siteSettings.xUrl,
         icon: <XLogo />,
       });
     }
 
-    if (normalizeHref(siteSettings.instagramUrl)) {
+    if (siteSettings.instagramUrl) {
       links.push({
         label: "Instagram",
-        href: normalizeHref(siteSettings.instagramUrl),
+        href: siteSettings.instagramUrl,
         icon: <InstagramLogo />,
       });
     }
@@ -188,28 +113,67 @@ export default function AppSidebar() {
 
   return (
     <div
-      className="flex h-screen w-[300px] min-w-0 flex-col border-r"
+      className="relative flex h-screen w-[264px] min-w-0 flex-col overflow-hidden border-r"
       style={{
-        background: "linear-gradient(180deg, var(--bg-sidebar) 0%, #0b0f14 100%)",
-        borderColor: "var(--border-subtle)",
+        background:
+          "linear-gradient(180deg, rgba(13,16,20,0.985) 0%, rgba(8,10,14,0.985) 100%)",
+        borderColor: "rgba(255,255,255,0.06)",
       }}
     >
-      <div className="flex-shrink-0 px-5 pb-5 pt-6">
+      <div className="pointer-events-none absolute inset-0">
+        <div
+          className="absolute inset-0 opacity-[0.15]"
+          style={{
+            backgroundImage: "url('/art/sidebar-warzone.webp')",
+            backgroundPosition: "center bottom",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "cover",
+          }}
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,12,16,0.90)_0%,rgba(10,12,16,0.86)_26%,rgba(10,12,16,0.94)_56%,rgba(10,12,16,0.985)_100%)]" />
+        <div className="absolute inset-y-0 right-0 w-px bg-[linear-gradient(180deg,transparent,rgba(162,174,191,0.18),transparent)]" />
+      </div>
+
+      <div className="relative z-10 flex-shrink-0 px-4 pb-4 pt-4">
         <Link
           href="/"
-          className="group flex min-w-0 items-center rounded-2xl border px-3 py-3 transition-all duration-200"
+          className="group flex min-w-0 items-center rounded-[6px] border px-3 py-3 transition-all duration-200"
           style={{
-            borderColor: "var(--border-subtle)",
-            background: "rgba(255,255,255,0.02)",
+            borderColor: "rgba(255,255,255,0.08)",
+            background:
+              "linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.018))",
           }}
         >
           <SidebarBrandMark />
         </Link>
+
+        <div className="mt-4 overflow-hidden rounded-[6px] border border-white/8 bg-[linear-gradient(180deg,rgba(255,255,255,0.025),rgba(255,255,255,0.012))]">
+          <div className="relative h-[118px]">
+            <Image
+              src="/art/sidebar-warzone.webp"
+              alt="Sidebar atmosphere"
+              fill
+              className="object-cover opacity-28 grayscale"
+            />
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,12,16,0.34),rgba(10,12,16,0.88))]" />
+            <div className="absolute inset-x-0 bottom-0 p-3.5">
+              <div className="text-[10px] font-semibold uppercase tracking-[0.26em] text-white/44">
+                Command Center
+              </div>
+              <div className="mt-2 text-sm font-semibold text-white">
+                Live hub online
+              </div>
+              <div className="mt-1 text-xs leading-5 text-white/58">
+                Boards, raffles, hunts, and challenges in one command shell.
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto px-5 premium-scrollbar">
-        <div className="pb-6">
-          <div className="mb-3 px-1 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-white/40">
+      <div className="relative z-10 min-h-0 flex-1 overflow-y-auto px-4 premium-scrollbar">
+        <div className="pb-5">
+          <div className="mb-3 px-1 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-white/34">
             Navigation
           </div>
 
@@ -223,32 +187,32 @@ export default function AppSidebar() {
                   key={item.href}
                   href={item.href}
                   className={clsx(
-                    "group relative flex min-w-0 items-center gap-3 overflow-hidden rounded-2xl border px-3 py-3 text-sm font-medium transition-all duration-200",
-                    isActive && "shadow-[0_0_20px_rgba(109,143,179,0.08)]",
+                    "group relative flex min-w-0 items-center gap-3 overflow-hidden rounded-[5px] border px-3 py-3 text-sm font-medium transition-all duration-200",
+                    isActive && "shadow-[0_0_0_1px_rgba(255,255,255,0.03)]",
                   )}
                   style={{
                     borderColor: isActive
-                      ? "rgba(167,177,191,0.18)"
-                      : "transparent",
+                      ? "rgba(142,156,175,0.14)"
+                      : "rgba(255,255,255,0.035)",
                     background: isActive
-                      ? "linear-gradient(90deg, rgba(255,255,255,0.055), rgba(109,143,179,0.06))"
-                      : "transparent",
+                      ? "linear-gradient(90deg, rgba(39,92,166,0.32), rgba(17,26,39,0.16))"
+                      : "linear-gradient(180deg, rgba(255,255,255,0.018), rgba(255,255,255,0.008))",
                     color: isActive
                       ? "rgba(255,255,255,0.96)"
-                      : "rgba(255,255,255,0.70)",
+                      : "rgba(255,255,255,0.72)",
                   }}
                 >
                   {isActive && (
                     <span
-                      className="absolute inset-y-2 left-0 w-[3px] rounded-full"
-                      style={{ background: "var(--accent-primary)" }}
+                      className="absolute inset-y-2 left-0 w-[2px]"
+                      style={{ background: "rgba(182,196,214,0.82)" }}
                     />
                   )}
 
                   <Icon
                     className={clsx(
                       "h-4 w-4 shrink-0 transition-transform duration-200",
-                      isActive ? "text-white/85" : "text-white/55",
+                      isActive ? "text-white/88" : "text-white/48",
                     )}
                   />
 
@@ -262,21 +226,19 @@ export default function AppSidebar() {
         </div>
 
         {showAdminTree && (
-          <div className="pb-6">
-            <div className="mb-3 flex items-center gap-2 px-1 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-white/40">
-              <Shield className="h-3.5 w-3.5 shrink-0 text-white/60" />
+          <div className="pb-5">
+            <div className="mb-3 flex items-center gap-2 px-1 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-white/34">
+              <Shield className="h-3.5 w-3.5 shrink-0 text-white/56" />
               <span className="truncate whitespace-nowrap">Admin</span>
             </div>
 
             <div
-              className="overflow-hidden rounded-2xl border p-2"
+              className="overflow-hidden rounded-[6px] border p-2"
               style={{
                 borderColor: adminSectionActive
-                  ? "rgba(167,177,191,0.14)"
+                  ? "rgba(255,255,255,0.10)"
                   : "rgba(255,255,255,0.06)",
-                background: adminSectionActive
-                  ? "linear-gradient(180deg, rgba(255,255,255,0.035), rgba(109,143,179,0.03))"
-                  : "rgba(255,255,255,0.02)",
+                background: "rgba(255,255,255,0.015)",
               }}
             >
               <div className="space-y-1">
@@ -288,26 +250,26 @@ export default function AppSidebar() {
                     <Link
                       key={item.href}
                       href={item.href}
-                      className="group flex min-w-0 items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200"
+                      className="group flex min-w-0 items-center gap-3 rounded-[5px] px-3 py-2.5 text-sm transition-all duration-200"
                       style={{
                         background: isActive
-                          ? "rgba(255,255,255,0.06)"
+                          ? "rgba(255,255,255,0.055)"
                           : "transparent",
                         color: isActive
-                          ? "rgba(255,255,255,0.96)"
-                          : "rgba(255,255,255,0.68)",
+                          ? "rgba(255,255,255,0.95)"
+                          : "rgba(255,255,255,0.66)",
                       }}
                     >
                       <ChevronRight
                         className={clsx(
                           "h-3.5 w-3.5 shrink-0 transition-transform duration-200",
-                          isActive ? "translate-x-0 text-white/70" : "text-white/30",
+                          isActive ? "translate-x-0 text-white/66" : "text-white/28",
                         )}
                       />
                       <Icon
                         className={clsx(
                           "h-4 w-4 shrink-0",
-                          isActive ? "text-white/82" : "text-white/45",
+                          isActive ? "text-white/82" : "text-white/42",
                         )}
                       />
                       <span className="min-w-0 flex-1 truncate whitespace-nowrap">
@@ -322,10 +284,10 @@ export default function AppSidebar() {
         )}
       </div>
 
-      <div className="flex-shrink-0 px-5 pb-6 pt-4">
+      <div className="relative z-10 flex-shrink-0 px-4 pb-4 pt-3">
         {hasStreamLinks ? (
           <>
-            <div className="mb-3 px-1 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-white/40">
+            <div className="mb-3 px-1 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-white/34">
               Stream
             </div>
 
@@ -335,15 +297,16 @@ export default function AppSidebar() {
                   href={kickUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="flex min-w-0 items-center justify-between gap-3 rounded-2xl border px-4 py-3 text-sm font-medium transition-all duration-200 hover:bg-white/5"
+                  className="flex min-w-0 items-center justify-between gap-3 rounded-[5px] border px-4 py-3 text-sm font-medium transition-all duration-200 hover:bg-white/[0.03]"
                   style={{
-                    borderColor: "var(--border-subtle)",
-                    background: "rgba(255,255,255,0.02)",
-                    color: "rgba(255,255,255,0.9)",
+                    borderColor: "rgba(255,255,255,0.07)",
+                    background:
+                      "linear-gradient(180deg, rgba(255,255,255,0.018), rgba(255,255,255,0.008))",
+                    color: "rgba(255,255,255,0.88)",
                   }}
                 >
                   <span className="min-w-0 truncate whitespace-nowrap">Watch on Kick</span>
-                  <ExternalLink className="h-4 w-4 shrink-0 text-white/55" />
+                  <ExternalLink className="h-4 w-4 shrink-0 text-white/48" />
                 </Link>
               ) : null}
 
@@ -355,11 +318,11 @@ export default function AppSidebar() {
                       href={item.href}
                       target="_blank"
                       rel="noreferrer"
-                      className="flex min-w-0 items-center justify-center gap-2 rounded-2xl border px-3 py-3 text-sm font-medium transition-all duration-200 hover:bg-white/5"
+                      className="flex min-w-0 items-center justify-center gap-2 rounded-[5px] border px-3 py-2.5 text-sm font-medium transition-all duration-200 hover:bg-white/[0.03]"
                       style={{
-                        borderColor: "var(--border-subtle)",
-                        background: "rgba(255,255,255,0.02)",
-                        color: "rgba(255,255,255,0.82)",
+                        borderColor: "rgba(255,255,255,0.07)",
+                        background: "rgba(255,255,255,0.014)",
+                        color: "rgba(255,255,255,0.76)",
                       }}
                     >
                       {item.icon}
@@ -372,7 +335,7 @@ export default function AppSidebar() {
           </>
         ) : null}
 
-        <div className={clsx("px-1 text-xs text-white/35", hasStreamLinks ? "mt-6" : "mt-2")}>
+        <div className={clsx("px-1 text-xs text-white/30", hasStreamLinks ? "mt-5" : "mt-2")}>
           © 2026 DirtyGunner Live
         </div>
       </div>
@@ -383,21 +346,21 @@ export default function AppSidebar() {
 function SidebarBrandMark() {
   return (
     <div className="flex min-w-0 items-center gap-3">
-      <div className="relative h-10 w-10 shrink-0">
+      <div className="relative h-9 w-9 shrink-0">
         <Image
           src="/brand/logo-mark.png"
           alt="DirtyGunner"
           fill
-          className="object-contain drop-shadow-[0_0_12px_rgba(139,92,246,0.45)]"
+          className="object-contain drop-shadow-[0_0_12px_rgba(136,174,216,0.18)]"
         />
       </div>
 
       <div className="min-w-0 flex flex-col leading-tight">
-        <span className="truncate text-sm font-semibold tracking-wide text-white">
+        <span className="truncate text-sm font-semibold tracking-[0.16em] text-white">
           DIRTYGUNNER
         </span>
-        <span className="truncate text-[10px] tracking-widest text-zinc-400">
-          
+        <span className="truncate text-[10px] tracking-[0.30em] text-white/36">
+          COMMAND HUB
         </span>
       </div>
     </div>
@@ -423,7 +386,7 @@ function YouTubeLogo() {
 function XLogo() {
   return (
     <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 fill-current" aria-hidden="true">
-      <path d="M18.244 2H21l-6.522 7.455L22.15 22h-6.007l-4.705-6.16L6.05 22H3.292l6.978-7.977L1.85 2h6.16l4.253 5.621L18.244 2Zm-1.053 18h1.527L7.18 3.896H5.542L17.19 20Z" />
+      <path d="M18.901 2H21.98l-6.726 7.687L23.167 22h-6.194l-4.85-6.35L6.566 22H3.485l7.194-8.222L.833 2h6.352l4.384 5.79L18.901 2Zm-1.086 18.145h1.706L6.26 3.758H4.429l13.386 16.387Z" />
     </svg>
   );
 }
@@ -431,7 +394,7 @@ function XLogo() {
 function InstagramLogo() {
   return (
     <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 fill-current" aria-hidden="true">
-      <path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2Zm0 1.8A3.95 3.95 0 0 0 3.8 7.75v8.5a3.95 3.95 0 0 0 3.95 3.95h8.5a3.95 3.95 0 0 0 3.95-3.95v-8.5a3.95 3.95 0 0 0-3.95-3.95h-8.5Zm8.95 1.35a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2ZM12 6.85A5.15 5.15 0 1 1 6.85 12 5.16 5.16 0 0 1 12 6.85Zm0 1.8A3.35 3.35 0 1 0 15.35 12 3.35 3.35 0 0 0 12 8.65Z" />
+      <path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2Zm0 1.75A4 4 0 0 0 3.75 7.75v8.5a4 4 0 0 0 4 4h8.5a4 4 0 0 0 4-4v-8.5a4 4 0 0 0-4-4h-8.5Zm8.875 1.312a1.063 1.063 0 1 1 0 2.126 1.063 1.063 0 0 1 0-2.126ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 1.75A3.25 3.25 0 1 0 12 15.25 3.25 3.25 0 0 0 12 8.75Z" />
     </svg>
   );
 }

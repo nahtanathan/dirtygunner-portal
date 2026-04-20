@@ -12,7 +12,7 @@ export function PremiumPanel({
   return (
     <div
       className={cn(
-        'panel-shell metal-border relative min-w-0 overflow-hidden rounded-[24px] p-4 sm:rounded-[26px] sm:p-5 md:rounded-[28px] md:p-6',
+        'panel-shell metal-border relative min-w-0 overflow-hidden rounded-[10px] p-4 sm:rounded-[10px] sm:p-5 md:rounded-[10px] md:p-6',
         'before:pointer-events-none before:absolute before:inset-0 before:bg-[linear-gradient(180deg,rgba(255,255,255,0.06),transparent_30%)]',
         className,
       )}

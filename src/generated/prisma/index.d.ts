@@ -4192,6 +4192,8 @@ export namespace Prisma {
     kickUrl: string | null
     discordUrl: string | null
     youtubeUrl: string | null
+    xUrl: string | null
+    instagramUrl: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -4201,6 +4203,8 @@ export namespace Prisma {
     kickUrl: string | null
     discordUrl: string | null
     youtubeUrl: string | null
+    xUrl: string | null
+    instagramUrl: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -4210,6 +4214,8 @@ export namespace Prisma {
     kickUrl: number
     discordUrl: number
     youtubeUrl: number
+    xUrl: number
+    instagramUrl: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -4221,6 +4227,8 @@ export namespace Prisma {
     kickUrl?: true
     discordUrl?: true
     youtubeUrl?: true
+    xUrl?: true
+    instagramUrl?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -4230,6 +4238,8 @@ export namespace Prisma {
     kickUrl?: true
     discordUrl?: true
     youtubeUrl?: true
+    xUrl?: true
+    instagramUrl?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -4239,6 +4249,8 @@ export namespace Prisma {
     kickUrl?: true
     discordUrl?: true
     youtubeUrl?: true
+    xUrl?: true
+    instagramUrl?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -4321,6 +4333,8 @@ export namespace Prisma {
     kickUrl: string
     discordUrl: string | null
     youtubeUrl: string | null
+    xUrl: string | null
+    instagramUrl: string | null
     createdAt: Date
     updatedAt: Date
     _count: SiteSettingsCountAggregateOutputType | null
@@ -4347,6 +4361,8 @@ export namespace Prisma {
     kickUrl?: boolean
     discordUrl?: boolean
     youtubeUrl?: boolean
+    xUrl?: boolean
+    instagramUrl?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["siteSettings"]>
@@ -4356,6 +4372,8 @@ export namespace Prisma {
     kickUrl?: boolean
     discordUrl?: boolean
     youtubeUrl?: boolean
+    xUrl?: boolean
+    instagramUrl?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["siteSettings"]>
@@ -4365,6 +4383,8 @@ export namespace Prisma {
     kickUrl?: boolean
     discordUrl?: boolean
     youtubeUrl?: boolean
+    xUrl?: boolean
+    instagramUrl?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["siteSettings"]>
@@ -4374,11 +4394,13 @@ export namespace Prisma {
     kickUrl?: boolean
     discordUrl?: boolean
     youtubeUrl?: boolean
+    xUrl?: boolean
+    instagramUrl?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type SiteSettingsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "kickUrl" | "discordUrl" | "youtubeUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["siteSettings"]>
+  export type SiteSettingsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "kickUrl" | "discordUrl" | "youtubeUrl" | "xUrl" | "instagramUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["siteSettings"]>
 
   export type $SiteSettingsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "SiteSettings"
@@ -4388,6 +4410,8 @@ export namespace Prisma {
       kickUrl: string
       discordUrl: string | null
       youtubeUrl: string | null
+      xUrl: string | null
+      instagramUrl: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["siteSettings"]>
@@ -4817,6 +4841,8 @@ export namespace Prisma {
     readonly kickUrl: FieldRef<"SiteSettings", 'String'>
     readonly discordUrl: FieldRef<"SiteSettings", 'String'>
     readonly youtubeUrl: FieldRef<"SiteSettings", 'String'>
+    readonly xUrl: FieldRef<"SiteSettings", 'String'>
+    readonly instagramUrl: FieldRef<"SiteSettings", 'String'>
     readonly createdAt: FieldRef<"SiteSettings", 'DateTime'>
     readonly updatedAt: FieldRef<"SiteSettings", 'DateTime'>
   }
@@ -12305,6 +12331,8 @@ export namespace Prisma {
     kickUrl: 'kickUrl',
     discordUrl: 'discordUrl',
     youtubeUrl: 'youtubeUrl',
+    xUrl: 'xUrl',
+    instagramUrl: 'instagramUrl',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -12758,6 +12786,8 @@ export namespace Prisma {
     kickUrl?: StringFilter<"SiteSettings"> | string
     discordUrl?: StringNullableFilter<"SiteSettings"> | string | null
     youtubeUrl?: StringNullableFilter<"SiteSettings"> | string | null
+    xUrl?: StringNullableFilter<"SiteSettings"> | string | null
+    instagramUrl?: StringNullableFilter<"SiteSettings"> | string | null
     createdAt?: DateTimeFilter<"SiteSettings"> | Date | string
     updatedAt?: DateTimeFilter<"SiteSettings"> | Date | string
   }
@@ -12767,6 +12797,8 @@ export namespace Prisma {
     kickUrl?: SortOrder
     discordUrl?: SortOrderInput | SortOrder
     youtubeUrl?: SortOrderInput | SortOrder
+    xUrl?: SortOrderInput | SortOrder
+    instagramUrl?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -12779,6 +12811,8 @@ export namespace Prisma {
     kickUrl?: StringFilter<"SiteSettings"> | string
     discordUrl?: StringNullableFilter<"SiteSettings"> | string | null
     youtubeUrl?: StringNullableFilter<"SiteSettings"> | string | null
+    xUrl?: StringNullableFilter<"SiteSettings"> | string | null
+    instagramUrl?: StringNullableFilter<"SiteSettings"> | string | null
     createdAt?: DateTimeFilter<"SiteSettings"> | Date | string
     updatedAt?: DateTimeFilter<"SiteSettings"> | Date | string
   }, "id">
@@ -12788,6 +12822,8 @@ export namespace Prisma {
     kickUrl?: SortOrder
     discordUrl?: SortOrderInput | SortOrder
     youtubeUrl?: SortOrderInput | SortOrder
+    xUrl?: SortOrderInput | SortOrder
+    instagramUrl?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: SiteSettingsCountOrderByAggregateInput
@@ -12803,6 +12839,8 @@ export namespace Prisma {
     kickUrl?: StringWithAggregatesFilter<"SiteSettings"> | string
     discordUrl?: StringNullableWithAggregatesFilter<"SiteSettings"> | string | null
     youtubeUrl?: StringNullableWithAggregatesFilter<"SiteSettings"> | string | null
+    xUrl?: StringNullableWithAggregatesFilter<"SiteSettings"> | string | null
+    instagramUrl?: StringNullableWithAggregatesFilter<"SiteSettings"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"SiteSettings"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"SiteSettings"> | Date | string
   }
@@ -13587,6 +13625,8 @@ export namespace Prisma {
     kickUrl: string
     discordUrl?: string | null
     youtubeUrl?: string | null
+    xUrl?: string | null
+    instagramUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -13596,6 +13636,8 @@ export namespace Prisma {
     kickUrl: string
     discordUrl?: string | null
     youtubeUrl?: string | null
+    xUrl?: string | null
+    instagramUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -13605,6 +13647,8 @@ export namespace Prisma {
     kickUrl?: StringFieldUpdateOperationsInput | string
     discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
     youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    xUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -13614,6 +13658,8 @@ export namespace Prisma {
     kickUrl?: StringFieldUpdateOperationsInput | string
     discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
     youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    xUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -13623,6 +13669,8 @@ export namespace Prisma {
     kickUrl: string
     discordUrl?: string | null
     youtubeUrl?: string | null
+    xUrl?: string | null
+    instagramUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -13632,6 +13680,8 @@ export namespace Prisma {
     kickUrl?: StringFieldUpdateOperationsInput | string
     discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
     youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    xUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -13641,6 +13691,8 @@ export namespace Prisma {
     kickUrl?: StringFieldUpdateOperationsInput | string
     discordUrl?: NullableStringFieldUpdateOperationsInput | string | null
     youtubeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    xUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -14579,6 +14631,8 @@ export namespace Prisma {
     kickUrl?: SortOrder
     discordUrl?: SortOrder
     youtubeUrl?: SortOrder
+    xUrl?: SortOrder
+    instagramUrl?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -14588,6 +14642,8 @@ export namespace Prisma {
     kickUrl?: SortOrder
     discordUrl?: SortOrder
     youtubeUrl?: SortOrder
+    xUrl?: SortOrder
+    instagramUrl?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -14597,6 +14653,8 @@ export namespace Prisma {
     kickUrl?: SortOrder
     discordUrl?: SortOrder
     youtubeUrl?: SortOrder
+    xUrl?: SortOrder
+    instagramUrl?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }

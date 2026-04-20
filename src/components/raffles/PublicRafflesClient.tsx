@@ -294,7 +294,7 @@ function RaffleCard({
 
   return (
     <article
-      className="group flex h-full min-w-0 flex-col overflow-hidden rounded-[28px] border p-3 transition-transform duration-200 hover:-translate-y-1"
+      className="group command-card flex h-full min-w-0 flex-col overflow-hidden rounded-[10px] border p-3 transition-transform duration-200 hover:-translate-y-1"
       style={{
         borderColor: live ? accent.border : "rgba(255,255,255,0.08)",
         background:
@@ -303,7 +303,7 @@ function RaffleCard({
       }}
     >
       <div
-        className="relative overflow-hidden rounded-[22px] border"
+        className="relative overflow-hidden rounded-[6px] border"
         style={{
           borderColor: "rgba(255,255,255,0.08)",
           background:
@@ -360,7 +360,7 @@ function RaffleCard({
           </div>
 
           <div
-            className="shrink-0 rounded-full border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em]"
+            className="shrink-0 rounded-[5px] border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em]"
             style={{
               borderColor: live ? accent.border : "rgba(255,255,255,0.08)",
               background: live ? accent.badge : "rgba(255,255,255,0.03)",
@@ -433,7 +433,7 @@ function InfoTile({
 }) {
   return (
     <div
-      className="min-w-0 rounded-2xl border px-4 py-3"
+      className="min-w-0 rounded-[6px] border px-4 py-3"
       style={{
         borderColor: "rgba(255,255,255,0.08)",
         background: "rgba(255,255,255,0.03)",
@@ -461,7 +461,7 @@ function EmptyState({
 }) {
   return (
     <div
-      className="rounded-[28px] border px-6 py-10 text-center"
+      className="rounded-[10px] border px-6 py-10 text-center"
       style={{
         borderColor: "rgba(255,255,255,0.08)",
         background:

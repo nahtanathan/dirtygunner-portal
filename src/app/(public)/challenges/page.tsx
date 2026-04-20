@@ -1,11 +1,11 @@
 // FILE: src/app/(public)/challenges/page.tsx
 import { unstable_noStore as noStore } from "next/cache";
 
-import { ChallengeCard } from "@/components/challenges/ChallengeCard";
+import { PublicChallengesClient } from "@/components/challenges/PublicChallengesClient";
 import { PageHero } from "@/components/ui/PageHero";
 import { PremiumPanel } from "@/components/ui/PremiumPanel";
-import { SectionHeader } from "@/components/ui/SectionHeader";
 import { dataRepository } from "@/lib/data/repository";
+import { getSession } from "@/lib/session";
 import type { Challenge } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -24,6 +24,7 @@ type RichChallenge = Challenge & {
 export default async function ChallengesPage() {
   noStore();
 
+  const session = await getSession();
   const repoItems = await dataRepository.getChallenges();
   const items = isChallengeArray(repoItems) ? repoItems : [];
 
@@ -65,45 +66,7 @@ export default async function ChallengesPage() {
         }
       />
 
-      <section className="space-y-6">
-        <SectionHeader
-          eyebrow="Active"
-          title="Open Challenges"
-          description=" "
-        />
-
-        {activeChallenges.length > 0 ? (
-          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
-            {activeChallenges.map((challenge) => (
-              <ChallengeCard key={challenge.id} challenge={challenge} />
-            ))}
-          </div>
-        ) : (
-          <PremiumPanel className="border border-white/10 bg-white/[0.03] p-6 text-sm text-white/65">
-            No open challenges right now.
-          </PremiumPanel>
-        )}
-      </section>
-
-      <section className="space-y-6">
-        <SectionHeader
-          eyebrow="Completed"
-          title="Finished Challenges"
-          description=" "
-        />
-
-        {completedChallenges.length > 0 ? (
-          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-            {completedChallenges.map((challenge) => (
-              <ChallengeCard key={challenge.id} challenge={challenge} />
-            ))}
-          </div>
-        ) : (
-          <PremiumPanel className="border border-white/10 bg-white/[0.03] p-6 text-sm text-white/65">
-            Finished challenges will show here once they close.
-          </PremiumPanel>
-        )}
-      </section>
+      <PublicChallengesClient isLoggedIn={Boolean(session?.sub)} />
     </div>
   );
 }

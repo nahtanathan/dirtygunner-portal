@@ -160,6 +160,8 @@ exports.Prisma.SiteSettingsScalarFieldEnum = {
   kickUrl: 'kickUrl',
   discordUrl: 'discordUrl',
   youtubeUrl: 'youtubeUrl',
+  xUrl: 'xUrl',
+  instagramUrl: 'instagramUrl',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };

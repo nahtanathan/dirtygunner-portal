@@ -212,7 +212,7 @@ export function ChallengeCard({
 
   return (
     <>
-      <PremiumPanel className="group flex h-full min-w-0 flex-col overflow-hidden border border-white/10 bg-[linear-gradient(180deg,rgba(36,24,42,0.88),rgba(19,24,35,0.96))] p-0 shadow-[0_20px_60px_rgba(0,0,0,0.30)]">
+      <PremiumPanel className="group flex h-full min-w-0 flex-col overflow-hidden border border-white/10 bg-[linear-gradient(180deg,rgba(18,24,35,0.94),rgba(11,16,24,0.98))] p-0 shadow-[0_20px_60px_rgba(0,0,0,0.30)]">
         <div className="relative flex h-full min-w-0 flex-col">
           <div className="relative h-[180px] overflow-hidden bg-[linear-gradient(180deg,rgba(33,23,38,0.95),rgba(19,24,35,1))]">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.06),transparent_55%)]" />
@@ -236,7 +236,7 @@ export function ChallengeCard({
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(17,13,22,0.10),rgba(17,13,22,0.55))]" />
 
             <div className="absolute left-4 top-4 max-w-[calc(100%-2rem)]">
-              <span className="inline-flex max-w-full rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.24em] text-amber-100 sm:text-[11px]">
+              <span className="inline-flex max-w-full rounded-[5px] border border-[#d6aa57]/25 bg-[#d6aa57]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.24em] text-[#f2cf8c] sm:text-[11px]">
                 <span className="truncate whitespace-nowrap">{getStatusLabel(rich)}</span>
               </span>
             </div>
@@ -261,7 +261,7 @@ export function ChallengeCard({
             </div>
 
             <div className="grid gap-3 sm:grid-cols-2">
-              <div className="min-w-0 rounded-2xl border border-white/10 bg-[#2b4771]/80 px-4 py-3 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] sm:text-left">
+              <div className="min-w-0 rounded-[6px] border border-white/10 bg-[#2b4771]/80 px-4 py-3 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] sm:text-left">
                 <div className="flex min-w-0 items-center justify-center gap-2 text-white sm:justify-start">
                   <Trophy className="h-4 w-4 shrink-0 text-slate-200" />
                   <span className="overflow-hidden text-ellipsis whitespace-nowrap text-xl font-black sm:text-2xl">
@@ -270,7 +270,7 @@ export function ChallengeCard({
                 </div>
               </div>
 
-              <div className="min-w-0 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3">
+              <div className="min-w-0 rounded-[6px] border border-white/10 bg-white/[0.04] px-4 py-3">
                 <div className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/42 sm:text-[11px]">
                   Target
                 </div>

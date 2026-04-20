@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useMemo, type ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -12,6 +12,7 @@ import {
   Trophy,
   Youtube,
 } from "lucide-react";
+import { useSiteSettings } from "@/lib/client/site-context";
 
 type FooterColumnLink = {
   href: string;
@@ -20,110 +21,53 @@ type FooterColumnLink = {
   external?: boolean;
 };
 
-type SiteSettings = {
-  kickUrl?: string;
-  discordUrl?: string;
-  youtubeUrl?: string;
-  xUrl?: string;
-  instagramUrl?: string;
-};
-
 type SocialLinkItem = {
   href: string;
   label: string;
   icon: ReactNode;
 };
 
-const EMPTY_SETTINGS: SiteSettings = {
-  kickUrl: "",
-  discordUrl: "",
-  youtubeUrl: "",
-  xUrl: "",
-  instagramUrl: "",
-};
-
-function normalizeHref(value?: string | null) {
-  const trimmed = value?.trim() ?? "";
-  return trimmed.length > 0 ? trimmed : "";
-}
-
 export default function SiteFooter() {
-  const [settings, setSettings] = useState<SiteSettings>(EMPTY_SETTINGS);
-
-  useEffect(() => {
-    let mounted = true;
-
-    async function loadSiteSettings() {
-      try {
-        const res = await fetch("/api/site-settings", {
-          method: "GET",
-          cache: "no-store",
-        });
-
-        const data = await res.json();
-
-        if (!mounted) return;
-
-        setSettings({
-          kickUrl: normalizeHref(data?.settings?.kickUrl),
-          discordUrl: normalizeHref(data?.settings?.discordUrl),
-          youtubeUrl: normalizeHref(data?.settings?.youtubeUrl),
-          xUrl: normalizeHref(data?.settings?.xUrl),
-          instagramUrl: normalizeHref(data?.settings?.instagramUrl),
-        });
-      } catch (error) {
-        console.error("Failed to load footer site settings:", error);
-
-        if (!mounted) return;
-        setSettings(EMPTY_SETTINGS);
-      }
-    }
-
-    void loadSiteSettings();
-
-    return () => {
-      mounted = false;
-    };
-  }, []);
+  const settings = useSiteSettings();
 
   const socialLinks = useMemo<SocialLinkItem[]>(() => {
     const links: SocialLinkItem[] = [];
 
-    if (normalizeHref(settings.kickUrl)) {
+    if (settings.kickUrl) {
       links.push({
-        href: normalizeHref(settings.kickUrl),
+        href: settings.kickUrl,
         label: "Kick",
         icon: <Radio className="h-4 w-4" />,
       });
     }
 
-    if (normalizeHref(settings.discordUrl)) {
+    if (settings.discordUrl) {
       links.push({
-        href: normalizeHref(settings.discordUrl),
+        href: settings.discordUrl,
         label: "Discord",
         icon: <Disc3 className="h-4 w-4" />,
       });
     }
 
-    if (normalizeHref(settings.youtubeUrl)) {
+    if (settings.youtubeUrl) {
       links.push({
-        href: normalizeHref(settings.youtubeUrl),
+        href: settings.youtubeUrl,
         label: "YouTube",
         icon: <Youtube className="h-4 w-4" />,
       });
     }
 
-    if (normalizeHref(settings.xUrl)) {
+    if (settings.xUrl) {
       links.push({
-        href: normalizeHref(settings.xUrl),
+        href: settings.xUrl,
         label: "X",
         icon: <XLogo />,
       });
     }
 
-    if (normalizeHref(settings.instagramUrl)) {
+    if (settings.instagramUrl) {
       links.push({
-        href: normalizeHref(settings.instagramUrl),
+        href: settings.instagramUrl,
         label: "Instagram",
         icon: <InstagramLogo />,
       });
@@ -158,9 +102,9 @@ export default function SiteFooter() {
   ];
 
   return (
-    <footer className="px-4 pb-6 pt-10 sm:px-6 lg:px-8 lg:pb-8 lg:pt-12">
+    <footer className="px-4 pb-5 pt-8 sm:px-6 lg:px-8 lg:pb-6 lg:pt-9">
       <div
-        className="overflow-hidden rounded-[20px] border"
+        className="overflow-hidden rounded-[8px] border"
         style={{
           borderColor: "rgba(255,255,255,0.08)",
           background:
@@ -170,15 +114,15 @@ export default function SiteFooter() {
       >
         <div
           className={[
-            "grid gap-8 px-5 py-6 md:px-7 lg:px-8 lg:py-7",
+            "grid gap-6 px-5 py-5 md:px-6 lg:px-7 lg:py-6",
             hasSocialLinks
-              ? "md:grid-cols-[minmax(0,1.2fr)_minmax(180px,auto)_minmax(180px,auto)]"
-              : "md:grid-cols-[minmax(0,1.2fr)_minmax(180px,auto)]",
+              ? "md:grid-cols-[minmax(0,1.2fr)_minmax(170px,auto)_minmax(170px,auto)]"
+              : "md:grid-cols-[minmax(0,1.2fr)_minmax(170px,auto)]",
           ].join(" ")}
         >
           <div className="min-w-0">
-            <div className="flex min-w-0 items-start gap-4">
-              <div className="relative h-12 w-12 flex-shrink-0">
+            <div className="flex min-w-0 items-start gap-3">
+              <div className="relative h-11 w-11 flex-shrink-0">
                 <Image
                   src="/brand/logo-mark.png"
                   alt="DirtyGunner"
@@ -188,16 +132,16 @@ export default function SiteFooter() {
               </div>
 
               <div className="min-w-0">
-                <div className="truncate text-base font-semibold tracking-wide text-white sm:text-lg">
+                <div className="truncate text-[1.05rem] font-semibold tracking-wide text-white">
                   DirtyGunner
                 </div>
-                <div className="truncate text-xs font-medium uppercase tracking-[0.22em] text-white/58 sm:text-sm">
+                <div className="truncate text-[11px] font-medium uppercase tracking-[0.24em] text-white/58">
                   Site
                 </div>
               </div>
             </div>
 
-            <div className="mt-5 max-w-[560px] text-sm leading-6 text-white/62 md:leading-7">
+            <div className="mt-4 max-w-[560px] text-sm leading-7 text-white/62">
               <Link
                 href="https://www.gambleaware.org/"
                 target="_blank"
@@ -212,7 +156,7 @@ export default function SiteFooter() {
             </div>
 
             {hasSocialLinks ? (
-              <div className="mt-5 flex flex-wrap items-center gap-3">
+              <div className="mt-4 flex flex-wrap items-center gap-2.5">
                 {socialLinks.map((link) => (
                   <SocialLink
                     key={`pill-${link.label}`}
@@ -241,7 +185,7 @@ export default function SiteFooter() {
         </div>
 
         <div
-          className="flex flex-col gap-3 border-t px-5 py-4 text-sm text-white/45 sm:flex-row sm:items-center sm:justify-between md:px-7 lg:px-8"
+          className="flex flex-col gap-3 border-t px-5 py-3.5 text-sm text-white/45 sm:flex-row sm:items-center sm:justify-between md:px-6 lg:px-7"
           style={{
             borderColor: "rgba(255,255,255,0.08)",
           }}
@@ -271,7 +215,7 @@ function FooterColumn({
 }) {
   return (
     <div className="min-w-0">
-      <div className="mb-4 text-[11px] font-semibold uppercase tracking-[0.24em] text-white/42">
+      <div className="mb-3 text-[10px] font-semibold uppercase tracking-[0.22em] text-white/42">
         {title}
       </div>
 
@@ -282,7 +226,7 @@ function FooterColumn({
             href={link.href}
             target={link.external ? "_blank" : undefined}
             rel={link.external ? "noreferrer" : undefined}
-            className="flex min-w-0 items-center gap-3 rounded-2xl border border-white/8 bg-white/[0.03] px-3 py-3 text-sm text-white/72 transition hover:bg-white/[0.05] hover:text-white"
+            className="flex min-w-0 items-center gap-3 rounded-[6px] border border-white/8 bg-white/[0.03] px-3 py-2 text-sm text-white/72 transition-all duration-200 hover:border-white/14 hover:bg-white/[0.05] hover:text-white"
           >
             <span className="shrink-0 text-white/45">{link.icon}</span>
             <span className="min-w-0 flex-1 truncate whitespace-nowrap">{link.label}</span>
@@ -307,7 +251,7 @@ function SocialLink({
       href={href}
       target="_blank"
       rel="noreferrer"
-      className="inline-flex min-w-0 max-w-full items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-white/75 transition hover:bg-white/[0.05] hover:text-white"
+      className="inline-flex min-w-0 max-w-full items-center gap-2 rounded-[999px] border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-white/75 transition-all duration-200 hover:border-white/14 hover:bg-white/[0.05] hover:text-white"
     >
       <span className="shrink-0 text-white/55">{icon}</span>
       <span className="truncate whitespace-nowrap">{label}</span>

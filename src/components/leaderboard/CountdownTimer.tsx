@@ -92,7 +92,7 @@ export function CountdownTimer({ target }: { target: string }) {
   return (
     <div className="mx-auto w-full max-w-4xl">
       <div
-        className="rounded-2xl border px-5 py-5 md:px-8 md:py-6"
+        className="rounded-[8px] border px-5 py-5 md:px-8 md:py-6"
         style={{
           borderColor: "rgba(239, 68, 68, 0.28)",
           background:
