@@ -16,6 +16,7 @@ import {
   Menu,
   Settings,
   Shield,
+  Swords,
   Target,
   Trophy,
   X,
@@ -35,6 +36,7 @@ const baseNavItems = [
   { name: "Raffles", href: "/raffles", icon: Gift },
   { name: "Challenges", href: "/challenges", icon: Target },
   { name: "Bonus Hunts", href: "/bonus-hunts", icon: Flame },
+  { name: "Slot Tournament", href: "/slot-tournament", icon: Swords },
 ];
 
 const adminNavItems = [
@@ -43,6 +45,7 @@ const adminNavItems = [
   { name: "Leaderboard", href: "/admin/leaderboard", icon: Trophy },
   { name: "Raffles", href: "/admin/raffles", icon: Gift },
   { name: "Challenges", href: "/admin/challenges", icon: Target },
+  { name: "Tournament", href: "/admin/tournament", icon: Swords },
   { name: "Challenge Claims", href: "/admin/challenge-claims", icon: FileCheck },
   { name: "Bonus Hunts", href: "/admin/bonus-hunts", icon: Flame },
 ];

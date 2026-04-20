@@ -248,6 +248,34 @@ exports.Prisma.ChallengeClaimScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.TournamentScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  status: 'status',
+  championName: 'championName',
+  championSlotName: 'championSlotName',
+  bracketSize: 'bracketSize',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.TournamentMatchScalarFieldEnum = {
+  id: 'id',
+  tournamentId: 'tournamentId',
+  round: 'round',
+  matchNumber: 'matchNumber',
+  leftViewerName: 'leftViewerName',
+  rightViewerName: 'rightViewerName',
+  leftSlotName: 'leftSlotName',
+  rightSlotName: 'rightSlotName',
+  leftPayout: 'leftPayout',
+  rightPayout: 'rightPayout',
+  winnerSide: 'winnerSide',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -284,7 +312,9 @@ exports.Prisma.ModelName = {
   Raffle: 'Raffle',
   RaffleEntry: 'RaffleEntry',
   Challenge: 'Challenge',
-  ChallengeClaim: 'ChallengeClaim'
+  ChallengeClaim: 'ChallengeClaim',
+  Tournament: 'Tournament',
+  TournamentMatch: 'TournamentMatch'
 };
 
 /**

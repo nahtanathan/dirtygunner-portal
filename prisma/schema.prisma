@@ -167,3 +167,37 @@ model ChallengeClaim {
   @@index([status])
   @@index([createdAt])
 }
+
+model Tournament {
+  id               String            @id @default("slot-tournament")
+  title            String
+  description      String?
+  status           String            @default("draft")
+  championName     String?
+  championSlotName String?
+  bracketSize      Int               @default(8)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  matches          TournamentMatch[]
+}
+
+model TournamentMatch {
+  id              String     @id @default(cuid())
+  tournamentId    String
+  round           Int
+  matchNumber     Int
+  leftViewerName  String?
+  rightViewerName String?
+  leftSlotName    String?
+  rightSlotName   String?
+  leftPayout      Float      @default(0)
+  rightPayout     Float      @default(0)
+  winnerSide      String?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  tournament      Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+
+  @@unique([tournamentId, round, matchNumber])
+  @@index([tournamentId, round])
+  @@index([updatedAt])
+}

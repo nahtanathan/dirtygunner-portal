@@ -9,6 +9,7 @@ import {
   Settings,
   Trophy,
   Gift,
+  Swords,
   Target,
 } from "lucide-react";
 
@@ -42,6 +43,12 @@ const adminNavItems = [
     href: "/admin/challenges",
     icon: Target,
     description: "Manage challenges",
+  },
+  {
+    name: "Tournament",
+    href: "/admin/tournament",
+    icon: Swords,
+    description: "Bracket control",
   },
 ];
 

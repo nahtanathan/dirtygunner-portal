@@ -15,6 +15,7 @@ import {
   LayoutDashboard,
   Settings,
   Shield,
+  Swords,
   Target,
   Trophy,
 } from "lucide-react";
@@ -26,20 +27,29 @@ type SocialLinkItem = {
   icon: React.ReactNode;
 };
 
-const baseNavItems = [
+type NavItem = {
+  name: string;
+  href: string;
+  icon: typeof Home;
+  external?: boolean;
+};
+
+const baseNavItems: NavItem[] = [
   { name: "Home", href: "/", icon: Home },
   { name: "Leaderboard", href: "/leaderboard", icon: Trophy },
   { name: "Raffles", href: "/raffles", icon: Gift },
   { name: "Challenges", href: "/challenges", icon: Target },
   { name: "Bonus Hunts", href: "/bonus-hunts", icon: Flame },
+  { name: "Slot Tournament", href: "/slot-tournament", icon: Swords },
 ];
 
-const adminNavItems = [
+const adminNavItems: NavItem[] = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { name: "Settings", href: "/admin/settings", icon: Settings },
   { name: "Leaderboard", href: "/admin/leaderboard", icon: Trophy },
   { name: "Raffles", href: "/admin/raffles", icon: Gift },
   { name: "Challenges", href: "/admin/challenges", icon: Target },
+  { name: "Tournament", href: "/admin/tournament", icon: Swords },
   { name: "Challenge Claims", href: "/admin/challenge-claims", icon: FileCheck },
   { name: "Bonus Hunts", href: "/admin/bonus-hunts", icon: Flame },
 ];
@@ -180,12 +190,14 @@ export default function AppSidebar() {
           <nav className="space-y-1.5">
             {navItems.map((item) => {
               const Icon = item.icon;
-              const isActive = isPathActive(pathname, item.href);
+              const isActive = item.external ? false : isPathActive(pathname, item.href);
 
               return (
                 <Link
                   key={item.href}
                   href={item.href}
+                  target={item.external ? "_blank" : undefined}
+                  rel={item.external ? "noopener noreferrer" : undefined}
                   className={clsx(
                     "group relative flex min-w-0 items-center gap-3 overflow-hidden rounded-[5px] border px-3 py-3 text-sm font-medium transition-all duration-200",
                     isActive && "shadow-[0_0_0_1px_rgba(255,255,255,0.03)]",
