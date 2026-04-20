@@ -28,6 +28,8 @@ type PublicRafflePageItem = {
   winners: number;
 };
 
+const DEFAULT_RAFFLE_IMAGE = "/prizes/cash-stack.png";
+
 export default async function RafflesPage() {
   noStore();
 
@@ -65,7 +67,7 @@ export default async function RafflesPage() {
       id: item.id,
       title: item.title,
       description: item.description ?? "",
-      image: item.image,
+      image: item.image || DEFAULT_RAFFLE_IMAGE,
       status: item.status === "active" ? "active" : "ended",
       entryMethod: item.entryMethod,
       entryCost: item.entryCost,

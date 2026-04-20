@@ -21,6 +21,8 @@ type UpsertRafflePayload = {
   prizeDetails: string;
 };
 
+const DEFAULT_RAFFLE_IMAGE = "/prizes/cash-stack.png";
+
 type EnterRafflePayload = {
   action: "enter";
   raffleId: string;
@@ -103,7 +105,7 @@ function normalizePayload(body: UpsertRafflePayload) {
     id: body.id.trim(),
     title: body.title.trim(),
     description: body.description?.trim() || null,
-    image: body.image?.trim() || null,
+    image: body.image?.trim() || DEFAULT_RAFFLE_IMAGE,
     status: body.status,
     entryMethod: body.entryMethod.trim(),
     entryCost,

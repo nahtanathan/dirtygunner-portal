@@ -210,21 +210,21 @@ export function BonusHuntCard({
               <div className="mb-3 flex flex-wrap items-center gap-2">
                 <div
                   className={cn(
-                    "inline-flex max-w-full items-center rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.24em] sm:text-[11px] sm:tracking-[0.28em]",
+                    "inline-flex max-w-full items-center rounded-[5px] border px-3 py-1 text-[10px] uppercase tracking-[0.24em] sm:text-[11px] sm:tracking-[0.28em]",
                     getStatusClass(hunt.status),
                   )}
                 >
                   <span className="truncate whitespace-nowrap">{getStatusLabel(hunt.status)}</span>
                 </div>
 
-                <div className="inline-flex max-w-full items-center rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[10px] uppercase tracking-[0.22em] text-silver/65 sm:text-[11px] sm:tracking-[0.24em]">
+                <div className="inline-flex max-w-full items-center rounded-[5px] border border-white/10 bg-white/[0.04] px-3 py-1 text-[10px] uppercase tracking-[0.22em] text-silver/65 sm:text-[11px] sm:tracking-[0.24em]">
                   <span className="truncate whitespace-nowrap">
                     {hunt.casino || hunt.provider || "BonusHunt.gg"}
                   </span>
                 </div>
               </div>
 
-              <h3 className="truncate-2 font-display text-[1.35rem] font-bold uppercase tracking-wide text-white sm:text-[1.55rem] md:text-[1.75rem] lg:text-[2rem]">
+              <h3 className="truncate-2 text-[1.35rem] font-bold uppercase tracking-[0.04em] text-white sm:text-[1.55rem] md:text-[1.75rem] lg:text-[2rem]">
                 {hunt.title}
               </h3>
 
@@ -233,7 +233,7 @@ export function BonusHuntCard({
               </p>
 
               {hunt.currentOpeningSlot ? (
-                <div className="mt-3 inline-flex max-w-full items-center gap-2 rounded-full border border-emerald-400/15 bg-emerald-400/10 px-3 py-1 text-sm text-emerald-300">
+                <div className="mt-3 inline-flex max-w-full items-center gap-2 rounded-[5px] border border-emerald-400/15 bg-emerald-400/10 px-3 py-1 text-sm text-emerald-300">
                   <span className="inline-flex h-2.5 w-2.5 shrink-0 rounded-full bg-emerald-300 shadow-[0_0_10px_rgba(110,231,183,0.95)]" />
                   <span className="min-w-0 truncate whitespace-nowrap">
                     Opening now: {hunt.currentOpeningSlot}
@@ -250,7 +250,7 @@ export function BonusHuntCard({
           </div>
 
           <div className="grid gap-4 lg:grid-cols-[minmax(0,1.3fr)_minmax(280px,0.9fr)]">
-            <div className="min-w-0 rounded-[1.5rem] border border-white/10 bg-black/20 p-4 backdrop-blur-sm sm:p-5">
+            <div className="panel-inset min-w-0 rounded-[8px] p-4 backdrop-blur-sm sm:p-5">
               <div className="text-label-tight text-silver/45">
                 {getResultLabel(hunt.profitLoss)}
               </div>
@@ -265,13 +265,13 @@ export function BonusHuntCard({
               </div>
 
               <div className="mt-3 flex flex-wrap items-center gap-2 text-sm sm:gap-3">
-                <span className="inline-flex max-w-full items-center rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-silver/70">
+                <span className="inline-flex max-w-full items-center rounded-[5px] border border-white/10 bg-white/[0.04] px-3 py-1 text-silver/70">
                   <span className="truncate whitespace-nowrap">Start {formatMoney(hunt.totalCost)}</span>
                 </span>
-                <span className="inline-flex max-w-full items-center rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-silver/70">
+                <span className="inline-flex max-w-full items-center rounded-[5px] border border-white/10 bg-white/[0.04] px-3 py-1 text-silver/70">
                   <span className="truncate whitespace-nowrap">Return {formatMoney(hunt.totalReturn)}</span>
                 </span>
-                <span className={cn("inline-flex max-w-full items-center rounded-full border px-3 py-1", tone.stat, tone.accent)}>
+                <span className={cn("inline-flex max-w-full items-center rounded-[5px] border px-3 py-1", tone.stat, tone.accent)}>
                   <span className="truncate whitespace-nowrap">ROI {formatPercent(hunt.profitLossPercentage)}</span>
                 </span>
               </div>
@@ -292,7 +292,7 @@ export function BonusHuntCard({
           </div>
 
           {visibleBonuses.length > 0 ? (
-            <div className="overflow-hidden rounded-[1.5rem] border border-white/10 bg-black/25">
+            <div className="overflow-hidden rounded-[8px] border border-white/10 bg-black/25">
               <div className="flex min-w-0 items-center justify-between gap-3 border-b border-white/10 px-4 py-3">
                 <div className="text-label-tight text-silver/45">Featured Bonuses</div>
                 <div className="shrink-0 whitespace-nowrap text-[11px] uppercase tracking-[0.24em] text-silver/40">
@@ -368,9 +368,9 @@ function StatCard({
   meta: string;
 }) {
   return (
-    <div className={cn("min-w-0 rounded-[1.35rem] border p-4", tone)}>
-      <div className="text-label-tight text-silver/45">{label}</div>
-      <div className="mt-2 overflow-hidden text-ellipsis whitespace-nowrap font-display text-xl font-bold text-white sm:text-2xl">
+    <div className={cn("min-w-0 rounded-[6px] border p-4", tone)}>
+      <div className="blue-data text-label-tight">{label}</div>
+      <div className="mt-2 overflow-hidden text-ellipsis whitespace-nowrap text-xl font-bold uppercase tracking-[0.02em] text-white sm:text-2xl">
         {value}
       </div>
       <div className="mt-1 truncate text-xs text-silver/55">{meta}</div>

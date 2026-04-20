@@ -62,6 +62,13 @@ type RaffleFormState = {
   prizeDetails: string;
 };
 
+const RAFFLE_IMAGE_OPTIONS = [
+  { label: "Cash Stack", value: "/prizes/cash-stack.png" },
+  { label: "Raffle Watch", value: "/prizes/raffle-watch.png" },
+];
+
+const DEFAULT_RAFFLE_IMAGE = "/prizes/cash-stack.png";
+
 const EMPTY_FORM: RaffleFormState = {
   id: "",
   title: "",
@@ -173,7 +180,7 @@ export default function AdminRafflesPage() {
     setMessage("");
   }
 
-  function startCreate() {
+function startCreate() {
     resetForm();
 
     const now = new Date();
@@ -182,6 +189,7 @@ export default function AdminRafflesPage() {
     setForm({
       ...EMPTY_FORM,
       id: createRaffleId(),
+      image: DEFAULT_RAFFLE_IMAGE,
       startDate: toLocalDateTimeValue(now),
       endDate: toLocalDateTimeValue(inSevenDays),
     });
@@ -505,12 +513,42 @@ export default function AdminRafflesPage() {
             </Field>
 
             <Field label="Image URL">
-              <input
-                value={form.image}
-                onChange={(event) => setField("image", event.target.value)}
-                className={inputClassName}
-                placeholder="https://..."
-              />
+              <div className="space-y-3">
+                <select
+                  value={form.image.startsWith("/prizes/") ? form.image : "custom"}
+                  onChange={(event) => {
+                    const value = event.target.value;
+                    setField("image", value === "custom" ? "" : value);
+                  }}
+                  className={inputClassName}
+                >
+                  {RAFFLE_IMAGE_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                  <option value="custom">Custom URL</option>
+                </select>
+
+                <input
+                  value={form.image}
+                  onChange={(event) => setField("image", event.target.value)}
+                  className={inputClassName}
+                  placeholder="https://... or /prizes/cash-stack.png"
+                />
+
+                <div className="rounded-[8px] border border-white/10 bg-white/[0.03] p-3">
+                  <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-white/42">
+                    Preview
+                  </div>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={form.image.trim() || DEFAULT_RAFFLE_IMAGE}
+                    alt="Raffle preview"
+                    className="h-32 w-full rounded-[6px] object-contain bg-black/20 p-3"
+                  />
+                </div>
+              </div>
             </Field>
 
             <div className="grid gap-4 sm:grid-cols-2">

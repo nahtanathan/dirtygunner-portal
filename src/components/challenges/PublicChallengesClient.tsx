@@ -89,7 +89,7 @@ export function PublicChallengesClient({
         <div className="flex min-w-0 items-end justify-between gap-4">
           <div className="min-w-0">
             <div className="blue-data text-label-tight">Live Challenges</div>
-            <h2 className="mt-2 truncate text-responsive-heading font-bold uppercase tracking-wide text-white">
+            <h2 className="mt-2 truncate text-responsive-heading font-bold uppercase tracking-[0.04em] text-white">
               Active Runs
             </h2>
           </div>
@@ -120,7 +120,7 @@ export function PublicChallengesClient({
         <div className="flex min-w-0 items-end justify-between gap-4">
           <div className="min-w-0">
             <div className="text-label-tight text-white/40">Archive</div>
-            <h2 className="mt-2 truncate text-responsive-heading font-bold uppercase tracking-wide text-white">
+            <h2 className="mt-2 truncate text-responsive-heading font-bold uppercase tracking-[0.04em] text-white">
               Completed Challenges
             </h2>
           </div>

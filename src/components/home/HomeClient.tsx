@@ -96,19 +96,11 @@ function clampPercent(value: number) {
 }
 
 function getActiveRaffle(raffles: Raffle[]) {
-  return (
-    raffles.find((raffle) => raffle.status === "active") ??
-    raffles[0] ??
-    null
-  );
+  return raffles.find((raffle) => raffle.status === "active") ?? raffles[0] ?? null;
 }
 
 function getActiveChallenge(challenges: Challenge[]) {
-  return (
-    challenges.find((challenge) => challenge.status === "active") ??
-    challenges[0] ??
-    null
-  );
+  return challenges.find((challenge) => challenge.status === "active") ?? challenges[0] ?? null;
 }
 
 function getLiveHunt(snapshot: BonusHuntSnapshot) {
@@ -144,6 +136,8 @@ export function HomeClient({
     [challenges],
   );
   const liveHunt = useMemo(() => getLiveHunt(bonusHunts), [bonusHunts]);
+  const hasAnyRaffles = raffles.length > 0;
+  const hasAnyChallenges = challenges.length > 0;
 
   const raffleTime = useMemo(
     () => formatCountdownCompact(activeRaffle?.endDate),
@@ -322,8 +316,8 @@ export function HomeClient({
               <div className="flex gap-3">
                 <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-[5px] border border-white/10 bg-black/20">
                   <Image
-                    src="/prizes/raffle-watch.png"
-                    alt="Raffle prize"
+                    src={activeRaffle?.image ?? "/prizes/cash-stack.png"}
+                    alt={activeRaffle?.title ?? "Raffle prize"}
                     fill
                     className="object-contain p-2 transition-transform duration-300 group-hover:scale-[1.04]"
                   />
@@ -331,15 +325,18 @@ export function HomeClient({
 
                 <div className="min-w-0 flex-1">
                   <div className="text-[1rem] font-bold uppercase tracking-[0.03em] text-white">
-                    {activeRaffle?.title ?? "Rolex Submariner Date"}
+                    {activeRaffle?.title ?? "No raffles right now"}
                   </div>
 
                   <div className="mt-1.5 text-sm text-white/58">
-                    {activeRaffle?.prizeDetails ?? "Enter for your chance to win"}
+                    {activeRaffle?.prizeDetails ??
+                      (hasAnyRaffles
+                        ? "Enter for your chance to win"
+                        : "Check back for the next raffle drop")}
                   </div>
 
                   <div className="blue-data mt-3 text-[1.25rem] font-bold tracking-[0.03em]">
-                    {raffleTime}
+                    {hasAnyRaffles ? raffleTime : "No live raffle"}
                   </div>
                 </div>
               </div>
@@ -402,20 +399,24 @@ export function HomeClient({
               <div className="blue-data text-[10px] font-semibold uppercase tracking-[0.22em]">
                 {activeChallenge?.status === "active"
                   ? "Current Challenge"
-                  : "Challenge Queue"}
+                  : hasAnyChallenges
+                    ? "Challenge Queue"
+                    : "No Challenge"}
               </div>
 
               <div className="mt-2.5 text-[1.15rem] font-bold uppercase leading-tight text-white">
-                {activeChallenge?.title ?? "Weekly Wager Race"}
+                {activeChallenge?.title ?? "No active challenge"}
               </div>
 
               <div className="mt-2.5 flex items-center justify-between text-sm text-white/62">
                 <span>
-                  {activeChallenge?.challengeType === "multiplier"
-                    ? `Target ${formatNumber(activeChallenge.targetValue)}x`
-                    : activeChallenge?.reward ?? "Reward active"}
+                  {activeChallenge
+                    ? activeChallenge.challengeType === "multiplier"
+                      ? `Target ${formatNumber(activeChallenge.targetValue)}x`
+                      : activeChallenge.reward ?? "Reward active"
+                    : "Check back for the next challenge"}
                 </span>
-                <span>{challengeTime}</span>
+                <span>{hasAnyChallenges ? challengeTime : "Stand by"}</span>
               </div>
 
               <div className="mt-3 h-2 rounded-full bg-white/8">
@@ -428,7 +429,7 @@ export function HomeClient({
               <div className="mt-3.5 flex items-center justify-between text-sm">
                 <span className="text-white/55">Reward</span>
                 <span className="gold-data font-semibold">
-                  {activeChallenge?.reward ?? "25,000 Points"}
+                  {activeChallenge?.reward ?? "No reward live"}
                 </span>
               </div>
 

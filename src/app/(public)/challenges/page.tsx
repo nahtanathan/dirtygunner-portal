@@ -80,7 +80,7 @@ function MetricBlock({
 }) {
   return (
     <div className="min-w-0">
-      <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/45">
+      <p className="blue-data text-[11px] font-semibold uppercase tracking-[0.24em]">
         {label}
       </p>
       <p className="mt-2 truncate text-2xl font-semibold text-white">{value}</p>

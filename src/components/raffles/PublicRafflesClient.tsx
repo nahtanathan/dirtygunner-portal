@@ -24,6 +24,8 @@ type PublicRaffleItem = {
   winners: number;
 };
 
+const DEFAULT_RAFFLE_IMAGE = "/prizes/cash-stack.png";
+
 type PublicRafflesClientProps = {
   initialRaffles: PublicRaffleItem[];
 };
@@ -71,7 +73,7 @@ export function PublicRafflesClient({
         id: item.id,
         title: item.title,
         description: item.description ?? "",
-        image: item.image,
+        image: item.image || DEFAULT_RAFFLE_IMAGE,
         status: item.status === "active" ? "active" : "ended",
         entryMethod: item.entryMethod,
         entryCost: item.entryCost,
@@ -174,10 +176,10 @@ export function PublicRafflesClient({
       <section className="space-y-4">
         <div className="flex min-w-0 items-end justify-between gap-4">
           <div className="min-w-0">
-            <div className="text-xs font-semibold uppercase tracking-[0.28em] text-sky-300/80">
+            <div className="blue-data text-xs font-semibold uppercase tracking-[0.28em]">
               Live Now
             </div>
-            <h2 className="mt-2 truncate text-2xl font-bold text-white md:text-[1.75rem]">
+            <h2 className="mt-2 truncate text-2xl font-bold uppercase tracking-[0.04em] text-white md:text-[1.75rem]">
               Active Raffles
             </h2>
           </div>
@@ -213,9 +215,9 @@ export function PublicRafflesClient({
           <div className="text-xs font-semibold uppercase tracking-[0.28em] text-white/40">
             Results
           </div>
-          <h2 className="mt-2 truncate text-2xl font-bold text-white md:text-[1.75rem]">
-            Completed Raffles
-          </h2>
+            <h2 className="mt-2 truncate text-2xl font-bold uppercase tracking-[0.04em] text-white md:text-[1.75rem]">
+              Completed Raffles
+            </h2>
         </div>
 
         {endedRaffles.length > 0 ? (
@@ -433,7 +435,7 @@ function InfoTile({
 }) {
   return (
     <div
-      className="min-w-0 rounded-[6px] border px-4 py-3"
+      className="panel-inset min-w-0 rounded-[6px] px-4 py-3"
       style={{
         borderColor: "rgba(255,255,255,0.08)",
         background: "rgba(255,255,255,0.03)",
@@ -461,7 +463,7 @@ function EmptyState({
 }) {
   return (
     <div
-      className="rounded-[10px] border px-6 py-10 text-center"
+      className="command-card rounded-[10px] border px-6 py-10 text-center"
       style={{
         borderColor: "rgba(255,255,255,0.08)",
         background:
