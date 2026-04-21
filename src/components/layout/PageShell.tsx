@@ -15,24 +15,32 @@ export default function PageShell({ children }: PageShellProps) {
     >
       <div className="pointer-events-none fixed inset-0 z-0">
         <div
-          className="absolute inset-0"
+          className="absolute inset-0 opacity-[0.08]"
           style={{
-            background:
-              "linear-gradient(180deg, rgba(255,255,255,0.025) 0%, transparent 16%, transparent 68%, rgba(0,0,0,0.34) 100%)",
+            backgroundImage: "url('/art/bg-topo.png')",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "cover",
           }}
         />
         <div
-          className="absolute inset-0 opacity-[0.16]"
+          className="absolute inset-0 opacity-[0.08]"
           style={{
-            background:
-              "repeating-linear-gradient(120deg, rgba(255,255,255,0.012) 0, rgba(255,255,255,0.012) 1px, transparent 1px, transparent 26px)",
+            backgroundImage: "url('/art/bg-grid.png')",
+            backgroundPosition: "center",
+            backgroundRepeat: "repeat",
+            backgroundSize: "1400px auto",
           }}
         />
+        <div className="absolute inset-y-0 left-0 w-[26rem] bg-[radial-gradient(circle_at_left_center,rgba(68,125,215,0.15),transparent_62%)]" />
+        <div className="absolute right-0 top-0 h-[26rem] w-[26rem] bg-[radial-gradient(circle,rgba(92,167,255,0.12),transparent_68%)]" />
         <div
-          className="absolute inset-0"
+          className="absolute inset-0 opacity-55"
           style={{
-            background:
-              "linear-gradient(180deg, rgba(13,17,23,0.18) 0%, rgba(10,14,20,0.36) 34%, rgba(5,7,10,0.68) 72%, rgba(2,3,4,0.86) 100%)",
+            backgroundImage: "url('/art/overlay-vignette.png')",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "cover",
           }}
         />
       </div>
@@ -52,7 +60,7 @@ export default function PageShell({ children }: PageShellProps) {
           </div>
         </div>
 
-        <main className="relative min-h-screen min-w-0 flex-1 overflow-x-hidden px-4 pb-8 pt-20 sm:px-6 md:pt-[5.25rem] lg:px-8 lg:pt-24">
+        <main className="relative min-h-screen min-w-0 flex-1 overflow-x-hidden px-4 pb-6 pt-20 sm:px-6 md:pb-7 md:pt-[5.25rem] lg:px-8 lg:pb-8 lg:pt-24">
           <div className="mx-auto min-w-0 max-w-[1600px]">{children}</div>
         </main>
       </div>

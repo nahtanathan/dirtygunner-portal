@@ -1,3 +1,5 @@
+// FILE: src/components/leaderboard/CountdownTimer.tsx
+
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -21,6 +23,10 @@ function getTimeLeft(target: string): TimeLeft {
     minutes: Math.floor((safe / (1000 * 60)) % 60),
     seconds: Math.floor((safe / 1000) % 60),
   };
+}
+
+function cx(...parts: Array<string | false | null | undefined>) {
+  return parts.filter(Boolean).join(" ");
 }
 
 const PLACEHOLDER_TIME: TimeLeft = {
@@ -53,12 +59,19 @@ export function CountdownTimer({ target }: { target: string }) {
 
   const displayTime = isMounted ? timeLeft : PLACEHOLDER_TIME;
 
+  const dangerLevel = useMemo(() => {
+    if (!isMounted) return "normal";
+    if (displayTime.totalMs <= 60_000) return "critical";
+    if (displayTime.totalMs <= 5 * 60_000) return "warning";
+    return "normal";
+  }, [displayTime.totalMs, isMounted]);
+
   const items = useMemo(() => {
     const base = [
-      { key: "days", label: "Days", value: displayTime.days },
-      { key: "hours", label: "Hours", value: displayTime.hours },
-      { key: "minutes", label: "Minutes", value: displayTime.minutes },
-      { key: "seconds", label: "Seconds", value: displayTime.seconds },
+      { key: "days", short: "d", value: displayTime.days },
+      { key: "hours", short: "h", value: displayTime.hours },
+      { key: "minutes", short: "m", value: displayTime.minutes },
+      { key: "seconds", short: "s", value: displayTime.seconds },
     ];
 
     if (displayTime.days <= 0) {
@@ -69,33 +82,77 @@ export function CountdownTimer({ target }: { target: string }) {
   }, [displayTime.days, displayTime.hours, displayTime.minutes, displayTime.seconds]);
 
   const statusText = useMemo(() => {
-    if (!isMounted) return "Cycle active";
-    if (displayTime.totalMs <= 0) return "Cycle closed";
-    if (displayTime.totalMs <= 60_000) return "Closing now";
-    if (displayTime.totalMs <= 5 * 60_000) return "Closing soon";
-    return "Cycle active";
-  }, [displayTime.totalMs, isMounted]);
+    if (!isMounted) return "Live";
+    if (displayTime.totalMs <= 0) return "Ended";
+    if (dangerLevel === "critical") return "Ending Now";
+    if (dangerLevel === "warning") return "Ending Soon";
+    return "Live";
+  }, [dangerLevel, displayTime.totalMs, isMounted]);
 
   return (
-    <div className="rounded-[24px] border border-white/8 bg-white/[0.025] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] sm:px-5">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <div className="vault-label">Countdown</div>
-          <div className="mt-2 text-sm font-medium text-[#a1acb8]">{statusText}</div>
+    <div className="mx-auto w-full max-w-4xl">
+      <div
+        className="rounded-[8px] border px-5 py-5 md:px-8 md:py-6"
+        style={{
+          borderColor: "rgba(239, 68, 68, 0.28)",
+          background:
+            "linear-gradient(180deg, rgba(12, 18, 30, 0.92) 0%, rgba(8, 12, 24, 0.96) 100%)",
+          boxShadow:
+            dangerLevel === "critical"
+              ? "0 0 30px rgba(239,68,68,0.18)"
+              : dangerLevel === "warning"
+                ? "0 0 24px rgba(245,158,11,0.14)"
+                : "0 0 20px rgba(59,130,246,0.10)",
+        }}
+      >
+        <div className="text-center">
+          <div className="text-[0.68rem] font-black uppercase tracking-[0.35em] text-white/45">
+            Leaderboard Reset
+          </div>
+
+          <div
+            className={cx(
+              "mt-2 text-sm font-bold uppercase tracking-[0.28em]",
+              dangerLevel === "critical" && "text-red-500",
+              dangerLevel === "warning" && "text-amber-400",
+              dangerLevel === "normal" && "text-sky-300",
+            )}
+          >
+            {statusText}
+          </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-2 sm:flex sm:items-stretch sm:gap-3">
-          {items.map((item) => (
-            <div
-              key={item.key}
-              className="min-w-[76px] rounded-[18px] border border-white/7 bg-black/20 px-3 py-3 text-center"
-            >
-              <div className="font-display text-[1.5rem] font-semibold leading-none text-[#f5f7fa] sm:text-[1.7rem]">
+        <div className="mt-4 flex items-center justify-center gap-3 md:gap-4">
+          {items.map((item, index) => (
+            <div key={item.key} className="flex items-end justify-center gap-2">
+              <div
+                className={cx(
+                  "font-mono text-2xl font-black leading-none md:text-3xl",
+                  dangerLevel === "critical" && item.key === "seconds" && "text-red-500",
+                  dangerLevel === "warning" && item.key === "seconds" && "text-amber-400",
+                  !(dangerLevel === "critical" || dangerLevel === "warning") && "text-white",
+                )}
+                style={{
+                  textShadow:
+                    dangerLevel === "critical" && item.key === "seconds"
+                      ? "0 0 10px rgba(239,68,68,0.45)"
+                      : dangerLevel === "warning" && item.key === "seconds"
+                        ? "0 0 10px rgba(245,158,11,0.35)"
+                        : "0 0 12px rgba(255,255,255,0.12)",
+                }}
+              >
                 {String(item.value).padStart(2, "0")}
               </div>
-              <div className="mt-2 text-[10px] uppercase tracking-[0.24em] text-[#6f7986]">
-                {item.label}
+
+              <div className="pb-0.5 text-xs font-black uppercase tracking-[0.22em] text-white/45 md:text-sm">
+                {item.short}
               </div>
+
+              {index < items.length - 1 && (
+                <div className="pb-0.5 font-mono text-xl font-black text-white/20 md:text-2xl">
+                  :
+                </div>
+              )}
             </div>
           ))}
         </div>

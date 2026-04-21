@@ -1,13 +1,10 @@
 import { unstable_noStore as noStore } from "next/cache";
 
-import { LeaderboardHeroSlab } from "@/components/leaderboard/LeaderboardHeroSlab";
-import { LeaderboardRow } from "@/components/leaderboard/LeaderboardRow";
-import { PrizeBreakdown } from "@/components/leaderboard/PrizeBreakdown";
+import { PageHero } from "@/components/ui/PageHero";
+import { CountdownTimer } from "@/components/leaderboard/CountdownTimer";
 import { TopThreeCards } from "@/components/leaderboard/TopThreeCards";
-import { PremiumPanel } from "@/components/ui/PremiumPanel";
 import { prisma } from "@/lib/prisma";
 import { getRoobetLeaderboard } from "@/lib/roobet";
-import type { PrizeTier } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -63,11 +60,7 @@ export default async function LeaderboardPage() {
   const remaining = entries.slice(3);
 
   const title = settings?.title || "Weekly Roobet Race";
-  const subtitle =
-    settings?.subtitle ||
-    "A restrained live read of the current race, machined down to only the numbers that matter.";
-  const prizeTiers: PrizeTier[] = settings?.prizeTiers ?? [];
-  const prizePool = prizeTiers.reduce((total, tier) => total + tier.prize, 0);
+  const subtitle = settings?.subtitle || " ";
 
   const countdownTarget =
     settings?.countdownTarget?.toISOString().slice(0, 16) ||
@@ -76,98 +69,86 @@ export default async function LeaderboardPage() {
       .slice(0, 16);
 
   return (
-    <div
-      className="space-y-8 md:space-y-10"
-      style={{
-        background:
-          "linear-gradient(180deg, rgba(13,17,23,0.10) 0%, rgba(10,14,20,0.12) 20%, rgba(7,10,15,0.24) 50%, rgba(5,7,10,0.44) 78%, rgba(2,3,4,0.72) 100%)",
-      }}
-    >
-      <LeaderboardHeroSlab
+    <div className="space-y-8 md:space-y-10">
+      <PageHero
+        eyebrow="Leaderboard"
         title={title}
-        subtitle={subtitle}
-        prizePool={prizePool}
-        countdownTarget={countdownTarget}
+        description={subtitle}
       />
+
+      <div className="mx-auto w-full max-w-[1200px]">
+        <CountdownTimer target={countdownTarget} />
+      </div>
 
       <TopThreeCards entries={topThree} />
 
-      <section className="vault-panel relative overflow-hidden rounded-[24px] p-5 sm:p-6 md:p-7">
-        <div className="pointer-events-none absolute inset-0 metal-pattern opacity-[0.04]" />
-
-        <div className="relative mb-5 flex min-w-0 flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+      <section className="command-card border-white/8 p-5 sm:p-6">
+        <div className="mb-5 flex min-w-0 flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div className="min-w-0">
-            <div className="vault-label">Live Standings</div>
-            <h2 className="mt-3 truncate font-display text-2xl font-semibold tracking-[-0.03em] text-[#f5f7fa] sm:text-3xl">
+            <div className="blue-data text-[11px] font-semibold uppercase tracking-[0.24em]">
+              Live Standings
+            </div>
+            <h2 className="mt-2 truncate text-xl font-bold uppercase tracking-[0.04em] text-white sm:text-2xl">
               Full Leaderboard
             </h2>
-            <p className="truncate-2 mt-2 text-sm leading-6 text-[#a1acb8]">
+            <p className="truncate-2 mt-1 text-sm leading-6 text-zinc-400">
               Current ranked positions for this cycle.
             </p>
           </div>
 
-          <div className="shrink-0 whitespace-nowrap text-sm text-[#6f7986]">
+          <div className="shrink-0 whitespace-nowrap text-sm text-zinc-500">
             {remaining.length} entries
           </div>
         </div>
 
-        <div className="panel-inset overflow-hidden rounded-[22px]">
-          <div className="grid grid-cols-[68px_minmax(0,1fr)_110px_110px] gap-3 border-b border-white/6 px-4 py-3 text-[11px] uppercase tracking-[0.22em] text-[#6f7986] sm:grid-cols-[80px_minmax(0,1fr)_160px_180px]">
+        <div className="panel-inset overflow-hidden rounded-[6px]">
+          <div className="grid grid-cols-[68px_minmax(0,1fr)_110px_110px] gap-3 border-b border-white/8 px-4 py-3 text-[11px] uppercase tracking-[0.18em] text-zinc-500 sm:grid-cols-[80px_minmax(0,1fr)_160px_180px]">
             <div>Rank</div>
             <div>User</div>
             <div className="text-right">Prize</div>
             <div className="text-right">Wager</div>
           </div>
 
-          <div>
+          <div className="divide-y divide-white/10">
             {remaining.length > 0 ? (
               remaining.map((entry) => (
-                <LeaderboardRow
+                <div
                   key={`${entry.rank}-${entry.username}`}
-                  entry={entry}
-                />
+                  className="grid grid-cols-[68px_minmax(0,1fr)_110px_110px] items-center gap-3 px-4 py-4 text-sm transition-colors duration-200 hover:bg-white/[0.025] sm:grid-cols-[80px_minmax(0,1fr)_160px_180px]"
+                >
+                  <div className="whitespace-nowrap font-semibold text-white">
+                    #{entry.rank}
+                  </div>
+
+                  <div className="min-w-0">
+                    <div className="truncate font-semibold text-white">
+                      {entry.username}
+                    </div>
+                  </div>
+
+                  <div className="gold-data whitespace-nowrap text-right font-semibold">
+                    {typeof entry.prize === "number"
+                      ? `$${entry.prize.toLocaleString(undefined, {
+                          maximumFractionDigits: 0,
+                        })}`
+                      : "—"}
+                  </div>
+
+                  <div className="blue-data whitespace-nowrap text-right font-semibold">
+                    ${entry.wageredTotal.toLocaleString(undefined, {
+                      maximumFractionDigits: 0,
+                    })}
+                  </div>
+                </div>
               ))
             ) : (
-              <div className="px-4 py-8 text-center text-sm text-[#a1acb8]">
+              <div className="px-4 py-8 text-center text-sm text-zinc-400">
                 No leaderboard entries available right now.
               </div>
             )}
           </div>
         </div>
       </section>
-
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px]">
-        <PrizeBreakdown prizes={prizeTiers} />
-
-        <PremiumPanel className="rounded-[24px]">
-          <div className="vault-label">Lower Vault</div>
-          <h3 className="mt-3 font-display text-2xl font-semibold tracking-[-0.03em] text-[#f5f7fa]">
-            Engineered to stay quiet.
-          </h3>
-          <p className="mt-4 text-sm leading-7 text-[#a1acb8]">
-            The hero carries the shimmer and engraved detail. Every section below it steps back
-            into darker surfaces, thinner borders, and softer motion so the numbers stay in charge.
-          </p>
-          <div className="mt-6 space-y-3">
-            <div className="rounded-[18px] border border-white/7 bg-black/20 px-4 py-4">
-              <div className="text-[10px] uppercase tracking-[0.24em] text-[#6f7986]">
-                Surface logic
-              </div>
-              <div className="mt-2 text-sm text-[#f5f7fa]">
-                Brightest dark slab at the top, quieter panels below, deepest tone near the footer.
-              </div>
-            </div>
-            <div className="rounded-[18px] border border-white/7 bg-black/20 px-4 py-4">
-              <div className="text-[10px] uppercase tracking-[0.24em] text-[#6f7986]">
-                Motion logic
-              </div>
-              <div className="mt-2 text-sm text-[#f5f7fa]">
-                Tilt is restrained, hover states are low contrast, and shimmer opacity stays deliberately low.
-              </div>
-            </div>
-          </div>
-        </PremiumPanel>
-      </div>
     </div>
   );
 }
