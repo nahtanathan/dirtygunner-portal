@@ -1,5 +1,18 @@
 import "./globals.css";
 import type { Metadata } from "next";
+import { Inter, Inter_Tight } from "next/font/google";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+const interTight = Inter_Tight({
+  subsets: ["latin"],
+  variable: "--font-inter-tight",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://dirtygunner.com"),
@@ -38,7 +51,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-[#020817] text-white antialiased">
+      <body
+        className={`${inter.variable} ${interTight.variable} min-h-screen bg-[#020304] text-white antialiased`}
+      >
         {children}
       </body>
     </html>
