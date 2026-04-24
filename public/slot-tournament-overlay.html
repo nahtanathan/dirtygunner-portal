@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DirtyGunner Slot Tournament Overlay</title>
+  <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.3.2/pixi.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/PixiPlugin.min.js"></script>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+    }
+
+    body {
+      font-family: "Teko", sans-serif;
+    }
+
+    canvas {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
+  <script>
+    gsap.registerPlugin(PixiPlugin);
+    PixiPlugin.registerPIXI(PIXI);
+
+    const BOX_W = 160;
+    const BOX_H = 58;
+    const CHAMP_W = 255;
+    const CHAMP_H = 75;
+    const CHAMP_X = 820;
+    const CHAMP_Y = 560;
+    const CASH_X = 940;
+    const CASH_Y = 685;
+    const POLL_MS = 5000;
+
+    const app = new PIXI.Application({
+      width: 1920,
+      height: 1080,
+      backgroundAlpha: 1,
+      antialias: true
+    });
+
+    document.body.appendChild(app.view);
+
+    const nodes = {};
+    const previousText = {};
+    const bgLayer = new PIXI.Container();
+    const nodeLayer = new PIXI.Container();
+    let previousChampion = "";
+    let previousChest = "";
+    let winnerContainer;
+    let winnerName;
+    let chestTxt;
+
+    app.stage.addChild(bgLayer, nodeLayer);
+
+    function normalizeLabel(slotName, viewerName) {
+      const value = (slotName || viewerName || "AWAITING").trim();
+      return value ? value.toUpperCase() : "AWAITING";
+    }
+
+    function formatMoney(value) {
+      const amount = Number(value || 0);
+
+      if (!Number.isFinite(amount)) {
+        return "$0";
+      }
+
+      return "$" + amount.toFixed(amount % 1 === 0 ? 0 : 2);
+    }
+
+    function getWinnerPayout(match) {
+      if (!match || !match.winnerSide) {
+        return 0;
+      }
+
+      return match.winnerSide === "left"
+        ? Number(match.leftPayout || 0)
+        : Number(match.rightPayout || 0);
+    }
+
+    function animateText(target) {
+      gsap.fromTo(
+        target.scale,
+        { x: 0.6, y: 0.6 },
+        { x: 1, y: 1, duration: 0.35, ease: "back.out(1.7)" }
+      );
+    }
+
+    function createNode(x, y, id, color) {
+      const container = new PIXI.Container();
+      container.position.set(x, y);
+
+      const box = new PIXI.Graphics()
+        .beginFill(0x000000, 0.9)
+        .lineStyle(2, color, 1)
+        .drawRoundedRect(0, 0, BOX_W, BOX_H, 4);
+
+      const label = new PIXI.Text("AWAITING", {
+        fill: 0x00d4ff,
+        fontSize: 18,
+        fontFamily: "Teko"
+      });
+
+      label.anchor.set(0.5);
+      label.position.set(BOX_W / 2, BOX_H / 2);
+
+      container.addChild(box);
+      container.addChild(label);
+      nodeLayer.addChild(container);
+
+      nodes[id] = { label };
+      previousText[id] = "AWAITING";
+    }
+
+    function applyNodeText(id, text) {
+      const node = nodes[id];
+
+      if (!node) {
+        return;
+      }
+
+      node.label.text = text;
+
+      if (previousText[id] !== text) {
+        previousText[id] = text;
+        animateText(node.label);
+      }
+    }
+
+    function matchText(match, side) {
+      if (!match) {
+        return "AWAITING";
+      }
+
+      return side === "left"
+        ? normalizeLabel(match.leftSlotName, match.leftViewerName)
+        : normalizeLabel(match.rightSlotName, match.rightViewerName);
+    }
+
+    function renderSnapshot(snapshot) {
+      const matches = snapshot && Array.isArray(snapshot.matches) ? snapshot.matches : [];
+      const matchMap = {};
+
+      matches.forEach((match) => {
+        matchMap[match.round + "-" + match.matchNumber] = match;
+      });
+
+      applyNodeText("r1_m1_l", matchText(matchMap["1-1"], "left"));
+      applyNodeText("r1_m1_r", matchText(matchMap["1-1"], "right"));
+      applyNodeText("r1_m2_l", matchText(matchMap["1-2"], "left"));
+      applyNodeText("r1_m2_r", matchText(matchMap["1-2"], "right"));
+      applyNodeText("semi_1_l", matchText(matchMap["2-1"], "left"));
+      applyNodeText("semi_1_r", matchText(matchMap["2-1"], "right"));
+      applyNodeText("final_l", matchText(matchMap["3-1"], "left"));
+
+      applyNodeText("r1_m3_l", matchText(matchMap["1-3"], "left"));
+      applyNodeText("r1_m3_r", matchText(matchMap["1-3"], "right"));
+      applyNodeText("r1_m4_l", matchText(matchMap["1-4"], "left"));
+      applyNodeText("r1_m4_r", matchText(matchMap["1-4"], "right"));
+      applyNodeText("semi_2_l", matchText(matchMap["2-2"], "left"));
+      applyNodeText("semi_2_r", matchText(matchMap["2-2"], "right"));
+      applyNodeText("final_r", matchText(matchMap["3-1"], "right"));
+
+      const championText =
+        snapshot && (snapshot.championName || snapshot.championSlotName)
+          ? normalizeLabel(snapshot.championName, snapshot.championSlotName)
+          : "CHAMPION";
+
+      winnerName.text = championText;
+
+      if (previousChampion !== championText) {
+        previousChampion = championText;
+        gsap.fromTo(
+          winnerContainer.scale,
+          { x: 1.25, y: 1.25 },
+          { x: 1, y: 1, duration: 0.55, ease: "bounce.out" }
+        );
+      }
+
+      const chestText = formatMoney(
+        matches.reduce((sum, match) => sum + getWinnerPayout(match) * 0.1, 0)
+      );
+
+      chestTxt.text = chestText;
+
+      if (previousChest !== chestText) {
+        previousChest = chestText;
+        animateText(chestTxt);
+      }
+    }
+
+    async function loadTournament() {
+      try {
+        const response = await fetch("/api/tournament", {
+          method: "GET",
+          cache: "no-store"
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to load tournament");
+        }
+
+        renderSnapshot(await response.json());
+      } catch (error) {
+        console.error("Failed to render tournament overlay", error);
+        renderSnapshot(null);
+      }
+    }
+
+    async function init() {
+      try {
+        const bgTexture = await PIXI.Assets.load("/bracket-bg.jpg?v=" + Date.now());
+        const bgSprite = new PIXI.Sprite(bgTexture);
+        bgSprite.width = 1920;
+        bgSprite.height = 1080;
+        bgLayer.addChild(bgSprite);
+      } catch (_error) {
+        app.renderer.background.color = 0x111111;
+      }
+
+      winnerContainer = new PIXI.Container();
+      winnerContainer.position.set(CHAMP_X, CHAMP_Y);
+
+      const winBox = new PIXI.Graphics()
+        .beginFill(0x000000, 0.95)
+        .lineStyle(4, 0x00ff00, 1)
+        .drawRoundedRect(0, 0, CHAMP_W, CHAMP_H, 8);
+
+      winnerContainer.addChild(winBox);
+
+      winnerName = new PIXI.Text("CHAMPION", {
+        fill: 0x00d4ff,
+        fontSize: 32,
+        fontFamily: "Teko",
+        fontWeight: "600"
+      });
+
+      winnerName.anchor.set(0.5);
+      winnerName.position.set(CHAMP_W / 2, CHAMP_H / 2);
+      winnerContainer.addChild(winnerName);
+      nodeLayer.addChild(winnerContainer);
+
+      chestTxt = new PIXI.Text("$0", {
+        fill: 0xffd700,
+        fontSize: 64,
+        fontFamily: "Teko",
+        fontWeight: "bold",
+        stroke: 0x000000,
+        strokeThickness: 6
+      });
+
+      chestTxt.anchor.set(0.5);
+      chestTxt.position.set(CASH_X, CASH_Y);
+      nodeLayer.addChild(chestTxt);
+
+      createNode(5, 245, "r1_m1_l", 0xffaa00);
+      createNode(1, 405, "r1_m1_r", 0xffaa00);
+      createNode(1, 565, "r1_m2_l", 0xffaa00);
+      createNode(1, 720, "r1_m2_r", 0xffaa00);
+      createNode(265, 330, "semi_1_l", 0xbd16ff);
+      createNode(265, 650, "semi_1_r", 0xbd16ff);
+      createNode(540, 500, "final_l", 0x00ff00);
+      createNode(1750, 245, "r1_m3_l", 0xffaa00);
+      createNode(1750, 405, "r1_m3_r", 0xffaa00);
+      createNode(1750, 565, "r1_m4_l", 0xffaa00);
+      createNode(1750, 720, "r1_m4_r", 0xffaa00);
+      createNode(1480, 330, "semi_2_l", 0xbd16ff);
+      createNode(1480, 650, "semi_2_r", 0xbd16ff);
+      createNode(1200, 500, "final_r", 0x00ff00);
+
+      await loadTournament();
+      window.setInterval(loadTournament, POLL_MS);
+    }
+
+    init();
+  </script>
+</body>
+</html>
