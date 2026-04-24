@@ -17,7 +17,6 @@ import { LegacyTournamentOverlayFrame } from "@/components/tournament/LegacyTour
 import type {
   TournamentMatchSnapshot,
   TournamentSnapshot,
-  TournamentWinnerSide,
 } from "@/lib/tournament";
 
 type AdminUser = {
@@ -34,10 +33,6 @@ type SeedSlot = {
   slotName: string;
 };
 
-type PrizeForm = {
-  prizeAmount: string;
-};
-
 const inputClassName =
   "h-12 w-full border border-white/10 bg-white/[0.03] px-4 text-sm text-white outline-none transition-all duration-200 placeholder:text-white/28 focus:border-sky-400/30 focus:bg-white/[0.05]";
 
@@ -47,9 +42,7 @@ export default function AdminTournamentPage() {
   const [loadingTournament, setLoadingTournament] = useState(true);
   const [repairingBracket, setRepairingBracket] = useState(false);
   const [tournament, setTournament] = useState<TournamentSnapshot | null>(null);
-  const [prizeForm, setPrizeForm] = useState<PrizeForm>({
-    prizeAmount: "0",
-  });
+  const [poolPercentInput, setPoolPercentInput] = useState("10");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [busyKey, setBusyKey] = useState<string | null>(null);
@@ -58,6 +51,10 @@ export default function AdminTournamentPage() {
     void loadUser();
     void loadTournament();
   }, []);
+
+  useEffect(() => {
+    setPoolPercentInput(String(tournament?.poolContributionPercent ?? 10));
+  }, [tournament?.poolContributionPercent]);
 
   const quarterfinalMatches = useMemo(
     () =>
@@ -105,12 +102,6 @@ export default function AdminTournamentPage() {
 
     return positions;
   }, [quarterfinalMatches]);
-
-  useEffect(() => {
-    setPrizeForm({
-      prizeAmount: String(tournament?.prizeAmount ?? 0),
-    });
-  }, [tournament?.prizeAmount]);
 
   async function loadUser() {
     setLoadingUser(true);
@@ -236,6 +227,30 @@ export default function AdminTournamentPage() {
     });
   }
 
+  function updateMatchPayout(
+    matchId: string,
+    side: "left" | "right",
+    value: string,
+  ) {
+    setTournament((current) => {
+      if (!current) {
+        return current;
+      }
+
+      return {
+        ...current,
+        matches: current.matches.map((match) =>
+          match.id === matchId
+            ? {
+                ...match,
+                [side === "left" ? "leftPayout" : "rightPayout"]: Number(value || 0),
+              }
+            : match,
+        ),
+      };
+    });
+  }
+
   async function submitAction(
     key: string,
     body: Record<string, unknown>,
@@ -312,40 +327,36 @@ export default function AdminTournamentPage() {
     );
   }
 
-  async function handleSetWinner(
-    match: TournamentMatchSnapshot,
-    winnerSide: TournamentWinnerSide,
-  ) {
-    if (winnerSide !== "left" && winnerSide !== "right") {
-      return;
-    }
-
+  async function handleSaveResult(match: TournamentMatchSnapshot) {
     await submitAction(
-      `${match.id}-winner-${winnerSide}`,
+      `${match.id}-save`,
       {
-        action: "setWinner",
+        action: "updateMatch",
         matchId: match.id,
-        winnerSide,
-        leftViewerName: match.leftViewerName,
-        rightViewerName: match.rightViewerName,
-        leftSlotName: match.leftSlotName,
-        rightSlotName: match.rightSlotName,
         leftPayout: match.leftPayout,
         rightPayout: match.rightPayout,
       },
-      `${match.label} winner updated.`,
+      `${match.label} result saved.`,
     );
   }
 
-  async function handleClearWinner(match: TournamentMatchSnapshot) {
-    await submitAction(
-      `${match.id}-clear`,
-      {
-        action: "clearWinner",
-        matchId: match.id,
-      },
-      `${match.label} winner cleared.`,
-    );
+  function getAutomaticWinner(match: TournamentMatchSnapshot) {
+    const hasLeft = Boolean((match.leftViewerName ?? "").trim());
+    const hasRight = Boolean((match.rightViewerName ?? "").trim());
+
+    if (!hasLeft || !hasRight) {
+      return null;
+    }
+
+    if (match.leftPayout > match.rightPayout) {
+      return "left";
+    }
+
+    if (match.rightPayout > match.leftPayout) {
+      return "right";
+    }
+
+    return null;
   }
 
   if (loadingUser) {
@@ -400,20 +411,24 @@ export default function AdminTournamentPage() {
               Simple Tournament Admin
             </div>
             <h1 className="mt-2 truncate text-2xl font-bold text-white sm:text-3xl md:text-4xl">
-              Seed Players And Pick Winners
+              Enter Seeds, Amounts, And Let It Flow
             </h1>
             <p className="mt-3 max-w-3xl text-sm leading-7 text-white/58">
-              Enter the 8 starting players in order, save the seeds, then click
-              winners as the bracket plays out on stream.
+              Enter the 8 players, save the seeds, then enter each side&apos;s win
+              amount. The higher amount advances automatically. Quarterfinal
+              winners feed the champion prize pool.
             </p>
           </div>
 
           <div className="grid grid-cols-3 gap-3">
             <TopStat value={String(tournament?.matches.length ?? 0)} label="Matches" />
-            <TopStat value={tournament?.status ?? "draft"} label="Status" />
             <TopStat
-              value={tournament?.championName ?? "Pending"}
-              label="Champion"
+              value={`${tournament?.poolContributionPercent ?? 10}%`}
+              label="Pool Cut"
+            />
+            <TopStat
+              value={`$${tournament?.prizeAmount ?? 0}`}
+              label="Prize Pool"
             />
           </div>
         </div>
@@ -462,10 +477,6 @@ export default function AdminTournamentPage() {
               <h2 className="mt-2 text-2xl font-bold text-white">
                 No Tournament Initialized
               </h2>
-              <p className="mt-3 max-w-2xl text-sm leading-7 text-white/56">
-                Create the bracket first, then enter the 8 seeds and run the
-                winners through to champion.
-              </p>
             </div>
 
             <button
@@ -520,25 +531,23 @@ export default function AdminTournamentPage() {
             >
               <div className="border-b border-white/8 px-5 py-5 sm:px-6">
                 <div className="text-xs font-semibold uppercase tracking-[0.26em] text-white/42">
-                  Quick Controls
+                  Prize Pool
                 </div>
                 <h2 className="mt-2 text-xl font-bold text-white sm:text-2xl">
-                  Refresh And Reset
+                  Pool Settings
                 </h2>
               </div>
 
               <div className="space-y-4 p-5 sm:p-6">
-                <Field label="Prize Amount">
+                <Field label="Winning Cut Percent">
                   <input
                     type="number"
                     min="0"
                     step="0.01"
-                    value={prizeForm.prizeAmount}
-                    onChange={(event) =>
-                      setPrizeForm({ prizeAmount: event.target.value })
-                    }
+                    value={poolPercentInput}
+                    onChange={(event) => setPoolPercentInput(event.target.value)}
                     className={inputClassName}
-                    placeholder="0"
+                    placeholder="10"
                   />
                 </Field>
 
@@ -546,24 +555,31 @@ export default function AdminTournamentPage() {
                   type="button"
                   onClick={() =>
                     void submitAction(
-                      "save-prize",
+                      "save-pool-percent",
                       {
-                        action: "updatePrizeAmount",
-                        prizeAmount: Number(prizeForm.prizeAmount || 0),
+                        action: "updatePoolContribution",
+                        poolContributionPercent: Number(poolPercentInput || 10),
                       },
-                      "Prize amount updated.",
+                      "Pool contribution updated.",
                     )
                   }
-                  disabled={busyKey === "save-prize"}
+                  disabled={busyKey === "save-pool-percent"}
                   className="inline-flex h-12 w-full items-center justify-center gap-2 bg-sky-500 px-4 text-sm font-extrabold uppercase tracking-[0.08em] text-white disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  {busyKey === "save-prize" ? (
+                  {busyKey === "save-pool-percent" ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
                     <Save className="h-4 w-4" />
                   )}
-                  Save Prize Amount
+                  Save Pool Percent
                 </button>
+
+                <div className="border border-white/10 bg-white/[0.03] px-4 py-4 text-sm text-white/78">
+                  Current champion prize:{" "}
+                  <span className="font-bold text-white">
+                    ${tournament.prizeAmount}
+                  </span>
+                </div>
 
                 <button
                   type="button"
@@ -661,18 +677,23 @@ export default function AdminTournamentPage() {
                 Step 2
               </div>
               <h2 className="mt-2 text-xl font-bold text-white sm:text-2xl">
-                Pick Quarterfinal Winners
+                Quarterfinal Results
               </h2>
             </div>
 
             <div className="grid gap-4 xl:grid-cols-2">
               {quarterfinalMatches.map((match) => (
-                <WinnerPickerCard
+                <AmountResultCard
                   key={match.id}
                   match={match}
                   busyKey={busyKey}
-                  onSelectWinner={handleSetWinner}
-                  onClearWinner={handleClearWinner}
+                  onLeftAmountChange={(value) =>
+                    updateMatchPayout(match.id, "left", value)
+                  }
+                  onRightAmountChange={(value) =>
+                    updateMatchPayout(match.id, "right", value)
+                  }
+                  onSave={() => void handleSaveResult(match)}
                 />
               ))}
             </div>
@@ -684,27 +705,37 @@ export default function AdminTournamentPage() {
                 Step 3
               </div>
               <h2 className="mt-2 text-xl font-bold text-white sm:text-2xl">
-                Pick Semifinal And Final Winners
+                Semifinal And Final Results
               </h2>
             </div>
 
             <div className="grid gap-4 xl:grid-cols-2">
               {semifinalMatches.map((match) => (
-                <WinnerPickerCard
+                <AmountResultCard
                   key={match.id}
                   match={match}
                   busyKey={busyKey}
-                  onSelectWinner={handleSetWinner}
-                  onClearWinner={handleClearWinner}
+                  onLeftAmountChange={(value) =>
+                    updateMatchPayout(match.id, "left", value)
+                  }
+                  onRightAmountChange={(value) =>
+                    updateMatchPayout(match.id, "right", value)
+                  }
+                  onSave={() => void handleSaveResult(match)}
                 />
               ))}
 
               {finalMatch ? (
-                <WinnerPickerCard
+                <AmountResultCard
                   match={finalMatch}
                   busyKey={busyKey}
-                  onSelectWinner={handleSetWinner}
-                  onClearWinner={handleClearWinner}
+                  onLeftAmountChange={(value) =>
+                    updateMatchPayout(finalMatch.id, "left", value)
+                  }
+                  onRightAmountChange={(value) =>
+                    updateMatchPayout(finalMatch.id, "right", value)
+                  }
+                  onSave={() => void handleSaveResult(finalMatch)}
                 />
               ) : null}
             </div>
@@ -764,20 +795,20 @@ function SeedInputCard({
   );
 }
 
-function WinnerPickerCard({
+function AmountResultCard({
   match,
   busyKey,
-  onSelectWinner,
-  onClearWinner,
+  onLeftAmountChange,
+  onRightAmountChange,
+  onSave,
 }: {
   match: TournamentMatchSnapshot;
   busyKey: string | null;
-  onSelectWinner: (
-    match: TournamentMatchSnapshot,
-    winnerSide: TournamentWinnerSide,
-  ) => Promise<void>;
-  onClearWinner: (match: TournamentMatchSnapshot) => Promise<void>;
+  onLeftAmountChange: (value: string) => void;
+  onRightAmountChange: (value: string) => void;
+  onSave: () => void;
 }) {
+  const automaticWinner = getAutomaticWinner(match);
   const isBusy = Boolean(busyKey?.startsWith(match.id));
 
   return (
@@ -800,67 +831,67 @@ function WinnerPickerCard({
           </div>
 
           <div className="border border-white/10 bg-white/[0.03] px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/62">
-            {match.winnerSide ? `Winner: ${match.winnerSide}` : "Awaiting result"}
+            {automaticWinner === "left"
+              ? "Left advances"
+              : automaticWinner === "right"
+                ? "Right advances"
+                : "Tie or incomplete"}
           </div>
         </div>
       </div>
 
       <div className="grid gap-px bg-white/8 lg:grid-cols-2">
-        <WinnerSidePanel
+        <AmountSidePanel
           title="Left"
           viewerName={match.leftViewerName}
           slotName={match.leftSlotName}
-          isWinner={match.winnerSide === "left"}
-          onClick={() => void onSelectWinner(match, "left")}
-          disabled={isBusy || !Boolean((match.leftViewerName ?? "").trim())}
-          busy={busyKey === `${match.id}-winner-left`}
+          amount={String(match.leftPayout ?? 0)}
+          isWinner={automaticWinner === "left"}
+          onAmountChange={onLeftAmountChange}
         />
-        <WinnerSidePanel
+        <AmountSidePanel
           title="Right"
           viewerName={match.rightViewerName}
           slotName={match.rightSlotName}
-          isWinner={match.winnerSide === "right"}
-          onClick={() => void onSelectWinner(match, "right")}
-          disabled={isBusy || !Boolean((match.rightViewerName ?? "").trim())}
-          busy={busyKey === `${match.id}-winner-right`}
+          amount={String(match.rightPayout ?? 0)}
+          isWinner={automaticWinner === "right"}
+          onAmountChange={onRightAmountChange}
         />
       </div>
 
       <div className="px-4 py-4 sm:px-5">
         <button
           type="button"
-          onClick={() => void onClearWinner(match)}
+          onClick={onSave}
           disabled={isBusy}
-          className="inline-flex h-11 items-center justify-center gap-2 border border-white/10 bg-white/[0.03] px-4 text-sm font-semibold uppercase tracking-[0.08em] text-white disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex h-11 items-center justify-center gap-2 bg-sky-500 px-4 text-sm font-black uppercase tracking-[0.08em] text-white disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {busyKey === `${match.id}-clear` ? (
+          {busyKey === `${match.id}-save` ? (
             <Loader2 className="h-4 w-4 animate-spin" />
           ) : (
-            <RotateCcw className="h-4 w-4" />
+            <Save className="h-4 w-4" />
           )}
-          Clear Winner
+          Save Result
         </button>
       </div>
     </article>
   );
 }
 
-function WinnerSidePanel({
+function AmountSidePanel({
   title,
   viewerName,
   slotName,
+  amount,
   isWinner,
-  onClick,
-  disabled,
-  busy,
+  onAmountChange,
 }: {
   title: string;
   viewerName: string | null;
   slotName: string | null;
+  amount: string;
   isWinner: boolean;
-  onClick: () => void;
-  disabled: boolean;
-  busy?: boolean;
+  onAmountChange: (value: string) => void;
 }) {
   return (
     <div
@@ -869,30 +900,56 @@ function WinnerSidePanel({
         background: isWinner ? "rgba(56,189,248,0.08)" : "transparent",
       }}
     >
-      <div className="mb-3 text-sm font-black uppercase tracking-[0.08em] text-white">
-        {title} Side
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <div className="text-sm font-black uppercase tracking-[0.08em] text-white">
+          {title} Side
+        </div>
+        {isWinner ? <Trophy className="h-4 w-4 text-sky-300" /> : null}
       </div>
 
       <div className="space-y-2">
         <div className="text-lg font-bold text-white">
-          {viewerName?.trim() || "Awaiting"}
+          {viewerName?.trim() || "Awaiting previous round"}
         </div>
         <div className="text-sm text-white/55">
           {slotName?.trim() || "No slot selected"}
         </div>
       </div>
 
-      <button
-        type="button"
-        onClick={onClick}
-        disabled={disabled}
-        className="mt-4 inline-flex h-11 w-full items-center justify-center gap-2 border border-white/10 bg-white/[0.03] px-4 text-sm font-semibold uppercase tracking-[0.08em] text-white disabled:cursor-not-allowed disabled:opacity-50"
-      >
-        {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trophy className="h-4 w-4" />}
-        {title === "Left" ? "Pick Left Winner" : "Pick Right Winner"}
-      </button>
+      <div className="mt-4">
+        <Field label="Win Amount">
+          <input
+            type="number"
+            min="0"
+            step="0.01"
+            value={amount}
+            onChange={(event) => onAmountChange(event.target.value)}
+            className={inputClassName}
+            placeholder="0"
+          />
+        </Field>
+      </div>
     </div>
   );
+}
+
+function getAutomaticWinner(match: TournamentMatchSnapshot) {
+  const hasLeft = Boolean((match.leftViewerName ?? "").trim());
+  const hasRight = Boolean((match.rightViewerName ?? "").trim());
+
+  if (!hasLeft || !hasRight) {
+    return null;
+  }
+
+  if (match.leftPayout > match.rightPayout) {
+    return "left";
+  }
+
+  if (match.rightPayout > match.leftPayout) {
+    return "right";
+  }
+
+  return null;
 }
 
 function Field({

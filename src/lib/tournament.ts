@@ -23,6 +23,7 @@ export type TournamentSnapshot = {
   description: string;
   status: TournamentStatus;
   prizeAmount: number;
+  poolContributionPercent: number;
   championName: string | null;
   championSlotName: string | null;
   bracketSize: number;
@@ -102,6 +103,7 @@ function normalizePayout(value: number | null | undefined) {
 }
 
 const PRIZE_PREFIX = "PRIZE::";
+const SETTINGS_PREFIX = "TOURNAMENT_META::";
 
 export function encodeTournamentPrizeAmount(value: number | null | undefined) {
   return `${PRIZE_PREFIX}${normalizePayout(value)}`;
@@ -115,6 +117,80 @@ export function parseTournamentPrizeAmount(value: string | null | undefined) {
   }
 
   return normalizePayout(Number(nextValue.slice(PRIZE_PREFIX.length)));
+}
+
+function normalizePercentage(value: number | null | undefined) {
+  const nextValue = Number(value ?? 10);
+
+  if (!Number.isFinite(nextValue)) {
+    return 10;
+  }
+
+  return Math.min(100, Math.max(0, nextValue));
+}
+
+export function encodeTournamentSettings({
+  poolContributionPercent,
+}: {
+  poolContributionPercent?: number | null;
+}) {
+  return `${SETTINGS_PREFIX}${JSON.stringify({
+    poolContributionPercent: normalizePercentage(poolContributionPercent),
+  })}`;
+}
+
+export function parseTournamentSettings(value: string | null | undefined) {
+  const nextValue = value?.trim();
+
+  if (nextValue?.startsWith(SETTINGS_PREFIX)) {
+    try {
+      const parsed = JSON.parse(nextValue.slice(SETTINGS_PREFIX.length)) as {
+        poolContributionPercent?: number;
+      };
+
+      return {
+        poolContributionPercent: normalizePercentage(
+          parsed.poolContributionPercent,
+        ),
+      };
+    } catch {
+      return {
+        poolContributionPercent: 10,
+      };
+    }
+  }
+
+  return {
+    poolContributionPercent: 10,
+  };
+}
+
+function hasEntry(match: EditableTournamentMatch, side: "left" | "right") {
+  const viewerName =
+    side === "left" ? normalizeName(match.leftViewerName) : normalizeName(match.rightViewerName);
+  const slotName =
+    side === "left" ? normalizeName(match.leftSlotName) : normalizeName(match.rightSlotName);
+
+  return Boolean(viewerName || slotName);
+}
+
+function getAutomaticWinnerSide(match: EditableTournamentMatch): TournamentWinnerSide {
+  const leftHasEntry = hasEntry(match, "left");
+  const rightHasEntry = hasEntry(match, "right");
+
+  if (!leftHasEntry || !rightHasEntry) {
+    return null;
+  }
+
+  if (match.leftPayout > match.rightPayout) {
+    return "left";
+  }
+
+  if (match.rightPayout > match.leftPayout) {
+    return "right";
+  }
+
+  return null;
 }
 
 function getWinnerPayload(match: EditableTournamentMatch) {
@@ -162,10 +238,7 @@ export function recomputeTournamentProgress(matches: EditableTournamentMatch[]) 
       rightSlotName: normalizeName(match.rightSlotName),
       leftPayout: normalizePayout(match.leftPayout),
       rightPayout: normalizePayout(match.rightPayout),
-      winnerSide:
-        match.winnerSide === "left" || match.winnerSide === "right"
-          ? match.winnerSide
-          : null,
+      winnerSide: null as TournamentWinnerSide,
     }))
     .sort((left, right) => {
       if (left.round !== right.round) {
@@ -180,36 +253,27 @@ export function recomputeTournamentProgress(matches: EditableTournamentMatch[]) 
   );
 
   for (const match of nextMatches) {
-    if (match.round === 1) {
-      continue;
+    if (match.round > 1) {
+      const feeds = TOURNAMENT_FEEDS[makeKey(match.round, match.matchNumber)];
+
+      if (feeds) {
+        const leftSource = feeds.left
+          ? byKey.get(makeKey(feeds.left.round, feeds.left.matchNumber))
+          : null;
+        const rightSource = feeds.right
+          ? byKey.get(makeKey(feeds.right.round, feeds.right.matchNumber))
+          : null;
+        const leftWinner = leftSource ? getWinnerPayload(leftSource) : null;
+        const rightWinner = rightSource ? getWinnerPayload(rightSource) : null;
+
+        match.leftViewerName = leftWinner?.viewerName ?? null;
+        match.leftSlotName = leftWinner?.slotName ?? null;
+        match.rightViewerName = rightWinner?.viewerName ?? null;
+        match.rightSlotName = rightWinner?.slotName ?? null;
+      }
     }
 
-    const feeds = TOURNAMENT_FEEDS[makeKey(match.round, match.matchNumber)];
-
-    if (!feeds) {
-      continue;
-    }
-
-    const leftSource = feeds.left
-      ? byKey.get(makeKey(feeds.left.round, feeds.left.matchNumber))
-      : null;
-    const rightSource = feeds.right
-      ? byKey.get(makeKey(feeds.right.round, feeds.right.matchNumber))
-      : null;
-    const leftWinner = leftSource ? getWinnerPayload(leftSource) : null;
-    const rightWinner = rightSource ? getWinnerPayload(rightSource) : null;
-
-    match.leftViewerName = leftWinner?.viewerName ?? null;
-    match.leftSlotName = leftWinner?.slotName ?? null;
-    match.rightViewerName = rightWinner?.viewerName ?? null;
-    match.rightSlotName = rightWinner?.slotName ?? null;
-
-    if (
-      (match.winnerSide === "left" && !match.leftViewerName) ||
-      (match.winnerSide === "right" && !match.rightViewerName)
-    ) {
-      match.winnerSide = null;
-    }
+    match.winnerSide = getAutomaticWinnerSide(match);
   }
 
   const finalMatch = byKey.get("3-1");
@@ -253,6 +317,43 @@ export function buildTournamentSnapshot(
     return null;
   }
 
+  const settings = parseTournamentSettings(tournament.description);
+  const normalizedMatches: TournamentMatchSnapshot[] = [...tournament.matches]
+    .sort((left, right) => {
+      if (left.round !== right.round) {
+        return left.round - right.round;
+      }
+
+      return left.matchNumber - right.matchNumber;
+    })
+    .map((match) => ({
+      id: match.id,
+      round: match.round,
+      matchNumber: match.matchNumber,
+      roundLabel: getRoundLabel(match.round),
+      label: getMatchLabel(match.round, match.matchNumber),
+      leftViewerName: match.leftViewerName,
+      rightViewerName: match.rightViewerName,
+      leftSlotName: match.leftSlotName,
+      rightSlotName: match.rightSlotName,
+      leftPayout: normalizePayout(match.leftPayout),
+      rightPayout: normalizePayout(match.rightPayout),
+      winnerSide:
+        match.winnerSide === "left" || match.winnerSide === "right"
+          ? match.winnerSide
+          : null,
+      updatedAt: match.updatedAt.toISOString(),
+    }));
+
+  const prizeAmount = normalizedMatches
+    .filter((match) => match.round === 1 && match.winnerSide)
+    .reduce((sum, match) => {
+      const winningPayout =
+        match.winnerSide === "left" ? match.leftPayout : match.rightPayout;
+
+      return sum + winningPayout * (settings.poolContributionPercent / 100);
+    }, 0);
+
   return {
     id: tournament.id,
     title: tournament.title,
@@ -261,36 +362,12 @@ export function buildTournamentSnapshot(
       tournament.status === "active" || tournament.status === "completed"
         ? tournament.status
         : "draft",
-    prizeAmount: parseTournamentPrizeAmount(tournament.description),
+    prizeAmount: normalizePayout(prizeAmount),
+    poolContributionPercent: settings.poolContributionPercent,
     championName: tournament.championName,
     championSlotName: tournament.championSlotName,
     bracketSize: tournament.bracketSize,
     updatedAt: tournament.updatedAt.toISOString(),
-    matches: [...tournament.matches]
-      .sort((left, right) => {
-        if (left.round !== right.round) {
-          return left.round - right.round;
-        }
-
-        return left.matchNumber - right.matchNumber;
-      })
-      .map((match) => ({
-        id: match.id,
-        round: match.round,
-        matchNumber: match.matchNumber,
-        roundLabel: getRoundLabel(match.round),
-        label: getMatchLabel(match.round, match.matchNumber),
-        leftViewerName: match.leftViewerName,
-        rightViewerName: match.rightViewerName,
-        leftSlotName: match.leftSlotName,
-        rightSlotName: match.rightSlotName,
-        leftPayout: normalizePayout(match.leftPayout),
-        rightPayout: normalizePayout(match.rightPayout),
-        winnerSide:
-          match.winnerSide === "left" || match.winnerSide === "right"
-            ? match.winnerSide
-            : null,
-        updatedAt: match.updatedAt.toISOString(),
-      })),
+    matches: normalizedMatches,
   };
 }
