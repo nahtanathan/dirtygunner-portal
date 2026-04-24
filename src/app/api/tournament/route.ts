@@ -375,25 +375,34 @@ export async function POST(req: Request) {
         throw new HttpError("Match not found", 404);
       }
 
+      const nextLeftViewerName =
+        body.leftViewerName === undefined
+          ? match.leftViewerName
+          : normalizeText(body.leftViewerName);
+      const nextRightViewerName =
+        body.rightViewerName === undefined
+          ? match.rightViewerName
+          : normalizeText(body.rightViewerName);
+      const nextLeftSlotName =
+        body.leftSlotName === undefined
+          ? match.leftSlotName
+          : normalizeText(body.leftSlotName);
+      const nextRightSlotName =
+        body.rightSlotName === undefined
+          ? match.rightSlotName
+          : normalizeText(body.rightSlotName);
+
       await prisma.tournamentMatch.update({
         where: { id: match.id },
         data: {
           leftViewerName:
-            match.round === 1
-              ? normalizeText(body.leftViewerName)
-              : match.leftViewerName,
+            match.round === 1 ? nextLeftViewerName : match.leftViewerName,
           rightViewerName:
-            match.round === 1
-              ? normalizeText(body.rightViewerName)
-              : match.rightViewerName,
+            match.round === 1 ? nextRightViewerName : match.rightViewerName,
           leftSlotName:
-            match.round === 1
-              ? normalizeText(body.leftSlotName)
-              : match.leftSlotName,
+            match.round === 1 ? nextLeftSlotName : match.leftSlotName,
           rightSlotName:
-            match.round === 1
-              ? normalizeText(body.rightSlotName)
-              : match.rightSlotName,
+            match.round === 1 ? nextRightSlotName : match.rightSlotName,
           leftPayout: normalizePayout(body.leftPayout),
           rightPayout: normalizePayout(body.rightPayout),
         },
