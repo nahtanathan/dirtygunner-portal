@@ -80,16 +80,6 @@
       return "$" + amount.toFixed(amount % 1 === 0 ? 0 : 2);
     }
 
-    function getWinnerPayout(match) {
-      if (!match || !match.winnerSide) {
-        return 0;
-      }
-
-      return match.winnerSide === "left"
-        ? Number(match.leftPayout || 0)
-        : Number(match.rightPayout || 0);
-    }
-
     function animateText(target) {
       gsap.fromTo(
         target.scale,
@@ -189,9 +179,7 @@
         );
       }
 
-      const chestText = formatMoney(
-        matches.reduce((sum, match) => sum + getWinnerPayout(match) * 0.1, 0)
-      );
+      const chestText = formatMoney(snapshot && snapshot.prizeAmount);
 
       chestTxt.text = chestText;
 

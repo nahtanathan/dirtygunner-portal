@@ -4,6 +4,7 @@ import { getSession } from "@/lib/session";
 import {
   buildTournamentSnapshot,
   createTournamentMatchSeed,
+  encodeTournamentPrizeAmount,
   recomputeTournamentProgress,
   TOURNAMENT_ID,
 } from "@/lib/tournament";
@@ -19,6 +20,11 @@ type UpdateTournamentPayload = {
   title: string;
   description?: string | null;
   status: "draft" | "active" | "completed";
+};
+
+type UpdatePrizeAmountPayload = {
+  action: "updatePrizeAmount";
+  prizeAmount?: number;
 };
 
 type UpdateSeedsPayload = {
@@ -78,6 +84,7 @@ type RepairBracketPayload = {
 type TournamentMutationPayload =
   | InitializeTournamentPayload
   | UpdateTournamentPayload
+  | UpdatePrizeAmountPayload
   | UpdateSeedsPayload
   | UpdateMatchPayload
   | SetWinnerPayload
@@ -274,9 +281,7 @@ export async function POST(req: Request) {
         data: {
           id: TOURNAMENT_ID,
           title: normalizeText(body.title) ?? "Slot Tournament",
-          description:
-            normalizeText(body.description) ??
-            "Live bracket control for the current DirtyGunner slot tournament.",
+          description: encodeTournamentPrizeAmount(0),
           status: "draft",
           matches: {
             create: createTournamentMatchSeed(TOURNAMENT_ID).map(
@@ -306,11 +311,21 @@ export async function POST(req: Request) {
         where: { id: TOURNAMENT_ID },
         data: {
           title: normalizeText(body.title) ?? "Slot Tournament",
-          description: normalizeText(body.description),
           status:
             body.status === "active" || body.status === "completed"
               ? body.status
               : "draft",
+        },
+      });
+
+      return NextResponse.json(buildTournamentSnapshot(await getTournamentRecord()));
+    }
+
+    if (body.action === "updatePrizeAmount") {
+      await prisma.tournament.update({
+        where: { id: TOURNAMENT_ID },
+        data: {
+          description: encodeTournamentPrizeAmount(body.prizeAmount),
         },
       });
 

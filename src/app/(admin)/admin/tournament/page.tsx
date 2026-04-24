@@ -34,6 +34,10 @@ type SeedSlot = {
   slotName: string;
 };
 
+type PrizeForm = {
+  prizeAmount: string;
+};
+
 const inputClassName =
   "h-12 w-full border border-white/10 bg-white/[0.03] px-4 text-sm text-white outline-none transition-all duration-200 placeholder:text-white/28 focus:border-sky-400/30 focus:bg-white/[0.05]";
 
@@ -43,6 +47,9 @@ export default function AdminTournamentPage() {
   const [loadingTournament, setLoadingTournament] = useState(true);
   const [repairingBracket, setRepairingBracket] = useState(false);
   const [tournament, setTournament] = useState<TournamentSnapshot | null>(null);
+  const [prizeForm, setPrizeForm] = useState<PrizeForm>({
+    prizeAmount: "0",
+  });
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [busyKey, setBusyKey] = useState<string | null>(null);
@@ -98,6 +105,12 @@ export default function AdminTournamentPage() {
 
     return positions;
   }, [quarterfinalMatches]);
+
+  useEffect(() => {
+    setPrizeForm({
+      prizeAmount: String(tournament?.prizeAmount ?? 0),
+    });
+  }, [tournament?.prizeAmount]);
 
   async function loadUser() {
     setLoadingUser(true);
@@ -515,6 +528,43 @@ export default function AdminTournamentPage() {
               </div>
 
               <div className="space-y-4 p-5 sm:p-6">
+                <Field label="Prize Amount">
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={prizeForm.prizeAmount}
+                    onChange={(event) =>
+                      setPrizeForm({ prizeAmount: event.target.value })
+                    }
+                    className={inputClassName}
+                    placeholder="0"
+                  />
+                </Field>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    void submitAction(
+                      "save-prize",
+                      {
+                        action: "updatePrizeAmount",
+                        prizeAmount: Number(prizeForm.prizeAmount || 0),
+                      },
+                      "Prize amount updated.",
+                    )
+                  }
+                  disabled={busyKey === "save-prize"}
+                  className="inline-flex h-12 w-full items-center justify-center gap-2 bg-sky-500 px-4 text-sm font-extrabold uppercase tracking-[0.08em] text-white disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {busyKey === "save-prize" ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Save className="h-4 w-4" />
+                  )}
+                  Save Prize Amount
+                </button>
+
                 <button
                   type="button"
                   onClick={() => void loadTournament()}

@@ -22,6 +22,7 @@ export type TournamentSnapshot = {
   title: string;
   description: string;
   status: TournamentStatus;
+  prizeAmount: number;
   championName: string | null;
   championSlotName: string | null;
   bracketSize: number;
@@ -98,6 +99,22 @@ function normalizeName(value: string | null | undefined) {
 function normalizePayout(value: number | null | undefined) {
   const nextValue = Number(value ?? 0);
   return Number.isFinite(nextValue) && nextValue >= 0 ? nextValue : 0;
+}
+
+const PRIZE_PREFIX = "PRIZE::";
+
+export function encodeTournamentPrizeAmount(value: number | null | undefined) {
+  return `${PRIZE_PREFIX}${normalizePayout(value)}`;
+}
+
+export function parseTournamentPrizeAmount(value: string | null | undefined) {
+  const nextValue = value?.trim();
+
+  if (!nextValue?.startsWith(PRIZE_PREFIX)) {
+    return 0;
+  }
+
+  return normalizePayout(Number(nextValue.slice(PRIZE_PREFIX.length)));
 }
 
 function getWinnerPayload(match: EditableTournamentMatch) {
@@ -244,6 +261,7 @@ export function buildTournamentSnapshot(
       tournament.status === "active" || tournament.status === "completed"
         ? tournament.status
         : "draft",
+    prizeAmount: parseTournamentPrizeAmount(tournament.description),
     championName: tournament.championName,
     championSlotName: tournament.championSlotName,
     bracketSize: tournament.bracketSize,
