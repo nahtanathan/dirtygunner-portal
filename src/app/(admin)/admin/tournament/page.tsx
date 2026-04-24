@@ -1,12 +1,11 @@
 "use client";
 
-import type { DragEvent, ReactNode } from "react";
+import type { ReactNode } from "react";
 import { useEffect, useMemo, useState } from "react";
 import {
   CheckCircle2,
   Crown,
   Loader2,
-  Plus,
   RefreshCw,
   RotateCcw,
   Save,
@@ -39,8 +38,6 @@ type ChampionForm = {
   championSlotName: string;
 };
 
-type LibraryKind = "slot" | "viewer";
-
 const inputClassName =
   "h-12 w-full border border-white/10 bg-white/[0.03] px-4 text-sm text-white outline-none transition-all duration-200 placeholder:text-white/28 focus:border-sky-400/30 focus:bg-white/[0.05]";
 
@@ -61,11 +58,6 @@ export default function AdminTournamentPage() {
     championName: "",
     championSlotName: "",
   });
-  const [selectedMatchId, setSelectedMatchId] = useState("");
-  const [slotLibrary, setSlotLibrary] = useState<string[]>([]);
-  const [viewerLibrary, setViewerLibrary] = useState<string[]>([]);
-  const [newSlotName, setNewSlotName] = useState("");
-  const [newViewerName, setNewViewerName] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [busyKey, setBusyKey] = useState<string | null>(null);
@@ -74,44 +66,6 @@ export default function AdminTournamentPage() {
     void loadUser();
     void loadTournament();
   }, []);
-
-  useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
-
-    try {
-      const storedSlots = window.localStorage.getItem("dg_slot_library");
-      const storedViewers = window.localStorage.getItem("dg_viewer_library");
-
-      setSlotLibrary(storedSlots ? (JSON.parse(storedSlots) as string[]) : []);
-      setViewerLibrary(
-        storedViewers ? (JSON.parse(storedViewers) as string[]) : [],
-      );
-    } catch {
-      setSlotLibrary([]);
-      setViewerLibrary([]);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
-
-    window.localStorage.setItem("dg_slot_library", JSON.stringify(slotLibrary));
-  }, [slotLibrary]);
-
-  useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
-
-    window.localStorage.setItem(
-      "dg_viewer_library",
-      JSON.stringify(viewerLibrary),
-    );
-  }, [viewerLibrary]);
 
   useEffect(() => {
     if (!tournament) {
@@ -127,13 +81,6 @@ export default function AdminTournamentPage() {
       return;
     }
 
-    if (
-      !selectedMatchId ||
-      !tournament.matches.some((match) => match.id === selectedMatchId)
-    ) {
-      setSelectedMatchId(tournament.matches[0]?.id ?? "");
-    }
-
     setMetaForm({
       title: tournament.title,
       description: tournament.description,
@@ -143,7 +90,7 @@ export default function AdminTournamentPage() {
       championName: tournament.championName ?? "",
       championSlotName: tournament.championSlotName ?? "",
     });
-  }, [selectedMatchId, tournament]);
+  }, [tournament]);
 
   const rounds = useMemo(() => {
     if (!tournament) {
@@ -174,9 +121,9 @@ export default function AdminTournamentPage() {
     }, []);
   }, [tournament]);
 
-  const selectedMatch = useMemo(
-    () => tournament?.matches.find((match) => match.id === selectedMatchId) ?? null,
-    [selectedMatchId, tournament],
+  const quarterfinalMatches = useMemo(
+    () => tournament?.matches.filter((match) => match.round === 1) ?? [],
+    [tournament],
   );
 
   async function loadUser() {
@@ -259,65 +206,6 @@ export default function AdminTournamentPage() {
         ),
       };
     });
-  }
-
-  function addLibraryItem(kind: LibraryKind) {
-    const rawValue = kind === "slot" ? newSlotName : newViewerName;
-    const nextValue = rawValue.trim();
-
-    if (!nextValue) {
-      return;
-    }
-
-    if (kind === "slot") {
-      setSlotLibrary((current) =>
-        current.some((item) => item.toLowerCase() === nextValue.toLowerCase())
-          ? current
-          : [...current, nextValue],
-      );
-      setNewSlotName("");
-      return;
-    }
-
-    setViewerLibrary((current) =>
-      current.some((item) => item.toLowerCase() === nextValue.toLowerCase())
-        ? current
-        : [...current, nextValue],
-    );
-    setNewViewerName("");
-  }
-
-  function handleLibraryDrop(
-    event: DragEvent<HTMLButtonElement>,
-    side: "left" | "right",
-    type: LibraryKind,
-  ) {
-    event.preventDefault();
-
-    if (!selectedMatch) {
-      return;
-    }
-
-    const value = event.dataTransfer.getData("text/plain").trim();
-
-    if (!value) {
-      return;
-    }
-
-    if (type === "slot") {
-      updateMatchField(
-        selectedMatch.id,
-        side === "left" ? "leftSlotName" : "rightSlotName",
-        value,
-      );
-      return;
-    }
-
-    updateMatchField(
-      selectedMatch.id,
-      side === "left" ? "leftViewerName" : "rightViewerName",
-      value,
-    );
   }
 
   async function submitAction(
@@ -741,191 +629,70 @@ export default function AdminTournamentPage() {
           >
             <div className="border-b border-white/8 px-5 py-5 sm:px-6">
               <div className="text-xs font-semibold uppercase tracking-[0.26em] text-white/42">
-                Original Workflow
+                Simple Setup
               </div>
               <h2 className="mt-2 text-xl font-bold text-white sm:text-2xl">
-                Broadcast Match Runner
+                Seed The 8 Entrants
               </h2>
               <p className="mt-3 max-w-3xl text-sm leading-7 text-white/56">
-                This mirrors the old slot tourney admin flow: save slot and
-                viewer names, pick a match, seat both sides, enter payouts, and
-                choose the winner. The difference is placements now live in the
-                tournament database instead of browser-only storage.
+                Type the viewer name and slot name for each round-one side, save
+                the match, then click the winning side when that match is over.
+                The public bracket updates from these entries automatically.
               </p>
             </div>
 
-            <div className="space-y-6 p-5 sm:p-6">
-              <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-                <Field label="Match Selector">
-                  <select
-                    value={selectedMatchId}
-                    onChange={(event) => setSelectedMatchId(event.target.value)}
-                    className={inputClassName}
-                  >
-                    {tournament.matches.map((match) => (
-                      <option key={match.id} value={match.id}>
-                        {match.label}
-                      </option>
-                    ))}
-                  </select>
-                </Field>
-
-                <div className="inline-flex items-center gap-2 self-start border border-emerald-300/18 bg-emerald-300/10 px-4 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-emerald-100">
-                  Automatic 10% chest logic stays active on winner selection
-                </div>
-              </div>
-
-              {selectedMatch ? (
-                <div className="grid gap-6 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
-                  <div className="space-y-5">
-                    <div className="grid gap-4 md:grid-cols-2">
-                      <LegacySeatCard
-                        title="Left Side"
-                        slotValue={selectedMatch.leftSlotName}
-                        viewerValue={selectedMatch.leftViewerName}
-                        payoutValue={String(selectedMatch.leftPayout ?? 0)}
-                        winnerTone={selectedMatch.winnerSide === "left"}
-                        onDropSlot={(event) =>
-                          handleLibraryDrop(event, "left", "slot")
-                        }
-                        onDropViewer={(event) =>
-                          handleLibraryDrop(event, "left", "viewer")
-                        }
-                        onPayoutChange={(value) =>
-                          updateMatchField(selectedMatch.id, "leftPayout", value)
-                        }
-                        onWin={() =>
-                          void submitAction(
-                            `${selectedMatch.id}-winner-left`,
-                            {
-                              action: "setWinner",
-                              matchId: selectedMatch.id,
-                              winnerSide: "left",
-                              leftViewerName: selectedMatch.leftViewerName,
-                              rightViewerName: selectedMatch.rightViewerName,
-                              leftSlotName: selectedMatch.leftSlotName,
-                              rightSlotName: selectedMatch.rightSlotName,
-                              leftPayout: selectedMatch.leftPayout,
-                              rightPayout: selectedMatch.rightPayout,
-                            },
-                            `${selectedMatch.label} winner updated.`,
-                          )
-                        }
-                        busy={busyKey === `${selectedMatch.id}-winner-left`}
-                      />
-
-                      <LegacySeatCard
-                        title="Right Side"
-                        slotValue={selectedMatch.rightSlotName}
-                        viewerValue={selectedMatch.rightViewerName}
-                        payoutValue={String(selectedMatch.rightPayout ?? 0)}
-                        winnerTone={selectedMatch.winnerSide === "right"}
-                        onDropSlot={(event) =>
-                          handleLibraryDrop(event, "right", "slot")
-                        }
-                        onDropViewer={(event) =>
-                          handleLibraryDrop(event, "right", "viewer")
-                        }
-                        onPayoutChange={(value) =>
-                          updateMatchField(selectedMatch.id, "rightPayout", value)
-                        }
-                        onWin={() =>
-                          void submitAction(
-                            `${selectedMatch.id}-winner-right`,
-                            {
-                              action: "setWinner",
-                              matchId: selectedMatch.id,
-                              winnerSide: "right",
-                              leftViewerName: selectedMatch.leftViewerName,
-                              rightViewerName: selectedMatch.rightViewerName,
-                              leftSlotName: selectedMatch.leftSlotName,
-                              rightSlotName: selectedMatch.rightSlotName,
-                              leftPayout: selectedMatch.leftPayout,
-                              rightPayout: selectedMatch.rightPayout,
-                            },
-                            `${selectedMatch.label} winner updated.`,
-                          )
-                        }
-                        busy={busyKey === `${selectedMatch.id}-winner-right`}
-                      />
-                    </div>
-
-                    <div className="flex flex-wrap gap-3">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          void submitAction(
-                            `${selectedMatch.id}-save`,
-                            {
-                              action: "updateMatch",
-                              matchId: selectedMatch.id,
-                              leftViewerName: selectedMatch.leftViewerName,
-                              rightViewerName: selectedMatch.rightViewerName,
-                              leftSlotName: selectedMatch.leftSlotName,
-                              rightSlotName: selectedMatch.rightSlotName,
-                              leftPayout: selectedMatch.leftPayout,
-                              rightPayout: selectedMatch.rightPayout,
-                            },
-                            `${selectedMatch.label} saved.`,
-                          )
-                        }
-                        disabled={busyKey === `${selectedMatch.id}-save`}
-                        className="inline-flex h-12 items-center justify-center gap-2 bg-sky-500 px-5 text-sm font-extrabold uppercase tracking-[0.08em] text-white disabled:cursor-not-allowed disabled:opacity-60"
-                      >
-                        {busyKey === `${selectedMatch.id}-save` ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : (
-                          <Save className="h-4 w-4" />
-                        )}
-                        Save Match
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() =>
-                          void submitAction(
-                            `${selectedMatch.id}-clear`,
-                            {
-                              action: "clearWinner",
-                              matchId: selectedMatch.id,
-                            },
-                            `${selectedMatch.label} winner cleared.`,
-                          )
-                        }
-                        disabled={busyKey === `${selectedMatch.id}-clear`}
-                        className="inline-flex h-12 items-center justify-center gap-2 border border-white/8 bg-white/[0.03] px-5 text-sm font-semibold uppercase tracking-[0.08em] text-white disabled:cursor-not-allowed disabled:opacity-60"
-                      >
-                        {busyKey === `${selectedMatch.id}-clear` ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : (
-                          <RotateCcw className="h-4 w-4" />
-                        )}
-                        Clear Winner
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-1">
-                    <LibraryPanel
-                      label="Slot Library"
-                      placeholder="SLOT NAME..."
-                      value={newSlotName}
-                      items={slotLibrary}
-                      onChange={setNewSlotName}
-                      onAdd={() => addLibraryItem("slot")}
-                    />
-
-                    <LibraryPanel
-                      label="Viewer Library"
-                      placeholder="VIEWER..."
-                      value={newViewerName}
-                      items={viewerLibrary}
-                      onChange={setNewViewerName}
-                      onAdd={() => addLibraryItem("viewer")}
-                    />
-                  </div>
-                </div>
-              ) : null}
+            <div className="grid gap-4 p-5 sm:p-6 xl:grid-cols-2">
+              {quarterfinalMatches.map((match) => (
+                <SimpleSeedMatchCard
+                  key={match.id}
+                  match={match}
+                  busyKey={busyKey}
+                  onFieldChange={updateMatchField}
+                  onSave={async (selectedMatch) => {
+                    await submitAction(
+                      `${selectedMatch.id}-save`,
+                      {
+                        action: "updateMatch",
+                        matchId: selectedMatch.id,
+                        leftViewerName: selectedMatch.leftViewerName,
+                        rightViewerName: selectedMatch.rightViewerName,
+                        leftSlotName: selectedMatch.leftSlotName,
+                        rightSlotName: selectedMatch.rightSlotName,
+                        leftPayout: selectedMatch.leftPayout,
+                        rightPayout: selectedMatch.rightPayout,
+                      },
+                      `${selectedMatch.label} saved.`,
+                    );
+                  }}
+                  onSetWinner={async (selectedMatch, winnerSide) => {
+                    await submitAction(
+                      `${selectedMatch.id}-winner-${winnerSide}`,
+                      {
+                        action: "setWinner",
+                        matchId: selectedMatch.id,
+                        winnerSide,
+                        leftViewerName: selectedMatch.leftViewerName,
+                        rightViewerName: selectedMatch.rightViewerName,
+                        leftSlotName: selectedMatch.leftSlotName,
+                        rightSlotName: selectedMatch.rightSlotName,
+                        leftPayout: selectedMatch.leftPayout,
+                        rightPayout: selectedMatch.rightPayout,
+                      },
+                      `${selectedMatch.label} winner updated.`,
+                    );
+                  }}
+                  onClearWinner={async (selectedMatch) => {
+                    await submitAction(
+                      `${selectedMatch.id}-clear`,
+                      {
+                        action: "clearWinner",
+                        matchId: selectedMatch.id,
+                      },
+                      `${selectedMatch.label} winner cleared.`,
+                    );
+                  }}
+                />
+              ))}
             </div>
           </section>
 
@@ -933,15 +700,15 @@ export default function AdminTournamentPage() {
             <div className="flex min-w-0 items-center justify-between gap-3">
               <div>
                 <div className="text-xs font-semibold uppercase tracking-[0.26em] text-white/42">
-                  Match Runner
+                  Step 2
                 </div>
                 <h2 className="mt-2 text-xl font-bold text-white sm:text-2xl">
-                  Bracket Control
+                  Run The Remaining Bracket
                 </h2>
                 <p className="mt-2 max-w-3xl text-sm leading-7 text-white/56">
-                  Work left-to-right through each match card, save any seeding
-                  edits, then click the winning side to push that entry into the
-                  next round.
+                  After quarterfinal seeding is saved, use these match cards to
+                  record semifinal and final payouts and choose winners as the
+                  tournament progresses.
                 </p>
               </div>
 
@@ -955,7 +722,9 @@ export default function AdminTournamentPage() {
               </div>
             </div>
 
-            {rounds.map((round) => (
+            {rounds
+              .filter((round) => round.round > 1)
+              .map((round) => (
               <div key={round.round} className="space-y-4">
                 <div className="flex min-w-0 items-center gap-3">
                   <div className="h-px flex-1 bg-white/8" />
@@ -1044,171 +813,195 @@ function Field({
   );
 }
 
-function LegacySeatCard({
-  title,
-  slotValue,
-  viewerValue,
-  payoutValue,
-  winnerTone,
-  onDropSlot,
-  onDropViewer,
-  onPayoutChange,
-  onWin,
-  busy,
+function SimpleSeedMatchCard({
+  match,
+  busyKey,
+  onFieldChange,
+  onSave,
+  onSetWinner,
+  onClearWinner,
 }: {
-  title: string;
-  slotValue: string | null;
-  viewerValue: string | null;
-  payoutValue: string;
-  winnerTone: boolean;
-  onDropSlot: (event: DragEvent<HTMLButtonElement>) => void;
-  onDropViewer: (event: DragEvent<HTMLButtonElement>) => void;
-  onPayoutChange: (value: string) => void;
-  onWin: () => void;
-  busy?: boolean;
+  match: TournamentMatchSnapshot;
+  busyKey: string | null;
+  onFieldChange: (
+    matchId: string,
+    key:
+      | "leftViewerName"
+      | "rightViewerName"
+      | "leftSlotName"
+      | "rightSlotName"
+      | "leftPayout"
+      | "rightPayout",
+    value: string,
+  ) => void;
+  onSave: (match: TournamentMatchSnapshot) => Promise<void>;
+  onSetWinner: (
+    match: TournamentMatchSnapshot,
+    winnerSide: "left" | "right",
+  ) => Promise<void>;
+  onClearWinner: (match: TournamentMatchSnapshot) => Promise<void>;
 }) {
+  const isBusy = Boolean(busyKey?.startsWith(match.id));
+
   return (
-    <div
-      className="border p-4"
+    <article
+      className="overflow-hidden border border-white/10"
       style={{
-        borderColor: winnerTone
-          ? "rgba(56,189,248,0.34)"
-          : "rgba(255,255,255,0.08)",
-        background: winnerTone
-          ? "linear-gradient(180deg, rgba(56,189,248,0.12) 0%, rgba(8,12,22,0.98) 100%)"
-          : "linear-gradient(180deg, rgba(10,15,25,0.96) 0%, rgba(6,10,18,0.98) 100%)",
-      }}
-    >
-      <div className="mb-4 text-sm font-black uppercase tracking-[0.08em] text-white">
-        {title}
-      </div>
-
-      <div className="space-y-3">
-        <DropField
-          label="Slot"
-          value={slotValue}
-          placeholder="DRAG SLOT"
-          onDrop={onDropSlot}
-        />
-        <DropField
-          label="Viewer"
-          value={viewerValue}
-          placeholder="DRAG VIEWER"
-          onDrop={onDropViewer}
-        />
-
-        <Field label="Payout">
-          <input
-            type="number"
-            min="0"
-            step="0.01"
-            value={payoutValue}
-            onChange={(event) => onPayoutChange(event.target.value)}
-            className={inputClassName}
-            placeholder="0"
-          />
-        </Field>
-
-        <button
-          type="button"
-          onClick={onWin}
-          disabled={busy}
-          className="inline-flex h-12 w-full items-center justify-center gap-2 bg-sky-500 px-4 text-sm font-extrabold uppercase tracking-[0.08em] text-white disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-          {title === "Left Side" ? "Win Left" : "Win Right"}
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function DropField({
-  label,
-  value,
-  placeholder,
-  onDrop,
-}: {
-  label: string;
-  value: string | null;
-  placeholder: string;
-  onDrop: (event: DragEvent<HTMLButtonElement>) => void;
-}) {
-  return (
-    <Field label={label}>
-      <button
-        type="button"
-        onDragOver={(event) => event.preventDefault()}
-        onDrop={onDrop}
-        className="flex h-16 w-full items-center justify-center border border-dashed border-white/18 bg-black/30 px-4 text-center text-lg font-semibold uppercase tracking-[0.06em] text-cyan-300"
-      >
-        {value?.trim() || placeholder}
-      </button>
-    </Field>
-  );
-}
-
-function LibraryPanel({
-  label,
-  placeholder,
-  value,
-  items,
-  onChange,
-  onAdd,
-}: {
-  label: string;
-  placeholder: string;
-  value: string;
-  items: string[];
-  onChange: (value: string) => void;
-  onAdd: () => void;
-}) {
-  return (
-    <div
-      className="border p-4"
-      style={{
-        borderColor: "rgba(255,255,255,0.08)",
         background:
           "linear-gradient(180deg, rgba(10,15,25,0.96) 0%, rgba(6,10,18,0.98) 100%)",
       }}
     >
-      <div className="mb-3 text-sm font-black uppercase tracking-[0.08em] text-white">
-        {label}
+      <div className="border-b border-white/8 px-4 py-4 sm:px-5">
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <div className="text-[10px] font-semibold uppercase tracking-[0.24em] text-white/38">
+              Quarterfinal
+            </div>
+            <h3 className="mt-2 text-lg font-black uppercase tracking-[0.06em] text-white">
+              {match.label}
+            </h3>
+          </div>
+
+          <div className="border border-white/10 bg-white/[0.03] px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/62">
+            {match.winnerSide ? `Winner: ${match.winnerSide}` : "Awaiting result"}
+          </div>
+        </div>
       </div>
 
-      <div className="mb-4 flex gap-2">
-        <input
-          value={value}
-          onChange={(event) => onChange(event.target.value)}
-          className={inputClassName}
-          placeholder={placeholder}
-        />
+      <div className="grid gap-px bg-white/8 lg:grid-cols-2">
+        <div className="space-y-3 bg-transparent p-4 sm:p-5">
+          <div className="text-sm font-black uppercase tracking-[0.08em] text-white">
+            Left Side
+          </div>
+          <Field label="Viewer Name">
+            <input
+              value={match.leftViewerName ?? ""}
+              onChange={(event) =>
+                onFieldChange(match.id, "leftViewerName", event.target.value)
+              }
+              className={inputClassName}
+              placeholder="Viewer name"
+            />
+          </Field>
+          <Field label="Slot Name">
+            <input
+              value={match.leftSlotName ?? ""}
+              onChange={(event) =>
+                onFieldChange(match.id, "leftSlotName", event.target.value)
+              }
+              className={inputClassName}
+              placeholder="Slot name"
+            />
+          </Field>
+          <Field label="Payout">
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              value={String(match.leftPayout ?? 0)}
+              onChange={(event) =>
+                onFieldChange(match.id, "leftPayout", event.target.value)
+              }
+              className={inputClassName}
+              placeholder="0"
+            />
+          </Field>
+        </div>
+
+        <div className="space-y-3 bg-transparent p-4 sm:p-5">
+          <div className="text-sm font-black uppercase tracking-[0.08em] text-white">
+            Right Side
+          </div>
+          <Field label="Viewer Name">
+            <input
+              value={match.rightViewerName ?? ""}
+              onChange={(event) =>
+                onFieldChange(match.id, "rightViewerName", event.target.value)
+              }
+              className={inputClassName}
+              placeholder="Viewer name"
+            />
+          </Field>
+          <Field label="Slot Name">
+            <input
+              value={match.rightSlotName ?? ""}
+              onChange={(event) =>
+                onFieldChange(match.id, "rightSlotName", event.target.value)
+              }
+              className={inputClassName}
+              placeholder="Slot name"
+            />
+          </Field>
+          <Field label="Payout">
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              value={String(match.rightPayout ?? 0)}
+              onChange={(event) =>
+                onFieldChange(match.id, "rightPayout", event.target.value)
+              }
+              className={inputClassName}
+              placeholder="0"
+            />
+          </Field>
+        </div>
+      </div>
+
+      <div className="flex flex-wrap gap-3 px-4 py-4 sm:px-5">
         <button
           type="button"
-          onClick={onAdd}
-          className="inline-flex h-12 shrink-0 items-center justify-center gap-2 bg-white px-4 text-sm font-extrabold uppercase tracking-[0.08em] text-slate-950"
+          onClick={() => void onSave(match)}
+          disabled={isBusy}
+          className="inline-flex h-11 items-center justify-center gap-2 bg-sky-500 px-4 text-sm font-black uppercase tracking-[0.08em] text-white disabled:cursor-not-allowed disabled:opacity-60"
         >
-          <Plus className="h-4 w-4" />
-          Save
+          {busyKey === `${match.id}-save` ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Save className="h-4 w-4" />
+          )}
+          Save Match
+        </button>
+
+        <button
+          type="button"
+          onClick={() => void onSetWinner(match, "left")}
+          disabled={isBusy}
+          className="inline-flex h-11 items-center justify-center gap-2 border border-emerald-300/18 bg-emerald-300/10 px-4 text-sm font-semibold uppercase tracking-[0.08em] text-white disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {busyKey === `${match.id}-winner-left` ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : null}
+          Win Left
+        </button>
+
+        <button
+          type="button"
+          onClick={() => void onSetWinner(match, "right")}
+          disabled={isBusy}
+          className="inline-flex h-11 items-center justify-center gap-2 border border-amber-300/18 bg-amber-300/10 px-4 text-sm font-semibold uppercase tracking-[0.08em] text-white disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {busyKey === `${match.id}-winner-right` ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : null}
+          Win Right
+        </button>
+
+        <button
+          type="button"
+          onClick={() => void onClearWinner(match)}
+          disabled={isBusy}
+          className="inline-flex h-11 items-center justify-center gap-2 border border-white/10 bg-white/[0.03] px-4 text-sm font-semibold uppercase tracking-[0.08em] text-white disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {busyKey === `${match.id}-clear` ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <RotateCcw className="h-4 w-4" />
+          )}
+          Clear Winner
         </button>
       </div>
-
-      <div className="flex max-h-[260px] flex-wrap gap-2 overflow-y-auto">
-        {items.map((item) => (
-          <button
-            key={item}
-            type="button"
-            draggable
-            onDragStart={(event) =>
-              event.dataTransfer.setData("text/plain", item)
-            }
-            className="border border-white/10 bg-white/[0.05] px-3 py-2 text-sm font-semibold uppercase tracking-[0.06em] text-white"
-          >
-            {item}
-          </button>
-        ))}
-      </div>
-    </div>
+    </article>
   );
 }
 
