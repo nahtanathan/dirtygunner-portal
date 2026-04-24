@@ -346,7 +346,7 @@ export function buildTournamentSnapshot(
     }));
 
   const prizeAmount = normalizedMatches
-    .filter((match) => match.round === 1 && match.winnerSide)
+    .filter((match) => match.winnerSide)
     .reduce((sum, match) => {
       const winningPayout =
         match.winnerSide === "left" ? match.leftPayout : match.rightPayout;

@@ -415,8 +415,8 @@ export default function AdminTournamentPage() {
             </h1>
             <p className="mt-3 max-w-3xl text-sm leading-7 text-white/58">
               Enter the 8 players, save the seeds, then enter each side&apos;s win
-              amount. The higher amount advances automatically. Quarterfinal
-              winners feed the champion prize pool.
+              amount. The higher amount advances automatically. Every winning
+              result adds its cut into the champion prize pool.
             </p>
           </div>
 
