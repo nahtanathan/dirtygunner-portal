@@ -21,6 +21,17 @@ type UpdateTournamentPayload = {
   status: "draft" | "active" | "completed";
 };
 
+type UpdateSeedsPayload = {
+  action: "updateSeeds";
+  seeds: Array<{
+    matchId: string;
+    leftViewerName?: string | null;
+    rightViewerName?: string | null;
+    leftSlotName?: string | null;
+    rightSlotName?: string | null;
+  }>;
+};
+
 type UpdateMatchPayload = {
   action: "updateMatch";
   matchId: string;
@@ -60,14 +71,20 @@ type ResetTournamentPayload = {
   action: "resetTournament";
 };
 
+type RepairBracketPayload = {
+  action: "repairBracket";
+};
+
 type TournamentMutationPayload =
   | InitializeTournamentPayload
   | UpdateTournamentPayload
+  | UpdateSeedsPayload
   | UpdateMatchPayload
   | SetWinnerPayload
   | ClearWinnerPayload
   | DeclareChampionPayload
-  | ResetTournamentPayload;
+  | ResetTournamentPayload
+  | RepairBracketPayload;
 
 class HttpError extends Error {
   status: number;
@@ -121,6 +138,39 @@ async function getTournamentRecord() {
   });
 
   return tournament;
+}
+
+async function ensureTournamentMatches() {
+  const tournament = await prisma.tournament.findUnique({
+    where: { id: TOURNAMENT_ID },
+    select: {
+      id: true,
+      matches: {
+        select: {
+          round: true,
+          matchNumber: true,
+        },
+      },
+    },
+  });
+
+  if (!tournament) {
+    throw new HttpError("Tournament not found", 404);
+  }
+
+  const existingKeys = new Set(
+    tournament.matches.map((match) => `${match.round}-${match.matchNumber}`),
+  );
+
+  const missingMatches = createTournamentMatchSeed(TOURNAMENT_ID).filter(
+    (match) => !existingKeys.has(`${match.round}-${match.matchNumber}`),
+  );
+
+  if (missingMatches.length > 0) {
+    await prisma.tournamentMatch.createMany({
+      data: missingMatches,
+    });
+  }
 }
 
 async function persistBracketState(
@@ -246,6 +296,11 @@ export async function POST(req: Request) {
       throw new HttpError("Tournament not found", 404);
     }
 
+    if (body.action === "repairBracket") {
+      await ensureTournamentMatches();
+      return NextResponse.json(buildTournamentSnapshot(await getTournamentRecord()));
+    }
+
     if (body.action === "updateTournament") {
       await prisma.tournament.update({
         where: { id: TOURNAMENT_ID },
@@ -260,6 +315,40 @@ export async function POST(req: Request) {
       });
 
       return NextResponse.json(buildTournamentSnapshot(await getTournamentRecord()));
+    }
+
+    if (body.action === "updateSeeds") {
+      await ensureTournamentMatches();
+
+      const currentTournament = await getTournamentRecord();
+
+      if (!currentTournament) {
+        throw new HttpError("Tournament not found", 404);
+      }
+
+      const roundOneMatches = currentTournament.matches.filter(
+        (match) => match.round === 1,
+      );
+
+      await prisma.$transaction(
+        roundOneMatches.map((match) => {
+          const seed = body.seeds.find((item) => item.matchId === match.id);
+
+          return prisma.tournamentMatch.update({
+            where: { id: match.id },
+            data: {
+              leftViewerName: normalizeText(seed?.leftViewerName),
+              rightViewerName: normalizeText(seed?.rightViewerName),
+              leftSlotName: normalizeText(seed?.leftSlotName),
+              rightSlotName: normalizeText(seed?.rightSlotName),
+            },
+          });
+        }),
+      );
+
+      return NextResponse.json(
+        buildTournamentSnapshot(await persistBracketState("draft")),
+      );
     }
 
     if (body.action === "updateMatch") {

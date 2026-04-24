@@ -4,20 +4,20 @@ import type { ReactNode } from "react";
 import { useEffect, useMemo, useState } from "react";
 import {
   CheckCircle2,
-  Crown,
   Loader2,
   RefreshCw,
   RotateCcw,
   Save,
   ShieldAlert,
   Swords,
+  Trophy,
   XCircle,
 } from "lucide-react";
 import { LegacyTournamentOverlayFrame } from "@/components/tournament/LegacyTournamentOverlayFrame";
-import { TournamentAdminMatchCard } from "@/components/tournament/TournamentAdminMatchCard";
 import type {
   TournamentMatchSnapshot,
   TournamentSnapshot,
+  TournamentWinnerSide,
 } from "@/lib/tournament";
 
 type AdminUser = {
@@ -25,39 +25,24 @@ type AdminUser = {
   isAdmin: boolean;
 };
 
-type TournamentStatus = "draft" | "active" | "completed";
-
-type TournamentMetaForm = {
-  title: string;
-  description: string;
-  status: TournamentStatus;
-};
-
-type ChampionForm = {
-  championName: string;
-  championSlotName: string;
+type SeedSlot = {
+  seedNumber: number;
+  matchId: string;
+  side: "left" | "right";
+  bracketLabel: string;
+  viewerName: string;
+  slotName: string;
 };
 
 const inputClassName =
   "h-12 w-full border border-white/10 bg-white/[0.03] px-4 text-sm text-white outline-none transition-all duration-200 placeholder:text-white/28 focus:border-sky-400/30 focus:bg-white/[0.05]";
 
-const textareaClassName =
-  "min-h-[120px] w-full border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white outline-none transition-all duration-200 placeholder:text-white/28 focus:border-sky-400/30 focus:bg-white/[0.05]";
-
 export default function AdminTournamentPage() {
   const [me, setMe] = useState<AdminUser | null>(null);
   const [loadingUser, setLoadingUser] = useState(true);
   const [loadingTournament, setLoadingTournament] = useState(true);
+  const [repairingBracket, setRepairingBracket] = useState(false);
   const [tournament, setTournament] = useState<TournamentSnapshot | null>(null);
-  const [metaForm, setMetaForm] = useState<TournamentMetaForm>({
-    title: "",
-    description: "",
-    status: "draft",
-  });
-  const [championForm, setChampionForm] = useState<ChampionForm>({
-    championName: "",
-    championSlotName: "",
-  });
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [busyKey, setBusyKey] = useState<string | null>(null);
@@ -67,64 +52,52 @@ export default function AdminTournamentPage() {
     void loadTournament();
   }, []);
 
-  useEffect(() => {
-    if (!tournament) {
-      setMetaForm({
-        title: "",
-        description: "",
-        status: "draft",
-      });
-      setChampionForm({
-        championName: "",
-        championSlotName: "",
-      });
-      return;
-    }
-
-    setMetaForm({
-      title: tournament.title,
-      description: tournament.description,
-      status: tournament.status,
-    });
-    setChampionForm({
-      championName: tournament.championName ?? "",
-      championSlotName: tournament.championSlotName ?? "",
-    });
-  }, [tournament]);
-
-  const rounds = useMemo(() => {
-    if (!tournament) {
-      return [];
-    }
-
-    return tournament.matches.reduce<
-      Array<{
-        round: number;
-        label: string;
-        matches: TournamentMatchSnapshot[];
-      }>
-    >((groups, match) => {
-      const existing = groups.find((item) => item.round === match.round);
-
-      if (existing) {
-        existing.matches.push(match);
-        return groups;
-      }
-
-      groups.push({
-        round: match.round,
-        label: match.roundLabel,
-        matches: [match],
-      });
-
-      return groups;
-    }, []);
-  }, [tournament]);
-
   const quarterfinalMatches = useMemo(
-    () => tournament?.matches.filter((match) => match.round === 1) ?? [],
+    () =>
+      [...(tournament?.matches ?? [])]
+        .filter((match) => match.round === 1)
+        .sort((left, right) => left.matchNumber - right.matchNumber),
     [tournament],
   );
+
+  const semifinalMatches = useMemo(
+    () =>
+      [...(tournament?.matches ?? [])]
+        .filter((match) => match.round === 2)
+        .sort((left, right) => left.matchNumber - right.matchNumber),
+    [tournament],
+  );
+
+  const finalMatch = useMemo(
+    () => tournament?.matches.find((match) => match.round === 3) ?? null,
+    [tournament],
+  );
+
+  const seedSlots = useMemo<SeedSlot[]>(() => {
+    const positions: SeedSlot[] = [];
+
+    for (const match of quarterfinalMatches) {
+      positions.push({
+        seedNumber: positions.length + 1,
+        matchId: match.id,
+        side: "left",
+        bracketLabel: `${match.label} Left`,
+        viewerName: match.leftViewerName ?? "",
+        slotName: match.leftSlotName ?? "",
+      });
+
+      positions.push({
+        seedNumber: positions.length + 1,
+        matchId: match.id,
+        side: "right",
+        bracketLabel: `${match.label} Right`,
+        viewerName: match.rightViewerName ?? "",
+        slotName: match.rightSlotName ?? "",
+      });
+    }
+
+    return positions;
+  }, [quarterfinalMatches]);
 
   async function loadUser() {
     setLoadingUser(true);
@@ -146,6 +119,7 @@ export default function AdminTournamentPage() {
 
   async function loadTournament() {
     setLoadingTournament(true);
+    setError("");
 
     try {
       const res = await fetch("/api/tournament", {
@@ -163,7 +137,35 @@ export default function AdminTournamentPage() {
         );
       }
 
-      setTournament((data as TournamentSnapshot | null) ?? null);
+      let snapshot = (data as TournamentSnapshot | null) ?? null;
+
+      if (snapshot && snapshot.matches.length === 0) {
+        setRepairingBracket(true);
+
+        const repairRes = await fetch("/api/tournament", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ action: "repairBracket" }),
+        });
+
+        const repairData = (await repairRes.json()) as
+          | TournamentSnapshot
+          | { error?: string };
+
+        if (!repairRes.ok) {
+          throw new Error(
+            typeof repairData === "object" && repairData && "error" in repairData
+              ? repairData.error || "Could not repair tournament bracket"
+              : "Could not repair tournament bracket",
+          );
+        }
+
+        snapshot = repairData as TournamentSnapshot;
+      }
+
+      setTournament(snapshot);
     } catch (fetchError) {
       setError(
         fetchError instanceof Error
@@ -171,19 +173,14 @@ export default function AdminTournamentPage() {
           : "Could not load tournament",
       );
     } finally {
+      setRepairingBracket(false);
       setLoadingTournament(false);
     }
   }
 
-  function updateMatchField(
-    matchId: string,
-    key:
-      | "leftViewerName"
-      | "rightViewerName"
-      | "leftSlotName"
-      | "rightSlotName"
-      | "leftPayout"
-      | "rightPayout",
+  function updateSeedField(
+    seedNumber: number,
+    key: "viewerName" | "slotName",
     value: string,
   ) {
     setTournament((current) => {
@@ -191,19 +188,37 @@ export default function AdminTournamentPage() {
         return current;
       }
 
+      const targetSeed = seedSlots.find((item) => item.seedNumber === seedNumber);
+
+      if (!targetSeed) {
+        return current;
+      }
+
       return {
         ...current,
-        matches: current.matches.map((match) =>
-          match.id === matchId
-            ? {
-                ...match,
-                [key]:
-                  key === "leftPayout" || key === "rightPayout"
-                    ? Number(value || 0)
-                    : value,
-              }
-            : match,
-        ),
+        matches: current.matches.map((match) => {
+          if (match.id !== targetSeed.matchId) {
+            return match;
+          }
+
+          if (targetSeed.side === "left") {
+            return {
+              ...match,
+              leftViewerName:
+                key === "viewerName" ? value : (match.leftViewerName ?? ""),
+              leftSlotName:
+                key === "slotName" ? value : (match.leftSlotName ?? ""),
+            };
+          }
+
+          return {
+            ...match,
+            rightViewerName:
+              key === "viewerName" ? value : (match.rightViewerName ?? ""),
+            rightSlotName:
+              key === "slotName" ? value : (match.rightSlotName ?? ""),
+          };
+        }),
       };
     });
   }
@@ -253,10 +268,70 @@ export default function AdminTournamentPage() {
       {
         action: "initialize",
         title: "Slot Tournament",
-        description:
-          "Live bracket control for the current DirtyGunner slot tournament.",
+        description: "DirtyGunner slot tournament bracket.",
       },
       "Tournament initialized.",
+    );
+  }
+
+  async function handleSaveSeeds() {
+    if (!tournament) {
+      return;
+    }
+
+    const roundOneMatches = tournament.matches
+      .filter((match) => match.round === 1)
+      .sort((left, right) => left.matchNumber - right.matchNumber);
+
+    await submitAction(
+      "save-seeds",
+      {
+        action: "updateSeeds",
+        seeds: roundOneMatches.map((match) => ({
+          matchId: match.id,
+          leftViewerName: match.leftViewerName,
+          rightViewerName: match.rightViewerName,
+          leftSlotName: match.leftSlotName,
+          rightSlotName: match.rightSlotName,
+        })),
+      },
+      "Seeds saved.",
+    );
+  }
+
+  async function handleSetWinner(
+    match: TournamentMatchSnapshot,
+    winnerSide: TournamentWinnerSide,
+  ) {
+    if (winnerSide !== "left" && winnerSide !== "right") {
+      return;
+    }
+
+    await submitAction(
+      `${match.id}-winner-${winnerSide}`,
+      {
+        action: "setWinner",
+        matchId: match.id,
+        winnerSide,
+        leftViewerName: match.leftViewerName,
+        rightViewerName: match.rightViewerName,
+        leftSlotName: match.leftSlotName,
+        rightSlotName: match.rightSlotName,
+        leftPayout: match.leftPayout,
+        rightPayout: match.rightPayout,
+      },
+      `${match.label} winner updated.`,
+    );
+  }
+
+  async function handleClearWinner(match: TournamentMatchSnapshot) {
+    await submitAction(
+      `${match.id}-clear`,
+      {
+        action: "clearWinner",
+        matchId: match.id,
+      },
+      `${match.label} winner cleared.`,
     );
   }
 
@@ -309,15 +384,14 @@ export default function AdminTournamentPage() {
         <div className="flex min-w-0 flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div className="min-w-0">
             <div className="text-xs font-semibold uppercase tracking-[0.3em] text-sky-300/85">
-              Live Operator Console
+              Simple Tournament Admin
             </div>
             <h1 className="mt-2 truncate text-2xl font-bold text-white sm:text-3xl md:text-4xl">
-              Tournament Control
+              Seed Players And Pick Winners
             </h1>
             <p className="mt-3 max-w-3xl text-sm leading-7 text-white/58">
-              Run the full bracket from this page: seed quarterfinals, set
-              payouts, click winners, and let the bracket advance through to the
-              champion automatically.
+              Enter the 8 starting players in order, save the seeds, then click
+              winners as the bracket plays out on stream.
             </p>
           </div>
 
@@ -344,7 +418,7 @@ export default function AdminTournamentPage() {
         </Notice>
       ) : null}
 
-      {loadingTournament ? (
+      {loadingTournament || repairingBracket ? (
         <section
           className="border px-6 py-10 text-center text-white/65"
           style={{
@@ -355,7 +429,7 @@ export default function AdminTournamentPage() {
         >
           <div className="inline-flex items-center gap-3">
             <Loader2 className="h-4 w-4 animate-spin" />
-            Loading tournament...
+            {repairingBracket ? "Repairing bracket..." : "Loading tournament..."}
           </div>
         </section>
       ) : !tournament ? (
@@ -376,8 +450,8 @@ export default function AdminTournamentPage() {
                 No Tournament Initialized
               </h2>
               <p className="mt-3 max-w-2xl text-sm leading-7 text-white/56">
-                Create the native tournament shell first, then seed the bracket
-                and manage the event from this page.
+                Create the bracket first, then enter the 8 seeds and run the
+                winners through to champion.
               </p>
             </div>
 
@@ -398,7 +472,7 @@ export default function AdminTournamentPage() {
         </section>
       ) : (
         <>
-          <div className="grid gap-6 xl:grid-cols-[minmax(0,1.35fr)_420px]">
+          <div className="grid gap-6 xl:grid-cols-[minmax(0,1.35fr)_360px]">
             <section
               className="overflow-hidden border"
               style={{
@@ -409,15 +483,11 @@ export default function AdminTournamentPage() {
             >
               <div className="border-b border-white/8 px-5 py-5 sm:px-6">
                 <div className="text-xs font-semibold uppercase tracking-[0.26em] text-white/42">
-                  Bracket Preview
+                  Public View
                 </div>
                 <h2 className="mt-2 text-xl font-bold text-white sm:text-2xl">
-                  Event Screen
+                  Live Bracket Preview
                 </h2>
-                <p className="mt-3 max-w-2xl text-sm leading-7 text-white/56">
-                  This mirrors the public-facing tournament stage so the admin
-                  operator can see exactly how current bracket state will read live.
-                </p>
               </div>
 
               <div className="p-3 sm:p-4">
@@ -437,184 +507,47 @@ export default function AdminTournamentPage() {
             >
               <div className="border-b border-white/8 px-5 py-5 sm:px-6">
                 <div className="text-xs font-semibold uppercase tracking-[0.26em] text-white/42">
-                  Secondary Controls
+                  Quick Controls
                 </div>
                 <h2 className="mt-2 text-xl font-bold text-white sm:text-2xl">
-                  Tournament Meta
+                  Refresh And Reset
                 </h2>
               </div>
 
-              <div className="space-y-6 p-5 sm:p-6">
-                <Field label="Title">
-                  <input
-                    value={metaForm.title}
-                    onChange={(event) =>
-                      setMetaForm((current) => ({
-                        ...current,
-                        title: event.target.value,
-                      }))
+              <div className="space-y-4 p-5 sm:p-6">
+                <button
+                  type="button"
+                  onClick={() => void loadTournament()}
+                  disabled={busyKey === "refresh"}
+                  className="inline-flex h-12 w-full items-center justify-center gap-2 border border-white/8 bg-white/[0.03] px-4 text-sm font-semibold uppercase tracking-[0.08em] text-white transition-all duration-200 hover:bg-white/[0.05]"
+                >
+                  <RefreshCw className="h-4 w-4" />
+                  Refresh
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (!window.confirm("Reset the full tournament bracket?")) {
+                      return;
                     }
-                    className={inputClassName}
-                  />
-                </Field>
 
-                <Field label="Description">
-                  <textarea
-                    value={metaForm.description}
-                    onChange={(event) =>
-                      setMetaForm((current) => ({
-                        ...current,
-                        description: event.target.value,
-                      }))
-                    }
-                    className={textareaClassName}
-                  />
-                </Field>
-
-                <Field label="Status">
-                  <select
-                    value={metaForm.status}
-                    onChange={(event) =>
-                      setMetaForm((current) => ({
-                        ...current,
-                        status: event.target.value as TournamentStatus,
-                      }))
-                    }
-                    className={inputClassName}
-                  >
-                    <option value="draft">draft</option>
-                    <option value="active">active</option>
-                    <option value="completed">completed</option>
-                  </select>
-                </Field>
-
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <button
-                    type="button"
-                    onClick={() =>
-                      void submitAction(
-                        "save-meta",
-                        {
-                          action: "updateTournament",
-                          title: metaForm.title,
-                          description: metaForm.description,
-                          status: metaForm.status,
-                        },
-                        "Tournament details updated.",
-                      )
-                    }
-                    disabled={busyKey === "save-meta"}
-                    className="inline-flex h-12 items-center justify-center gap-2 bg-sky-500 px-4 text-sm font-extrabold uppercase tracking-[0.08em] text-white disabled:cursor-not-allowed disabled:opacity-60"
-                  >
-                    {busyKey === "save-meta" ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <Save className="h-4 w-4" />
-                    )}
-                    Save Meta
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => void loadTournament()}
-                    disabled={busyKey === "refresh"}
-                    className="inline-flex h-12 items-center justify-center gap-2 border border-white/8 bg-white/[0.03] px-4 text-sm font-semibold uppercase tracking-[0.08em] text-white transition-all duration-200 hover:bg-white/[0.05]"
-                  >
-                    <RefreshCw className="h-4 w-4" />
-                    Refresh
-                  </button>
-                </div>
-
-                <div className="border-t border-white/8 pt-6">
-                  <div className="text-xs font-semibold uppercase tracking-[0.26em] text-white/42">
-                    Champion Override
-                  </div>
-                  <p className="mt-3 text-sm leading-7 text-white/56">
-                    Final winner updates automatically. Use this only if you need
-                    to force the champion state for production cleanup.
-                  </p>
-
-                  <div className="mt-4 space-y-4">
-                    <Field label="Champion Name">
-                      <input
-                        value={championForm.championName}
-                        onChange={(event) =>
-                          setChampionForm((current) => ({
-                            ...current,
-                            championName: event.target.value,
-                          }))
-                        }
-                        className={inputClassName}
-                        placeholder="Viewer name"
-                      />
-                    </Field>
-
-                    <Field label="Winning Slot">
-                      <input
-                        value={championForm.championSlotName}
-                        onChange={(event) =>
-                          setChampionForm((current) => ({
-                            ...current,
-                            championSlotName: event.target.value,
-                          }))
-                        }
-                        className={inputClassName}
-                        placeholder="Slot title"
-                      />
-                    </Field>
-
-                    <button
-                      type="button"
-                      onClick={() =>
-                        void submitAction(
-                          "champion",
-                          {
-                            action: "declareChampion",
-                            championName: championForm.championName,
-                            championSlotName: championForm.championSlotName,
-                            status: "completed",
-                          },
-                          "Champion updated.",
-                        )
-                      }
-                      disabled={busyKey === "champion"}
-                      className="inline-flex h-12 w-full items-center justify-center gap-2 border border-amber-300/18 bg-amber-300/10 px-4 text-sm font-semibold uppercase tracking-[0.08em] text-white transition-all duration-200 hover:bg-amber-300/15 disabled:cursor-not-allowed disabled:opacity-60"
-                    >
-                      {busyKey === "champion" ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <Crown className="h-4 w-4" />
-                      )}
-                      Set Champion
-                    </button>
-                  </div>
-                </div>
-
-                <div className="border-t border-white/8 pt-6">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (!window.confirm("Reset the full tournament bracket?")) {
-                        return;
-                      }
-
-                      void submitAction(
-                        "reset-tournament",
-                        { action: "resetTournament" },
-                        "Tournament reset.",
-                      );
-                    }}
-                    disabled={busyKey === "reset-tournament"}
-                    className="inline-flex h-11 w-full items-center justify-center gap-2 border border-red-400/18 bg-red-400/10 px-4 text-sm font-semibold uppercase tracking-[0.08em] text-white transition-all duration-200 hover:bg-red-400/15 disabled:cursor-not-allowed disabled:opacity-60"
-                  >
-                    {busyKey === "reset-tournament" ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <RotateCcw className="h-4 w-4" />
-                    )}
-                    Reset Tournament
-                  </button>
-                </div>
+                    void submitAction(
+                      "reset-tournament",
+                      { action: "resetTournament" },
+                      "Tournament reset.",
+                    );
+                  }}
+                  disabled={busyKey === "reset-tournament"}
+                  className="inline-flex h-12 w-full items-center justify-center gap-2 border border-red-400/18 bg-red-400/10 px-4 text-sm font-semibold uppercase tracking-[0.08em] text-white transition-all duration-200 hover:bg-red-400/15 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {busyKey === "reset-tournament" ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <RotateCcw className="h-4 w-4" />
+                  )}
+                  Reset Tournament
+                </button>
               </div>
             </section>
           </div>
@@ -629,169 +562,285 @@ export default function AdminTournamentPage() {
           >
             <div className="border-b border-white/8 px-5 py-5 sm:px-6">
               <div className="text-xs font-semibold uppercase tracking-[0.26em] text-white/42">
-                Simple Setup
+                Step 1
               </div>
               <h2 className="mt-2 text-xl font-bold text-white sm:text-2xl">
-                Seed The 8 Entrants
+                Enter Seeds 1 Through 8
               </h2>
               <p className="mt-3 max-w-3xl text-sm leading-7 text-white/56">
-                Type the viewer name and slot name for each round-one side, save
-                the match, then click the winning side when that match is over.
-                The public bracket updates from these entries automatically.
+                Seeds 1 to 4 fill the left side top-down. Seeds 5 to 8 fill the
+                right side top-down.
               </p>
             </div>
 
-            <div className="grid gap-4 p-5 sm:p-6 xl:grid-cols-2">
+            <div className="space-y-5 p-5 sm:p-6">
+              <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                {seedSlots.map((seed) => (
+                  <SeedInputCard
+                    key={seed.seedNumber}
+                    seed={seed}
+                    onViewerChange={(value) =>
+                      updateSeedField(seed.seedNumber, "viewerName", value)
+                    }
+                    onSlotChange={(value) =>
+                      updateSeedField(seed.seedNumber, "slotName", value)
+                    }
+                  />
+                ))}
+              </div>
+
+              <button
+                type="button"
+                onClick={() => void handleSaveSeeds()}
+                disabled={busyKey === "save-seeds" || seedSlots.length === 0}
+                className="inline-flex h-12 items-center justify-center gap-2 bg-sky-500 px-5 text-sm font-extrabold uppercase tracking-[0.08em] text-white disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {busyKey === "save-seeds" ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Save className="h-4 w-4" />
+                )}
+                Save All Seeds
+              </button>
+            </div>
+          </section>
+
+          <section className="space-y-4">
+            <div>
+              <div className="text-xs font-semibold uppercase tracking-[0.26em] text-white/42">
+                Step 2
+              </div>
+              <h2 className="mt-2 text-xl font-bold text-white sm:text-2xl">
+                Pick Quarterfinal Winners
+              </h2>
+            </div>
+
+            <div className="grid gap-4 xl:grid-cols-2">
               {quarterfinalMatches.map((match) => (
-                <SimpleSeedMatchCard
+                <WinnerPickerCard
                   key={match.id}
                   match={match}
                   busyKey={busyKey}
-                  onFieldChange={updateMatchField}
-                  onSave={async (selectedMatch) => {
-                    await submitAction(
-                      `${selectedMatch.id}-save`,
-                      {
-                        action: "updateMatch",
-                        matchId: selectedMatch.id,
-                        leftViewerName: selectedMatch.leftViewerName,
-                        rightViewerName: selectedMatch.rightViewerName,
-                        leftSlotName: selectedMatch.leftSlotName,
-                        rightSlotName: selectedMatch.rightSlotName,
-                        leftPayout: selectedMatch.leftPayout,
-                        rightPayout: selectedMatch.rightPayout,
-                      },
-                      `${selectedMatch.label} saved.`,
-                    );
-                  }}
-                  onSetWinner={async (selectedMatch, winnerSide) => {
-                    await submitAction(
-                      `${selectedMatch.id}-winner-${winnerSide}`,
-                      {
-                        action: "setWinner",
-                        matchId: selectedMatch.id,
-                        winnerSide,
-                        leftViewerName: selectedMatch.leftViewerName,
-                        rightViewerName: selectedMatch.rightViewerName,
-                        leftSlotName: selectedMatch.leftSlotName,
-                        rightSlotName: selectedMatch.rightSlotName,
-                        leftPayout: selectedMatch.leftPayout,
-                        rightPayout: selectedMatch.rightPayout,
-                      },
-                      `${selectedMatch.label} winner updated.`,
-                    );
-                  }}
-                  onClearWinner={async (selectedMatch) => {
-                    await submitAction(
-                      `${selectedMatch.id}-clear`,
-                      {
-                        action: "clearWinner",
-                        matchId: selectedMatch.id,
-                      },
-                      `${selectedMatch.label} winner cleared.`,
-                    );
-                  }}
+                  onSelectWinner={handleSetWinner}
+                  onClearWinner={handleClearWinner}
                 />
               ))}
             </div>
           </section>
 
           <section className="space-y-4">
-            <div className="flex min-w-0 items-center justify-between gap-3">
-              <div>
-                <div className="text-xs font-semibold uppercase tracking-[0.26em] text-white/42">
-                  Step 2
-                </div>
-                <h2 className="mt-2 text-xl font-bold text-white sm:text-2xl">
-                  Run The Remaining Bracket
-                </h2>
-                <p className="mt-2 max-w-3xl text-sm leading-7 text-white/56">
-                  After quarterfinal seeding is saved, use these match cards to
-                  record semifinal and final payouts and choose winners as the
-                  tournament progresses.
-                </p>
+            <div>
+              <div className="text-xs font-semibold uppercase tracking-[0.26em] text-white/42">
+                Step 3
               </div>
-
-              <div className="hidden shrink-0 lg:block">
-                <TopStat
-                  value={String(
-                    rounds.reduce((total, round) => total + round.matches.length, 0),
-                  )}
-                  label="Total Matches"
-                />
-              </div>
+              <h2 className="mt-2 text-xl font-bold text-white sm:text-2xl">
+                Pick Semifinal And Final Winners
+              </h2>
             </div>
 
-            {rounds
-              .filter((round) => round.round > 1)
-              .map((round) => (
-              <div key={round.round} className="space-y-4">
-                <div className="flex min-w-0 items-center gap-3">
-                  <div className="h-px flex-1 bg-white/8" />
-                  <div className="shrink-0 text-sm font-semibold uppercase tracking-[0.24em] text-blue-300/80">
-                    {round.label}
-                  </div>
-                  <div className="h-px flex-1 bg-white/8" />
-                </div>
+            <div className="grid gap-4 xl:grid-cols-2">
+              {semifinalMatches.map((match) => (
+                <WinnerPickerCard
+                  key={match.id}
+                  match={match}
+                  busyKey={busyKey}
+                  onSelectWinner={handleSetWinner}
+                  onClearWinner={handleClearWinner}
+                />
+              ))}
 
-                <div className="grid gap-4 xl:grid-cols-2">
-                  {round.matches.map((match) => (
-                    <TournamentAdminMatchCard
-                      key={match.id}
-                      match={match}
-                      busyKey={busyKey}
-                      onFieldChange={updateMatchField}
-                      onSave={async (selectedMatch) => {
-                        await submitAction(
-                          `${selectedMatch.id}-save`,
-                          {
-                            action: "updateMatch",
-                            matchId: selectedMatch.id,
-                            leftViewerName: selectedMatch.leftViewerName,
-                            rightViewerName: selectedMatch.rightViewerName,
-                            leftSlotName: selectedMatch.leftSlotName,
-                            rightSlotName: selectedMatch.rightSlotName,
-                            leftPayout: selectedMatch.leftPayout,
-                            rightPayout: selectedMatch.rightPayout,
-                          },
-                          `${selectedMatch.label} saved.`,
-                        );
-                      }}
-                      onSetWinner={async (selectedMatch, winnerSide) => {
-                        await submitAction(
-                          `${selectedMatch.id}-winner-${winnerSide}`,
-                          {
-                            action: "setWinner",
-                            matchId: selectedMatch.id,
-                            winnerSide,
-                            leftViewerName: selectedMatch.leftViewerName,
-                            rightViewerName: selectedMatch.rightViewerName,
-                            leftSlotName: selectedMatch.leftSlotName,
-                            rightSlotName: selectedMatch.rightSlotName,
-                            leftPayout: selectedMatch.leftPayout,
-                            rightPayout: selectedMatch.rightPayout,
-                          },
-                          `${selectedMatch.label} winner updated.`,
-                        );
-                      }}
-                      onClearWinner={async (selectedMatch) => {
-                        await submitAction(
-                          `${selectedMatch.id}-clear`,
-                          {
-                            action: "clearWinner",
-                            matchId: selectedMatch.id,
-                          },
-                          `${selectedMatch.label} winner cleared.`,
-                        );
-                      }}
-                    />
-                  ))}
-                </div>
-              </div>
-            ))}
+              {finalMatch ? (
+                <WinnerPickerCard
+                  match={finalMatch}
+                  busyKey={busyKey}
+                  onSelectWinner={handleSetWinner}
+                  onClearWinner={handleClearWinner}
+                />
+              ) : null}
+            </div>
           </section>
         </>
       )}
+    </div>
+  );
+}
+
+function SeedInputCard({
+  seed,
+  onViewerChange,
+  onSlotChange,
+}: {
+  seed: SeedSlot;
+  onViewerChange: (value: string) => void;
+  onSlotChange: (value: string) => void;
+}) {
+  return (
+    <article
+      className="overflow-hidden border border-white/10 p-4"
+      style={{
+        background:
+          "linear-gradient(180deg, rgba(10,15,25,0.96) 0%, rgba(6,10,18,0.98) 100%)",
+      }}
+    >
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <div className="text-lg font-black uppercase tracking-[0.08em] text-white">
+          Seed {seed.seedNumber}
+        </div>
+        <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/42">
+          {seed.bracketLabel}
+        </div>
+      </div>
+
+      <div className="space-y-3">
+        <Field label="Username">
+          <input
+            value={seed.viewerName}
+            onChange={(event) => onViewerChange(event.target.value)}
+            className={inputClassName}
+            placeholder={`Player ${seed.seedNumber}`}
+          />
+        </Field>
+
+        <Field label="Slot Name">
+          <input
+            value={seed.slotName}
+            onChange={(event) => onSlotChange(event.target.value)}
+            className={inputClassName}
+            placeholder="Slot title"
+          />
+        </Field>
+      </div>
+    </article>
+  );
+}
+
+function WinnerPickerCard({
+  match,
+  busyKey,
+  onSelectWinner,
+  onClearWinner,
+}: {
+  match: TournamentMatchSnapshot;
+  busyKey: string | null;
+  onSelectWinner: (
+    match: TournamentMatchSnapshot,
+    winnerSide: TournamentWinnerSide,
+  ) => Promise<void>;
+  onClearWinner: (match: TournamentMatchSnapshot) => Promise<void>;
+}) {
+  const isBusy = Boolean(busyKey?.startsWith(match.id));
+
+  return (
+    <article
+      className="overflow-hidden border border-white/10"
+      style={{
+        background:
+          "linear-gradient(180deg, rgba(10,15,25,0.96) 0%, rgba(6,10,18,0.98) 100%)",
+      }}
+    >
+      <div className="border-b border-white/8 px-4 py-4 sm:px-5">
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <div className="text-[10px] font-semibold uppercase tracking-[0.24em] text-white/38">
+              {match.roundLabel}
+            </div>
+            <h3 className="mt-2 text-lg font-black uppercase tracking-[0.06em] text-white">
+              {match.label}
+            </h3>
+          </div>
+
+          <div className="border border-white/10 bg-white/[0.03] px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/62">
+            {match.winnerSide ? `Winner: ${match.winnerSide}` : "Awaiting result"}
+          </div>
+        </div>
+      </div>
+
+      <div className="grid gap-px bg-white/8 lg:grid-cols-2">
+        <WinnerSidePanel
+          title="Left"
+          viewerName={match.leftViewerName}
+          slotName={match.leftSlotName}
+          isWinner={match.winnerSide === "left"}
+          onClick={() => void onSelectWinner(match, "left")}
+          disabled={isBusy || !Boolean((match.leftViewerName ?? "").trim())}
+          busy={busyKey === `${match.id}-winner-left`}
+        />
+        <WinnerSidePanel
+          title="Right"
+          viewerName={match.rightViewerName}
+          slotName={match.rightSlotName}
+          isWinner={match.winnerSide === "right"}
+          onClick={() => void onSelectWinner(match, "right")}
+          disabled={isBusy || !Boolean((match.rightViewerName ?? "").trim())}
+          busy={busyKey === `${match.id}-winner-right`}
+        />
+      </div>
+
+      <div className="px-4 py-4 sm:px-5">
+        <button
+          type="button"
+          onClick={() => void onClearWinner(match)}
+          disabled={isBusy}
+          className="inline-flex h-11 items-center justify-center gap-2 border border-white/10 bg-white/[0.03] px-4 text-sm font-semibold uppercase tracking-[0.08em] text-white disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {busyKey === `${match.id}-clear` ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <RotateCcw className="h-4 w-4" />
+          )}
+          Clear Winner
+        </button>
+      </div>
+    </article>
+  );
+}
+
+function WinnerSidePanel({
+  title,
+  viewerName,
+  slotName,
+  isWinner,
+  onClick,
+  disabled,
+  busy,
+}: {
+  title: string;
+  viewerName: string | null;
+  slotName: string | null;
+  isWinner: boolean;
+  onClick: () => void;
+  disabled: boolean;
+  busy?: boolean;
+}) {
+  return (
+    <div
+      className="p-4 sm:p-5"
+      style={{
+        background: isWinner ? "rgba(56,189,248,0.08)" : "transparent",
+      }}
+    >
+      <div className="mb-3 text-sm font-black uppercase tracking-[0.08em] text-white">
+        {title} Side
+      </div>
+
+      <div className="space-y-2">
+        <div className="text-lg font-bold text-white">
+          {viewerName?.trim() || "Awaiting"}
+        </div>
+        <div className="text-sm text-white/55">
+          {slotName?.trim() || "No slot selected"}
+        </div>
+      </div>
+
+      <button
+        type="button"
+        onClick={onClick}
+        disabled={disabled}
+        className="mt-4 inline-flex h-11 w-full items-center justify-center gap-2 border border-white/10 bg-white/[0.03] px-4 text-sm font-semibold uppercase tracking-[0.08em] text-white disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trophy className="h-4 w-4" />}
+        {title === "Left" ? "Pick Left Winner" : "Pick Right Winner"}
+      </button>
     </div>
   );
 }
@@ -810,198 +859,6 @@ function Field({
       </div>
       {children}
     </label>
-  );
-}
-
-function SimpleSeedMatchCard({
-  match,
-  busyKey,
-  onFieldChange,
-  onSave,
-  onSetWinner,
-  onClearWinner,
-}: {
-  match: TournamentMatchSnapshot;
-  busyKey: string | null;
-  onFieldChange: (
-    matchId: string,
-    key:
-      | "leftViewerName"
-      | "rightViewerName"
-      | "leftSlotName"
-      | "rightSlotName"
-      | "leftPayout"
-      | "rightPayout",
-    value: string,
-  ) => void;
-  onSave: (match: TournamentMatchSnapshot) => Promise<void>;
-  onSetWinner: (
-    match: TournamentMatchSnapshot,
-    winnerSide: "left" | "right",
-  ) => Promise<void>;
-  onClearWinner: (match: TournamentMatchSnapshot) => Promise<void>;
-}) {
-  const isBusy = Boolean(busyKey?.startsWith(match.id));
-
-  return (
-    <article
-      className="overflow-hidden border border-white/10"
-      style={{
-        background:
-          "linear-gradient(180deg, rgba(10,15,25,0.96) 0%, rgba(6,10,18,0.98) 100%)",
-      }}
-    >
-      <div className="border-b border-white/8 px-4 py-4 sm:px-5">
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <div className="text-[10px] font-semibold uppercase tracking-[0.24em] text-white/38">
-              Quarterfinal
-            </div>
-            <h3 className="mt-2 text-lg font-black uppercase tracking-[0.06em] text-white">
-              {match.label}
-            </h3>
-          </div>
-
-          <div className="border border-white/10 bg-white/[0.03] px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/62">
-            {match.winnerSide ? `Winner: ${match.winnerSide}` : "Awaiting result"}
-          </div>
-        </div>
-      </div>
-
-      <div className="grid gap-px bg-white/8 lg:grid-cols-2">
-        <div className="space-y-3 bg-transparent p-4 sm:p-5">
-          <div className="text-sm font-black uppercase tracking-[0.08em] text-white">
-            Left Side
-          </div>
-          <Field label="Viewer Name">
-            <input
-              value={match.leftViewerName ?? ""}
-              onChange={(event) =>
-                onFieldChange(match.id, "leftViewerName", event.target.value)
-              }
-              className={inputClassName}
-              placeholder="Viewer name"
-            />
-          </Field>
-          <Field label="Slot Name">
-            <input
-              value={match.leftSlotName ?? ""}
-              onChange={(event) =>
-                onFieldChange(match.id, "leftSlotName", event.target.value)
-              }
-              className={inputClassName}
-              placeholder="Slot name"
-            />
-          </Field>
-          <Field label="Payout">
-            <input
-              type="number"
-              min="0"
-              step="0.01"
-              value={String(match.leftPayout ?? 0)}
-              onChange={(event) =>
-                onFieldChange(match.id, "leftPayout", event.target.value)
-              }
-              className={inputClassName}
-              placeholder="0"
-            />
-          </Field>
-        </div>
-
-        <div className="space-y-3 bg-transparent p-4 sm:p-5">
-          <div className="text-sm font-black uppercase tracking-[0.08em] text-white">
-            Right Side
-          </div>
-          <Field label="Viewer Name">
-            <input
-              value={match.rightViewerName ?? ""}
-              onChange={(event) =>
-                onFieldChange(match.id, "rightViewerName", event.target.value)
-              }
-              className={inputClassName}
-              placeholder="Viewer name"
-            />
-          </Field>
-          <Field label="Slot Name">
-            <input
-              value={match.rightSlotName ?? ""}
-              onChange={(event) =>
-                onFieldChange(match.id, "rightSlotName", event.target.value)
-              }
-              className={inputClassName}
-              placeholder="Slot name"
-            />
-          </Field>
-          <Field label="Payout">
-            <input
-              type="number"
-              min="0"
-              step="0.01"
-              value={String(match.rightPayout ?? 0)}
-              onChange={(event) =>
-                onFieldChange(match.id, "rightPayout", event.target.value)
-              }
-              className={inputClassName}
-              placeholder="0"
-            />
-          </Field>
-        </div>
-      </div>
-
-      <div className="flex flex-wrap gap-3 px-4 py-4 sm:px-5">
-        <button
-          type="button"
-          onClick={() => void onSave(match)}
-          disabled={isBusy}
-          className="inline-flex h-11 items-center justify-center gap-2 bg-sky-500 px-4 text-sm font-black uppercase tracking-[0.08em] text-white disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          {busyKey === `${match.id}-save` ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            <Save className="h-4 w-4" />
-          )}
-          Save Match
-        </button>
-
-        <button
-          type="button"
-          onClick={() => void onSetWinner(match, "left")}
-          disabled={isBusy}
-          className="inline-flex h-11 items-center justify-center gap-2 border border-emerald-300/18 bg-emerald-300/10 px-4 text-sm font-semibold uppercase tracking-[0.08em] text-white disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          {busyKey === `${match.id}-winner-left` ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : null}
-          Win Left
-        </button>
-
-        <button
-          type="button"
-          onClick={() => void onSetWinner(match, "right")}
-          disabled={isBusy}
-          className="inline-flex h-11 items-center justify-center gap-2 border border-amber-300/18 bg-amber-300/10 px-4 text-sm font-semibold uppercase tracking-[0.08em] text-white disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          {busyKey === `${match.id}-winner-right` ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : null}
-          Win Right
-        </button>
-
-        <button
-          type="button"
-          onClick={() => void onClearWinner(match)}
-          disabled={isBusy}
-          className="inline-flex h-11 items-center justify-center gap-2 border border-white/10 bg-white/[0.03] px-4 text-sm font-semibold uppercase tracking-[0.08em] text-white disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          {busyKey === `${match.id}-clear` ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            <RotateCcw className="h-4 w-4" />
-          )}
-          Clear Winner
-        </button>
-      </div>
-    </article>
   );
 }
 
