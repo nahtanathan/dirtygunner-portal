@@ -60,14 +60,34 @@
     let previousChampion = "";
     let previousChest = "";
     let winnerContainer;
-    let winnerName;
+    let winnerPrimaryText;
+    let winnerSecondaryText;
     let chestTxt;
 
     app.stage.addChild(bgLayer, nodeLayer);
 
-    function normalizeLabel(slotName, viewerName) {
-      const value = (slotName || viewerName || "AWAITING").trim();
-      return value ? value.toUpperCase() : "AWAITING";
+    function normalizeLine(value) {
+      const nextValue = String(value || "").trim();
+      return nextValue ? nextValue.toUpperCase() : "";
+    }
+
+    function buildEntryText(viewerName, slotName, fallback) {
+      const primary = normalizeLine(viewerName);
+      const secondary = normalizeLine(slotName);
+
+      if (primary && secondary) {
+        return { primary, secondary };
+      }
+
+      if (primary) {
+        return { primary, secondary: "" };
+      }
+
+      if (secondary) {
+        return { primary: secondary, secondary: "" };
+      }
+
+      return { primary: fallback, secondary: "" };
     }
 
     function formatMoney(value) {
@@ -97,21 +117,42 @@
         .lineStyle(2, color, 1)
         .drawRoundedRect(0, 0, BOX_W, BOX_H, 4);
 
-      const label = new PIXI.Text("AWAITING", {
+      const primaryLabel = new PIXI.Text("AWAITING", {
         fill: 0x00d4ff,
-        fontSize: 18,
+        fontSize: 16,
         fontFamily: "Teko"
       });
 
-      label.anchor.set(0.5);
-      label.position.set(BOX_W / 2, BOX_H / 2);
+      primaryLabel.anchor.set(0.5);
+
+      const secondaryLabel = new PIXI.Text("", {
+        fill: 0x00d4ff,
+        fontSize: 12,
+        fontFamily: "Teko"
+      });
+
+      secondaryLabel.anchor.set(0.5);
+      secondaryLabel.alpha = 0.92;
+
+      function positionLabels(primary, secondary) {
+        if (secondary.text) {
+          primary.position.set(BOX_W / 2, 20);
+          secondary.position.set(BOX_W / 2, 38);
+        } else {
+          primary.position.set(BOX_W / 2, BOX_H / 2);
+          secondary.position.set(BOX_W / 2, 38);
+        }
+      }
+
+      positionLabels(primaryLabel, secondaryLabel);
 
       container.addChild(box);
-      container.addChild(label);
+      container.addChild(primaryLabel);
+      container.addChild(secondaryLabel);
       nodeLayer.addChild(container);
 
-      nodes[id] = { label };
-      previousText[id] = "AWAITING";
+      nodes[id] = { primaryLabel, secondaryLabel, positionLabels };
+      previousText[id] = "AWAITING||";
     }
 
     function applyNodeText(id, text) {
@@ -121,22 +162,30 @@
         return;
       }
 
-      node.label.text = text;
+      const nextKey = text.primary + "||" + text.secondary;
 
-      if (previousText[id] !== text) {
-        previousText[id] = text;
-        animateText(node.label);
+      node.primaryLabel.text = text.primary;
+      node.secondaryLabel.text = text.secondary;
+      node.positionLabels(node.primaryLabel, node.secondaryLabel);
+
+      if (previousText[id] !== nextKey) {
+        previousText[id] = nextKey;
+        animateText(node.primaryLabel);
+
+        if (text.secondary) {
+          animateText(node.secondaryLabel);
+        }
       }
     }
 
     function matchText(match, side) {
       if (!match) {
-        return "AWAITING";
+        return buildEntryText("", "", "AWAITING");
       }
 
       return side === "left"
-        ? normalizeLabel(match.leftSlotName, match.leftViewerName)
-        : normalizeLabel(match.rightSlotName, match.rightViewerName);
+        ? buildEntryText(match.leftViewerName, match.leftSlotName, "AWAITING")
+        : buildEntryText(match.rightViewerName, match.rightSlotName, "AWAITING");
     }
 
     function renderSnapshot(snapshot) {
@@ -165,13 +214,24 @@
 
       const championText =
         snapshot && (snapshot.championName || snapshot.championSlotName)
-          ? normalizeLabel(snapshot.championName, snapshot.championSlotName)
-          : "CHAMPION";
+          ? buildEntryText(snapshot.championName, snapshot.championSlotName, "CHAMPION")
+          : buildEntryText("", "", "CHAMPION");
 
-      winnerName.text = championText;
+      const nextChampionKey = championText.primary + "||" + championText.secondary;
 
-      if (previousChampion !== championText) {
-        previousChampion = championText;
+      winnerPrimaryText.text = championText.primary;
+      winnerSecondaryText.text = championText.secondary;
+
+      if (championText.secondary) {
+        winnerPrimaryText.position.set(CHAMP_W / 2, 24);
+        winnerSecondaryText.position.set(CHAMP_W / 2, 53);
+      } else {
+        winnerPrimaryText.position.set(CHAMP_W / 2, CHAMP_H / 2);
+        winnerSecondaryText.position.set(CHAMP_W / 2, 53);
+      }
+
+      if (previousChampion !== nextChampionKey) {
+        previousChampion = nextChampionKey;
         gsap.fromTo(
           winnerContainer.scale,
           { x: 1.25, y: 1.25 },
@@ -228,16 +288,29 @@
 
       winnerContainer.addChild(winBox);
 
-      winnerName = new PIXI.Text("CHAMPION", {
+      winnerPrimaryText = new PIXI.Text("CHAMPION", {
         fill: 0x00d4ff,
-        fontSize: 32,
+        fontSize: 28,
         fontFamily: "Teko",
         fontWeight: "600"
       });
 
-      winnerName.anchor.set(0.5);
-      winnerName.position.set(CHAMP_W / 2, CHAMP_H / 2);
-      winnerContainer.addChild(winnerName);
+      winnerPrimaryText.anchor.set(0.5);
+      winnerPrimaryText.position.set(CHAMP_W / 2, CHAMP_H / 2);
+
+      winnerSecondaryText = new PIXI.Text("", {
+        fill: 0x00d4ff,
+        fontSize: 18,
+        fontFamily: "Teko",
+        fontWeight: "600"
+      });
+
+      winnerSecondaryText.anchor.set(0.5);
+      winnerSecondaryText.position.set(CHAMP_W / 2, 53);
+      winnerSecondaryText.alpha = 0.92;
+
+      winnerContainer.addChild(winnerPrimaryText);
+      winnerContainer.addChild(winnerSecondaryText);
       nodeLayer.addChild(winnerContainer);
 
       chestTxt = new PIXI.Text("$0", {
