@@ -7,6 +7,7 @@ import { encryptSecret } from "@/lib/crypto";
 import { createSession, setSessionCookie } from "@/lib/session";
 import { exchangeCodeForToken, fetchKickMe } from "@/lib/kick";
 import { env } from "@/lib/env";
+import { ensureKickPointSubscriptions } from "@/lib/kick/events";
 
 const PKCE_COOKIE = "kick_pkce_verifier";
 const STATE_COOKIE = "kick_oauth_state";
@@ -174,6 +175,14 @@ export async function GET(request: NextRequest) {
     kickUsername: user.kick_username ?? undefined,
     isAdmin: user.isAdmin,
   });
+
+  if (shouldBeBroadcaster) {
+    try {
+      await ensureKickPointSubscriptions(user.id);
+    } catch (error) {
+      console.error("Failed to ensure Kick point subscriptions", error);
+    }
+  }
 
   await setSessionCookie(sessionToken);
 
