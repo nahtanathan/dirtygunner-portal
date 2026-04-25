@@ -139,6 +139,20 @@ exports.Prisma.UserScalarFieldEnum = {
   profile_accent: 'profile_accent'
 };
 
+exports.Prisma.KickEventReceiptScalarFieldEnum = {
+  id: 'id',
+  kick_message_id: 'kick_message_id',
+  dedupe_key: 'dedupe_key',
+  kick_subscription_id: 'kick_subscription_id',
+  event_type: 'event_type',
+  event_version: 'event_version',
+  kick_user_id: 'kick_user_id',
+  kick_username: 'kick_username',
+  points_awarded: 'points_awarded',
+  payload: 'payload',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.KickRewardScalarFieldEnum = {
   id: 'id',
   kick_reward_id: 'kick_reward_id',
@@ -305,6 +319,7 @@ exports.Prisma.JsonNullValueFilter = {
 
 exports.Prisma.ModelName = {
   User: 'User',
+  KickEventReceipt: 'KickEventReceipt',
   KickReward: 'KickReward',
   SiteSettings: 'SiteSettings',
   LeaderboardSettings: 'LeaderboardSettings',

@@ -48,6 +48,7 @@ const adminNavItems: NavItem[] = [
   { name: "Settings", href: "/admin/settings", icon: Settings },
   { name: "Leaderboard", href: "/admin/leaderboard", icon: Trophy },
   { name: "Raffles", href: "/admin/raffles", icon: Gift },
+  { name: "Points Backfill", href: "/admin/points-backfill", icon: Trophy },
   { name: "Challenges", href: "/admin/challenges", icon: Target },
   { name: "Tournament", href: "/admin/tournament", icon: Swords },
   { name: "Challenge Claims", href: "/admin/challenge-claims", icon: FileCheck },

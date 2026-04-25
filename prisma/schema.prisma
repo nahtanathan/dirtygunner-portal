@@ -29,6 +29,23 @@ model User {
   raffleEntries           RaffleEntry[]
 }
 
+model KickEventReceipt {
+  id                   String   @id @default(cuid())
+  kick_message_id      String   @unique
+  dedupe_key           String?  @unique
+  kick_subscription_id String?
+  event_type           String
+  event_version        Int?
+  kick_user_id         String?
+  kick_username        String?
+  points_awarded       Int      @default(0)
+  payload              Json?
+  createdAt            DateTime @default(now())
+
+  @@index([event_type])
+  @@index([kick_user_id])
+}
+
 model KickReward {
   id                                    String   @id @default(cuid())
   kick_reward_id                        String   @unique

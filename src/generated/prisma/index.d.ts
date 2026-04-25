@@ -19,6 +19,11 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
  */
 export type User = $Result.DefaultSelection<Prisma.$UserPayload>
 /**
+ * Model KickEventReceipt
+ * 
+ */
+export type KickEventReceipt = $Result.DefaultSelection<Prisma.$KickEventReceiptPayload>
+/**
  * Model KickReward
  * 
  */
@@ -199,6 +204,16 @@ export class PrismaClient<
     * ```
     */
   get user(): Prisma.UserDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.kickEventReceipt`: Exposes CRUD operations for the **KickEventReceipt** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more KickEventReceipts
+    * const kickEventReceipts = await prisma.kickEventReceipt.findMany()
+    * ```
+    */
+  get kickEventReceipt(): Prisma.KickEventReceiptDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.kickReward`: Exposes CRUD operations for the **KickReward** model.
@@ -734,6 +749,7 @@ export namespace Prisma {
 
   export const ModelName: {
     User: 'User',
+    KickEventReceipt: 'KickEventReceipt',
     KickReward: 'KickReward',
     SiteSettings: 'SiteSettings',
     LeaderboardSettings: 'LeaderboardSettings',
@@ -759,7 +775,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "kickReward" | "siteSettings" | "leaderboardSettings" | "leaderboardPrizeTier" | "raffle" | "raffleEntry" | "challenge" | "challengeClaim" | "tournament" | "tournamentMatch"
+      modelProps: "user" | "kickEventReceipt" | "kickReward" | "siteSettings" | "leaderboardSettings" | "leaderboardPrizeTier" | "raffle" | "raffleEntry" | "challenge" | "challengeClaim" | "tournament" | "tournamentMatch"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -834,6 +850,80 @@ export namespace Prisma {
           count: {
             args: Prisma.UserCountArgs<ExtArgs>
             result: $Utils.Optional<UserCountAggregateOutputType> | number
+          }
+        }
+      }
+      KickEventReceipt: {
+        payload: Prisma.$KickEventReceiptPayload<ExtArgs>
+        fields: Prisma.KickEventReceiptFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.KickEventReceiptFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KickEventReceiptPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.KickEventReceiptFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KickEventReceiptPayload>
+          }
+          findFirst: {
+            args: Prisma.KickEventReceiptFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KickEventReceiptPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.KickEventReceiptFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KickEventReceiptPayload>
+          }
+          findMany: {
+            args: Prisma.KickEventReceiptFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KickEventReceiptPayload>[]
+          }
+          create: {
+            args: Prisma.KickEventReceiptCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KickEventReceiptPayload>
+          }
+          createMany: {
+            args: Prisma.KickEventReceiptCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.KickEventReceiptCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KickEventReceiptPayload>[]
+          }
+          delete: {
+            args: Prisma.KickEventReceiptDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KickEventReceiptPayload>
+          }
+          update: {
+            args: Prisma.KickEventReceiptUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KickEventReceiptPayload>
+          }
+          deleteMany: {
+            args: Prisma.KickEventReceiptDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.KickEventReceiptUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.KickEventReceiptUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KickEventReceiptPayload>[]
+          }
+          upsert: {
+            args: Prisma.KickEventReceiptUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KickEventReceiptPayload>
+          }
+          aggregate: {
+            args: Prisma.KickEventReceiptAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateKickEventReceipt>
+          }
+          groupBy: {
+            args: Prisma.KickEventReceiptGroupByArgs<ExtArgs>
+            result: $Utils.Optional<KickEventReceiptGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.KickEventReceiptCountArgs<ExtArgs>
+            result: $Utils.Optional<KickEventReceiptCountAggregateOutputType> | number
           }
         }
       }
@@ -1686,6 +1776,7 @@ export namespace Prisma {
   }
   export type GlobalOmitConfig = {
     user?: UserOmit
+    kickEventReceipt?: KickEventReceiptOmit
     kickReward?: KickRewardOmit
     siteSettings?: SiteSettingsOmit
     leaderboardSettings?: LeaderboardSettingsOmit
@@ -3253,6 +3344,1118 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: UserInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model KickEventReceipt
+   */
+
+  export type AggregateKickEventReceipt = {
+    _count: KickEventReceiptCountAggregateOutputType | null
+    _avg: KickEventReceiptAvgAggregateOutputType | null
+    _sum: KickEventReceiptSumAggregateOutputType | null
+    _min: KickEventReceiptMinAggregateOutputType | null
+    _max: KickEventReceiptMaxAggregateOutputType | null
+  }
+
+  export type KickEventReceiptAvgAggregateOutputType = {
+    event_version: number | null
+    points_awarded: number | null
+  }
+
+  export type KickEventReceiptSumAggregateOutputType = {
+    event_version: number | null
+    points_awarded: number | null
+  }
+
+  export type KickEventReceiptMinAggregateOutputType = {
+    id: string | null
+    kick_message_id: string | null
+    dedupe_key: string | null
+    kick_subscription_id: string | null
+    event_type: string | null
+    event_version: number | null
+    kick_user_id: string | null
+    kick_username: string | null
+    points_awarded: number | null
+    createdAt: Date | null
+  }
+
+  export type KickEventReceiptMaxAggregateOutputType = {
+    id: string | null
+    kick_message_id: string | null
+    dedupe_key: string | null
+    kick_subscription_id: string | null
+    event_type: string | null
+    event_version: number | null
+    kick_user_id: string | null
+    kick_username: string | null
+    points_awarded: number | null
+    createdAt: Date | null
+  }
+
+  export type KickEventReceiptCountAggregateOutputType = {
+    id: number
+    kick_message_id: number
+    dedupe_key: number
+    kick_subscription_id: number
+    event_type: number
+    event_version: number
+    kick_user_id: number
+    kick_username: number
+    points_awarded: number
+    payload: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type KickEventReceiptAvgAggregateInputType = {
+    event_version?: true
+    points_awarded?: true
+  }
+
+  export type KickEventReceiptSumAggregateInputType = {
+    event_version?: true
+    points_awarded?: true
+  }
+
+  export type KickEventReceiptMinAggregateInputType = {
+    id?: true
+    kick_message_id?: true
+    dedupe_key?: true
+    kick_subscription_id?: true
+    event_type?: true
+    event_version?: true
+    kick_user_id?: true
+    kick_username?: true
+    points_awarded?: true
+    createdAt?: true
+  }
+
+  export type KickEventReceiptMaxAggregateInputType = {
+    id?: true
+    kick_message_id?: true
+    dedupe_key?: true
+    kick_subscription_id?: true
+    event_type?: true
+    event_version?: true
+    kick_user_id?: true
+    kick_username?: true
+    points_awarded?: true
+    createdAt?: true
+  }
+
+  export type KickEventReceiptCountAggregateInputType = {
+    id?: true
+    kick_message_id?: true
+    dedupe_key?: true
+    kick_subscription_id?: true
+    event_type?: true
+    event_version?: true
+    kick_user_id?: true
+    kick_username?: true
+    points_awarded?: true
+    payload?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type KickEventReceiptAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which KickEventReceipt to aggregate.
+     */
+    where?: KickEventReceiptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of KickEventReceipts to fetch.
+     */
+    orderBy?: KickEventReceiptOrderByWithRelationInput | KickEventReceiptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: KickEventReceiptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` KickEventReceipts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` KickEventReceipts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned KickEventReceipts
+    **/
+    _count?: true | KickEventReceiptCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: KickEventReceiptAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: KickEventReceiptSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: KickEventReceiptMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: KickEventReceiptMaxAggregateInputType
+  }
+
+  export type GetKickEventReceiptAggregateType<T extends KickEventReceiptAggregateArgs> = {
+        [P in keyof T & keyof AggregateKickEventReceipt]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateKickEventReceipt[P]>
+      : GetScalarType<T[P], AggregateKickEventReceipt[P]>
+  }
+
+
+
+
+  export type KickEventReceiptGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: KickEventReceiptWhereInput
+    orderBy?: KickEventReceiptOrderByWithAggregationInput | KickEventReceiptOrderByWithAggregationInput[]
+    by: KickEventReceiptScalarFieldEnum[] | KickEventReceiptScalarFieldEnum
+    having?: KickEventReceiptScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: KickEventReceiptCountAggregateInputType | true
+    _avg?: KickEventReceiptAvgAggregateInputType
+    _sum?: KickEventReceiptSumAggregateInputType
+    _min?: KickEventReceiptMinAggregateInputType
+    _max?: KickEventReceiptMaxAggregateInputType
+  }
+
+  export type KickEventReceiptGroupByOutputType = {
+    id: string
+    kick_message_id: string
+    dedupe_key: string | null
+    kick_subscription_id: string | null
+    event_type: string
+    event_version: number | null
+    kick_user_id: string | null
+    kick_username: string | null
+    points_awarded: number
+    payload: JsonValue | null
+    createdAt: Date
+    _count: KickEventReceiptCountAggregateOutputType | null
+    _avg: KickEventReceiptAvgAggregateOutputType | null
+    _sum: KickEventReceiptSumAggregateOutputType | null
+    _min: KickEventReceiptMinAggregateOutputType | null
+    _max: KickEventReceiptMaxAggregateOutputType | null
+  }
+
+  type GetKickEventReceiptGroupByPayload<T extends KickEventReceiptGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<KickEventReceiptGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof KickEventReceiptGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], KickEventReceiptGroupByOutputType[P]>
+            : GetScalarType<T[P], KickEventReceiptGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type KickEventReceiptSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    kick_message_id?: boolean
+    dedupe_key?: boolean
+    kick_subscription_id?: boolean
+    event_type?: boolean
+    event_version?: boolean
+    kick_user_id?: boolean
+    kick_username?: boolean
+    points_awarded?: boolean
+    payload?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["kickEventReceipt"]>
+
+  export type KickEventReceiptSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    kick_message_id?: boolean
+    dedupe_key?: boolean
+    kick_subscription_id?: boolean
+    event_type?: boolean
+    event_version?: boolean
+    kick_user_id?: boolean
+    kick_username?: boolean
+    points_awarded?: boolean
+    payload?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["kickEventReceipt"]>
+
+  export type KickEventReceiptSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    kick_message_id?: boolean
+    dedupe_key?: boolean
+    kick_subscription_id?: boolean
+    event_type?: boolean
+    event_version?: boolean
+    kick_user_id?: boolean
+    kick_username?: boolean
+    points_awarded?: boolean
+    payload?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["kickEventReceipt"]>
+
+  export type KickEventReceiptSelectScalar = {
+    id?: boolean
+    kick_message_id?: boolean
+    dedupe_key?: boolean
+    kick_subscription_id?: boolean
+    event_type?: boolean
+    event_version?: boolean
+    kick_user_id?: boolean
+    kick_username?: boolean
+    points_awarded?: boolean
+    payload?: boolean
+    createdAt?: boolean
+  }
+
+  export type KickEventReceiptOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "kick_message_id" | "dedupe_key" | "kick_subscription_id" | "event_type" | "event_version" | "kick_user_id" | "kick_username" | "points_awarded" | "payload" | "createdAt", ExtArgs["result"]["kickEventReceipt"]>
+
+  export type $KickEventReceiptPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "KickEventReceipt"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      kick_message_id: string
+      dedupe_key: string | null
+      kick_subscription_id: string | null
+      event_type: string
+      event_version: number | null
+      kick_user_id: string | null
+      kick_username: string | null
+      points_awarded: number
+      payload: Prisma.JsonValue | null
+      createdAt: Date
+    }, ExtArgs["result"]["kickEventReceipt"]>
+    composites: {}
+  }
+
+  type KickEventReceiptGetPayload<S extends boolean | null | undefined | KickEventReceiptDefaultArgs> = $Result.GetResult<Prisma.$KickEventReceiptPayload, S>
+
+  type KickEventReceiptCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<KickEventReceiptFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: KickEventReceiptCountAggregateInputType | true
+    }
+
+  export interface KickEventReceiptDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['KickEventReceipt'], meta: { name: 'KickEventReceipt' } }
+    /**
+     * Find zero or one KickEventReceipt that matches the filter.
+     * @param {KickEventReceiptFindUniqueArgs} args - Arguments to find a KickEventReceipt
+     * @example
+     * // Get one KickEventReceipt
+     * const kickEventReceipt = await prisma.kickEventReceipt.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends KickEventReceiptFindUniqueArgs>(args: SelectSubset<T, KickEventReceiptFindUniqueArgs<ExtArgs>>): Prisma__KickEventReceiptClient<$Result.GetResult<Prisma.$KickEventReceiptPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one KickEventReceipt that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {KickEventReceiptFindUniqueOrThrowArgs} args - Arguments to find a KickEventReceipt
+     * @example
+     * // Get one KickEventReceipt
+     * const kickEventReceipt = await prisma.kickEventReceipt.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends KickEventReceiptFindUniqueOrThrowArgs>(args: SelectSubset<T, KickEventReceiptFindUniqueOrThrowArgs<ExtArgs>>): Prisma__KickEventReceiptClient<$Result.GetResult<Prisma.$KickEventReceiptPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first KickEventReceipt that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KickEventReceiptFindFirstArgs} args - Arguments to find a KickEventReceipt
+     * @example
+     * // Get one KickEventReceipt
+     * const kickEventReceipt = await prisma.kickEventReceipt.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends KickEventReceiptFindFirstArgs>(args?: SelectSubset<T, KickEventReceiptFindFirstArgs<ExtArgs>>): Prisma__KickEventReceiptClient<$Result.GetResult<Prisma.$KickEventReceiptPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first KickEventReceipt that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KickEventReceiptFindFirstOrThrowArgs} args - Arguments to find a KickEventReceipt
+     * @example
+     * // Get one KickEventReceipt
+     * const kickEventReceipt = await prisma.kickEventReceipt.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends KickEventReceiptFindFirstOrThrowArgs>(args?: SelectSubset<T, KickEventReceiptFindFirstOrThrowArgs<ExtArgs>>): Prisma__KickEventReceiptClient<$Result.GetResult<Prisma.$KickEventReceiptPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more KickEventReceipts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KickEventReceiptFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all KickEventReceipts
+     * const kickEventReceipts = await prisma.kickEventReceipt.findMany()
+     * 
+     * // Get first 10 KickEventReceipts
+     * const kickEventReceipts = await prisma.kickEventReceipt.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const kickEventReceiptWithIdOnly = await prisma.kickEventReceipt.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends KickEventReceiptFindManyArgs>(args?: SelectSubset<T, KickEventReceiptFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$KickEventReceiptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a KickEventReceipt.
+     * @param {KickEventReceiptCreateArgs} args - Arguments to create a KickEventReceipt.
+     * @example
+     * // Create one KickEventReceipt
+     * const KickEventReceipt = await prisma.kickEventReceipt.create({
+     *   data: {
+     *     // ... data to create a KickEventReceipt
+     *   }
+     * })
+     * 
+     */
+    create<T extends KickEventReceiptCreateArgs>(args: SelectSubset<T, KickEventReceiptCreateArgs<ExtArgs>>): Prisma__KickEventReceiptClient<$Result.GetResult<Prisma.$KickEventReceiptPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many KickEventReceipts.
+     * @param {KickEventReceiptCreateManyArgs} args - Arguments to create many KickEventReceipts.
+     * @example
+     * // Create many KickEventReceipts
+     * const kickEventReceipt = await prisma.kickEventReceipt.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends KickEventReceiptCreateManyArgs>(args?: SelectSubset<T, KickEventReceiptCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many KickEventReceipts and returns the data saved in the database.
+     * @param {KickEventReceiptCreateManyAndReturnArgs} args - Arguments to create many KickEventReceipts.
+     * @example
+     * // Create many KickEventReceipts
+     * const kickEventReceipt = await prisma.kickEventReceipt.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many KickEventReceipts and only return the `id`
+     * const kickEventReceiptWithIdOnly = await prisma.kickEventReceipt.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends KickEventReceiptCreateManyAndReturnArgs>(args?: SelectSubset<T, KickEventReceiptCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$KickEventReceiptPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a KickEventReceipt.
+     * @param {KickEventReceiptDeleteArgs} args - Arguments to delete one KickEventReceipt.
+     * @example
+     * // Delete one KickEventReceipt
+     * const KickEventReceipt = await prisma.kickEventReceipt.delete({
+     *   where: {
+     *     // ... filter to delete one KickEventReceipt
+     *   }
+     * })
+     * 
+     */
+    delete<T extends KickEventReceiptDeleteArgs>(args: SelectSubset<T, KickEventReceiptDeleteArgs<ExtArgs>>): Prisma__KickEventReceiptClient<$Result.GetResult<Prisma.$KickEventReceiptPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one KickEventReceipt.
+     * @param {KickEventReceiptUpdateArgs} args - Arguments to update one KickEventReceipt.
+     * @example
+     * // Update one KickEventReceipt
+     * const kickEventReceipt = await prisma.kickEventReceipt.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends KickEventReceiptUpdateArgs>(args: SelectSubset<T, KickEventReceiptUpdateArgs<ExtArgs>>): Prisma__KickEventReceiptClient<$Result.GetResult<Prisma.$KickEventReceiptPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more KickEventReceipts.
+     * @param {KickEventReceiptDeleteManyArgs} args - Arguments to filter KickEventReceipts to delete.
+     * @example
+     * // Delete a few KickEventReceipts
+     * const { count } = await prisma.kickEventReceipt.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends KickEventReceiptDeleteManyArgs>(args?: SelectSubset<T, KickEventReceiptDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more KickEventReceipts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KickEventReceiptUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many KickEventReceipts
+     * const kickEventReceipt = await prisma.kickEventReceipt.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends KickEventReceiptUpdateManyArgs>(args: SelectSubset<T, KickEventReceiptUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more KickEventReceipts and returns the data updated in the database.
+     * @param {KickEventReceiptUpdateManyAndReturnArgs} args - Arguments to update many KickEventReceipts.
+     * @example
+     * // Update many KickEventReceipts
+     * const kickEventReceipt = await prisma.kickEventReceipt.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more KickEventReceipts and only return the `id`
+     * const kickEventReceiptWithIdOnly = await prisma.kickEventReceipt.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends KickEventReceiptUpdateManyAndReturnArgs>(args: SelectSubset<T, KickEventReceiptUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$KickEventReceiptPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one KickEventReceipt.
+     * @param {KickEventReceiptUpsertArgs} args - Arguments to update or create a KickEventReceipt.
+     * @example
+     * // Update or create a KickEventReceipt
+     * const kickEventReceipt = await prisma.kickEventReceipt.upsert({
+     *   create: {
+     *     // ... data to create a KickEventReceipt
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the KickEventReceipt we want to update
+     *   }
+     * })
+     */
+    upsert<T extends KickEventReceiptUpsertArgs>(args: SelectSubset<T, KickEventReceiptUpsertArgs<ExtArgs>>): Prisma__KickEventReceiptClient<$Result.GetResult<Prisma.$KickEventReceiptPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of KickEventReceipts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KickEventReceiptCountArgs} args - Arguments to filter KickEventReceipts to count.
+     * @example
+     * // Count the number of KickEventReceipts
+     * const count = await prisma.kickEventReceipt.count({
+     *   where: {
+     *     // ... the filter for the KickEventReceipts we want to count
+     *   }
+     * })
+    **/
+    count<T extends KickEventReceiptCountArgs>(
+      args?: Subset<T, KickEventReceiptCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], KickEventReceiptCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a KickEventReceipt.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KickEventReceiptAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends KickEventReceiptAggregateArgs>(args: Subset<T, KickEventReceiptAggregateArgs>): Prisma.PrismaPromise<GetKickEventReceiptAggregateType<T>>
+
+    /**
+     * Group by KickEventReceipt.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KickEventReceiptGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends KickEventReceiptGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: KickEventReceiptGroupByArgs['orderBy'] }
+        : { orderBy?: KickEventReceiptGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, KickEventReceiptGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetKickEventReceiptGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the KickEventReceipt model
+   */
+  readonly fields: KickEventReceiptFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for KickEventReceipt.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__KickEventReceiptClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the KickEventReceipt model
+   */
+  interface KickEventReceiptFieldRefs {
+    readonly id: FieldRef<"KickEventReceipt", 'String'>
+    readonly kick_message_id: FieldRef<"KickEventReceipt", 'String'>
+    readonly dedupe_key: FieldRef<"KickEventReceipt", 'String'>
+    readonly kick_subscription_id: FieldRef<"KickEventReceipt", 'String'>
+    readonly event_type: FieldRef<"KickEventReceipt", 'String'>
+    readonly event_version: FieldRef<"KickEventReceipt", 'Int'>
+    readonly kick_user_id: FieldRef<"KickEventReceipt", 'String'>
+    readonly kick_username: FieldRef<"KickEventReceipt", 'String'>
+    readonly points_awarded: FieldRef<"KickEventReceipt", 'Int'>
+    readonly payload: FieldRef<"KickEventReceipt", 'Json'>
+    readonly createdAt: FieldRef<"KickEventReceipt", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * KickEventReceipt findUnique
+   */
+  export type KickEventReceiptFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KickEventReceipt
+     */
+    select?: KickEventReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KickEventReceipt
+     */
+    omit?: KickEventReceiptOmit<ExtArgs> | null
+    /**
+     * Filter, which KickEventReceipt to fetch.
+     */
+    where: KickEventReceiptWhereUniqueInput
+  }
+
+  /**
+   * KickEventReceipt findUniqueOrThrow
+   */
+  export type KickEventReceiptFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KickEventReceipt
+     */
+    select?: KickEventReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KickEventReceipt
+     */
+    omit?: KickEventReceiptOmit<ExtArgs> | null
+    /**
+     * Filter, which KickEventReceipt to fetch.
+     */
+    where: KickEventReceiptWhereUniqueInput
+  }
+
+  /**
+   * KickEventReceipt findFirst
+   */
+  export type KickEventReceiptFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KickEventReceipt
+     */
+    select?: KickEventReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KickEventReceipt
+     */
+    omit?: KickEventReceiptOmit<ExtArgs> | null
+    /**
+     * Filter, which KickEventReceipt to fetch.
+     */
+    where?: KickEventReceiptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of KickEventReceipts to fetch.
+     */
+    orderBy?: KickEventReceiptOrderByWithRelationInput | KickEventReceiptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for KickEventReceipts.
+     */
+    cursor?: KickEventReceiptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` KickEventReceipts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` KickEventReceipts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of KickEventReceipts.
+     */
+    distinct?: KickEventReceiptScalarFieldEnum | KickEventReceiptScalarFieldEnum[]
+  }
+
+  /**
+   * KickEventReceipt findFirstOrThrow
+   */
+  export type KickEventReceiptFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KickEventReceipt
+     */
+    select?: KickEventReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KickEventReceipt
+     */
+    omit?: KickEventReceiptOmit<ExtArgs> | null
+    /**
+     * Filter, which KickEventReceipt to fetch.
+     */
+    where?: KickEventReceiptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of KickEventReceipts to fetch.
+     */
+    orderBy?: KickEventReceiptOrderByWithRelationInput | KickEventReceiptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for KickEventReceipts.
+     */
+    cursor?: KickEventReceiptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` KickEventReceipts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` KickEventReceipts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of KickEventReceipts.
+     */
+    distinct?: KickEventReceiptScalarFieldEnum | KickEventReceiptScalarFieldEnum[]
+  }
+
+  /**
+   * KickEventReceipt findMany
+   */
+  export type KickEventReceiptFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KickEventReceipt
+     */
+    select?: KickEventReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KickEventReceipt
+     */
+    omit?: KickEventReceiptOmit<ExtArgs> | null
+    /**
+     * Filter, which KickEventReceipts to fetch.
+     */
+    where?: KickEventReceiptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of KickEventReceipts to fetch.
+     */
+    orderBy?: KickEventReceiptOrderByWithRelationInput | KickEventReceiptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing KickEventReceipts.
+     */
+    cursor?: KickEventReceiptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` KickEventReceipts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` KickEventReceipts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of KickEventReceipts.
+     */
+    distinct?: KickEventReceiptScalarFieldEnum | KickEventReceiptScalarFieldEnum[]
+  }
+
+  /**
+   * KickEventReceipt create
+   */
+  export type KickEventReceiptCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KickEventReceipt
+     */
+    select?: KickEventReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KickEventReceipt
+     */
+    omit?: KickEventReceiptOmit<ExtArgs> | null
+    /**
+     * The data needed to create a KickEventReceipt.
+     */
+    data: XOR<KickEventReceiptCreateInput, KickEventReceiptUncheckedCreateInput>
+  }
+
+  /**
+   * KickEventReceipt createMany
+   */
+  export type KickEventReceiptCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many KickEventReceipts.
+     */
+    data: KickEventReceiptCreateManyInput | KickEventReceiptCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * KickEventReceipt createManyAndReturn
+   */
+  export type KickEventReceiptCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KickEventReceipt
+     */
+    select?: KickEventReceiptSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the KickEventReceipt
+     */
+    omit?: KickEventReceiptOmit<ExtArgs> | null
+    /**
+     * The data used to create many KickEventReceipts.
+     */
+    data: KickEventReceiptCreateManyInput | KickEventReceiptCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * KickEventReceipt update
+   */
+  export type KickEventReceiptUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KickEventReceipt
+     */
+    select?: KickEventReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KickEventReceipt
+     */
+    omit?: KickEventReceiptOmit<ExtArgs> | null
+    /**
+     * The data needed to update a KickEventReceipt.
+     */
+    data: XOR<KickEventReceiptUpdateInput, KickEventReceiptUncheckedUpdateInput>
+    /**
+     * Choose, which KickEventReceipt to update.
+     */
+    where: KickEventReceiptWhereUniqueInput
+  }
+
+  /**
+   * KickEventReceipt updateMany
+   */
+  export type KickEventReceiptUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update KickEventReceipts.
+     */
+    data: XOR<KickEventReceiptUpdateManyMutationInput, KickEventReceiptUncheckedUpdateManyInput>
+    /**
+     * Filter which KickEventReceipts to update
+     */
+    where?: KickEventReceiptWhereInput
+    /**
+     * Limit how many KickEventReceipts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * KickEventReceipt updateManyAndReturn
+   */
+  export type KickEventReceiptUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KickEventReceipt
+     */
+    select?: KickEventReceiptSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the KickEventReceipt
+     */
+    omit?: KickEventReceiptOmit<ExtArgs> | null
+    /**
+     * The data used to update KickEventReceipts.
+     */
+    data: XOR<KickEventReceiptUpdateManyMutationInput, KickEventReceiptUncheckedUpdateManyInput>
+    /**
+     * Filter which KickEventReceipts to update
+     */
+    where?: KickEventReceiptWhereInput
+    /**
+     * Limit how many KickEventReceipts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * KickEventReceipt upsert
+   */
+  export type KickEventReceiptUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KickEventReceipt
+     */
+    select?: KickEventReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KickEventReceipt
+     */
+    omit?: KickEventReceiptOmit<ExtArgs> | null
+    /**
+     * The filter to search for the KickEventReceipt to update in case it exists.
+     */
+    where: KickEventReceiptWhereUniqueInput
+    /**
+     * In case the KickEventReceipt found by the `where` argument doesn't exist, create a new KickEventReceipt with this data.
+     */
+    create: XOR<KickEventReceiptCreateInput, KickEventReceiptUncheckedCreateInput>
+    /**
+     * In case the KickEventReceipt was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<KickEventReceiptUpdateInput, KickEventReceiptUncheckedUpdateInput>
+  }
+
+  /**
+   * KickEventReceipt delete
+   */
+  export type KickEventReceiptDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KickEventReceipt
+     */
+    select?: KickEventReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KickEventReceipt
+     */
+    omit?: KickEventReceiptOmit<ExtArgs> | null
+    /**
+     * Filter which KickEventReceipt to delete.
+     */
+    where: KickEventReceiptWhereUniqueInput
+  }
+
+  /**
+   * KickEventReceipt deleteMany
+   */
+  export type KickEventReceiptDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which KickEventReceipts to delete
+     */
+    where?: KickEventReceiptWhereInput
+    /**
+     * Limit how many KickEventReceipts to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * KickEventReceipt without action
+   */
+  export type KickEventReceiptDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KickEventReceipt
+     */
+    select?: KickEventReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KickEventReceipt
+     */
+    omit?: KickEventReceiptOmit<ExtArgs> | null
   }
 
 
@@ -14894,6 +16097,23 @@ export namespace Prisma {
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
+  export const KickEventReceiptScalarFieldEnum: {
+    id: 'id',
+    kick_message_id: 'kick_message_id',
+    dedupe_key: 'dedupe_key',
+    kick_subscription_id: 'kick_subscription_id',
+    event_type: 'event_type',
+    event_version: 'event_version',
+    kick_user_id: 'kick_user_id',
+    kick_username: 'kick_username',
+    points_awarded: 'points_awarded',
+    payload: 'payload',
+    createdAt: 'createdAt'
+  };
+
+  export type KickEventReceiptScalarFieldEnum = (typeof KickEventReceiptScalarFieldEnum)[keyof typeof KickEventReceiptScalarFieldEnum]
+
+
   export const KickRewardScalarFieldEnum: {
     id: 'id',
     kick_reward_id: 'kick_reward_id',
@@ -15303,6 +16523,90 @@ export namespace Prisma {
     bio?: StringNullableWithAggregatesFilter<"User"> | string | null
     display_name?: StringNullableWithAggregatesFilter<"User"> | string | null
     profile_accent?: StringNullableWithAggregatesFilter<"User"> | string | null
+  }
+
+  export type KickEventReceiptWhereInput = {
+    AND?: KickEventReceiptWhereInput | KickEventReceiptWhereInput[]
+    OR?: KickEventReceiptWhereInput[]
+    NOT?: KickEventReceiptWhereInput | KickEventReceiptWhereInput[]
+    id?: StringFilter<"KickEventReceipt"> | string
+    kick_message_id?: StringFilter<"KickEventReceipt"> | string
+    dedupe_key?: StringNullableFilter<"KickEventReceipt"> | string | null
+    kick_subscription_id?: StringNullableFilter<"KickEventReceipt"> | string | null
+    event_type?: StringFilter<"KickEventReceipt"> | string
+    event_version?: IntNullableFilter<"KickEventReceipt"> | number | null
+    kick_user_id?: StringNullableFilter<"KickEventReceipt"> | string | null
+    kick_username?: StringNullableFilter<"KickEventReceipt"> | string | null
+    points_awarded?: IntFilter<"KickEventReceipt"> | number
+    payload?: JsonNullableFilter<"KickEventReceipt">
+    createdAt?: DateTimeFilter<"KickEventReceipt"> | Date | string
+  }
+
+  export type KickEventReceiptOrderByWithRelationInput = {
+    id?: SortOrder
+    kick_message_id?: SortOrder
+    dedupe_key?: SortOrderInput | SortOrder
+    kick_subscription_id?: SortOrderInput | SortOrder
+    event_type?: SortOrder
+    event_version?: SortOrderInput | SortOrder
+    kick_user_id?: SortOrderInput | SortOrder
+    kick_username?: SortOrderInput | SortOrder
+    points_awarded?: SortOrder
+    payload?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type KickEventReceiptWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    kick_message_id?: string
+    dedupe_key?: string
+    AND?: KickEventReceiptWhereInput | KickEventReceiptWhereInput[]
+    OR?: KickEventReceiptWhereInput[]
+    NOT?: KickEventReceiptWhereInput | KickEventReceiptWhereInput[]
+    kick_subscription_id?: StringNullableFilter<"KickEventReceipt"> | string | null
+    event_type?: StringFilter<"KickEventReceipt"> | string
+    event_version?: IntNullableFilter<"KickEventReceipt"> | number | null
+    kick_user_id?: StringNullableFilter<"KickEventReceipt"> | string | null
+    kick_username?: StringNullableFilter<"KickEventReceipt"> | string | null
+    points_awarded?: IntFilter<"KickEventReceipt"> | number
+    payload?: JsonNullableFilter<"KickEventReceipt">
+    createdAt?: DateTimeFilter<"KickEventReceipt"> | Date | string
+  }, "id" | "kick_message_id" | "dedupe_key">
+
+  export type KickEventReceiptOrderByWithAggregationInput = {
+    id?: SortOrder
+    kick_message_id?: SortOrder
+    dedupe_key?: SortOrderInput | SortOrder
+    kick_subscription_id?: SortOrderInput | SortOrder
+    event_type?: SortOrder
+    event_version?: SortOrderInput | SortOrder
+    kick_user_id?: SortOrderInput | SortOrder
+    kick_username?: SortOrderInput | SortOrder
+    points_awarded?: SortOrder
+    payload?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: KickEventReceiptCountOrderByAggregateInput
+    _avg?: KickEventReceiptAvgOrderByAggregateInput
+    _max?: KickEventReceiptMaxOrderByAggregateInput
+    _min?: KickEventReceiptMinOrderByAggregateInput
+    _sum?: KickEventReceiptSumOrderByAggregateInput
+  }
+
+  export type KickEventReceiptScalarWhereWithAggregatesInput = {
+    AND?: KickEventReceiptScalarWhereWithAggregatesInput | KickEventReceiptScalarWhereWithAggregatesInput[]
+    OR?: KickEventReceiptScalarWhereWithAggregatesInput[]
+    NOT?: KickEventReceiptScalarWhereWithAggregatesInput | KickEventReceiptScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"KickEventReceipt"> | string
+    kick_message_id?: StringWithAggregatesFilter<"KickEventReceipt"> | string
+    dedupe_key?: StringNullableWithAggregatesFilter<"KickEventReceipt"> | string | null
+    kick_subscription_id?: StringNullableWithAggregatesFilter<"KickEventReceipt"> | string | null
+    event_type?: StringWithAggregatesFilter<"KickEventReceipt"> | string
+    event_version?: IntNullableWithAggregatesFilter<"KickEventReceipt"> | number | null
+    kick_user_id?: StringNullableWithAggregatesFilter<"KickEventReceipt"> | string | null
+    kick_username?: StringNullableWithAggregatesFilter<"KickEventReceipt"> | string | null
+    points_awarded?: IntWithAggregatesFilter<"KickEventReceipt"> | number
+    payload?: JsonNullableWithAggregatesFilter<"KickEventReceipt">
+    createdAt?: DateTimeWithAggregatesFilter<"KickEventReceipt"> | Date | string
   }
 
   export type KickRewardWhereInput = {
@@ -16302,6 +17606,104 @@ export namespace Prisma {
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     display_name?: NullableStringFieldUpdateOperationsInput | string | null
     profile_accent?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type KickEventReceiptCreateInput = {
+    id?: string
+    kick_message_id: string
+    dedupe_key?: string | null
+    kick_subscription_id?: string | null
+    event_type: string
+    event_version?: number | null
+    kick_user_id?: string | null
+    kick_username?: string | null
+    points_awarded?: number
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type KickEventReceiptUncheckedCreateInput = {
+    id?: string
+    kick_message_id: string
+    dedupe_key?: string | null
+    kick_subscription_id?: string | null
+    event_type: string
+    event_version?: number | null
+    kick_user_id?: string | null
+    kick_username?: string | null
+    points_awarded?: number
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type KickEventReceiptUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kick_message_id?: StringFieldUpdateOperationsInput | string
+    dedupe_key?: NullableStringFieldUpdateOperationsInput | string | null
+    kick_subscription_id?: NullableStringFieldUpdateOperationsInput | string | null
+    event_type?: StringFieldUpdateOperationsInput | string
+    event_version?: NullableIntFieldUpdateOperationsInput | number | null
+    kick_user_id?: NullableStringFieldUpdateOperationsInput | string | null
+    kick_username?: NullableStringFieldUpdateOperationsInput | string | null
+    points_awarded?: IntFieldUpdateOperationsInput | number
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type KickEventReceiptUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kick_message_id?: StringFieldUpdateOperationsInput | string
+    dedupe_key?: NullableStringFieldUpdateOperationsInput | string | null
+    kick_subscription_id?: NullableStringFieldUpdateOperationsInput | string | null
+    event_type?: StringFieldUpdateOperationsInput | string
+    event_version?: NullableIntFieldUpdateOperationsInput | number | null
+    kick_user_id?: NullableStringFieldUpdateOperationsInput | string | null
+    kick_username?: NullableStringFieldUpdateOperationsInput | string | null
+    points_awarded?: IntFieldUpdateOperationsInput | number
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type KickEventReceiptCreateManyInput = {
+    id?: string
+    kick_message_id: string
+    dedupe_key?: string | null
+    kick_subscription_id?: string | null
+    event_type: string
+    event_version?: number | null
+    kick_user_id?: string | null
+    kick_username?: string | null
+    points_awarded?: number
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type KickEventReceiptUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kick_message_id?: StringFieldUpdateOperationsInput | string
+    dedupe_key?: NullableStringFieldUpdateOperationsInput | string | null
+    kick_subscription_id?: NullableStringFieldUpdateOperationsInput | string | null
+    event_type?: StringFieldUpdateOperationsInput | string
+    event_version?: NullableIntFieldUpdateOperationsInput | number | null
+    kick_user_id?: NullableStringFieldUpdateOperationsInput | string | null
+    kick_username?: NullableStringFieldUpdateOperationsInput | string | null
+    points_awarded?: IntFieldUpdateOperationsInput | number
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type KickEventReceiptUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kick_message_id?: StringFieldUpdateOperationsInput | string
+    dedupe_key?: NullableStringFieldUpdateOperationsInput | string | null
+    kick_subscription_id?: NullableStringFieldUpdateOperationsInput | string | null
+    event_type?: StringFieldUpdateOperationsInput | string
+    event_version?: NullableIntFieldUpdateOperationsInput | number | null
+    kick_user_id?: NullableStringFieldUpdateOperationsInput | string | null
+    kick_username?: NullableStringFieldUpdateOperationsInput | string | null
+    points_awarded?: IntFieldUpdateOperationsInput | number
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type KickRewardCreateInput = {
@@ -17517,6 +18919,17 @@ export namespace Prisma {
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
+
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
   export type JsonNullableFilter<$PrismaModel = never> =
     | PatchUndefined<
         Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
@@ -17539,6 +18952,98 @@ export namespace Prisma {
     gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
     gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type KickEventReceiptCountOrderByAggregateInput = {
+    id?: SortOrder
+    kick_message_id?: SortOrder
+    dedupe_key?: SortOrder
+    kick_subscription_id?: SortOrder
+    event_type?: SortOrder
+    event_version?: SortOrder
+    kick_user_id?: SortOrder
+    kick_username?: SortOrder
+    points_awarded?: SortOrder
+    payload?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type KickEventReceiptAvgOrderByAggregateInput = {
+    event_version?: SortOrder
+    points_awarded?: SortOrder
+  }
+
+  export type KickEventReceiptMaxOrderByAggregateInput = {
+    id?: SortOrder
+    kick_message_id?: SortOrder
+    dedupe_key?: SortOrder
+    kick_subscription_id?: SortOrder
+    event_type?: SortOrder
+    event_version?: SortOrder
+    kick_user_id?: SortOrder
+    kick_username?: SortOrder
+    points_awarded?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type KickEventReceiptMinOrderByAggregateInput = {
+    id?: SortOrder
+    kick_message_id?: SortOrder
+    dedupe_key?: SortOrder
+    kick_subscription_id?: SortOrder
+    event_type?: SortOrder
+    event_version?: SortOrder
+    kick_user_id?: SortOrder
+    kick_username?: SortOrder
+    points_awarded?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type KickEventReceiptSumOrderByAggregateInput = {
+    event_version?: SortOrder
+    points_awarded?: SortOrder
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
   export type KickRewardCountOrderByAggregateInput = {
@@ -17593,32 +19098,6 @@ export namespace Prisma {
 
   export type KickRewardSumOrderByAggregateInput = {
     cost?: SortOrder
-  }
-  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedJsonNullableFilter<$PrismaModel>
-    _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
   export type SiteSettingsCountOrderByAggregateInput = {
@@ -17738,17 +19217,6 @@ export namespace Prisma {
     prize?: SortOrder
   }
 
-  export type IntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
   export type RaffleCountOrderByAggregateInput = {
     id?: SortOrder
     title?: SortOrder
@@ -17816,22 +19284,6 @@ export namespace Prisma {
     totalEntries?: SortOrder
     entryCost?: SortOrder
     maxEntriesPerUser?: SortOrder
-  }
-
-  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type RaffleScalarRelationFilter = {
@@ -18317,6 +19769,14 @@ export namespace Prisma {
     deleteMany?: RaffleEntryScalarWhereInput | RaffleEntryScalarWhereInput[]
   }
 
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type LeaderboardPrizeTierCreateNestedManyWithoutLeaderboardInput = {
     create?: XOR<LeaderboardPrizeTierCreateWithoutLeaderboardInput, LeaderboardPrizeTierUncheckedCreateWithoutLeaderboardInput> | LeaderboardPrizeTierCreateWithoutLeaderboardInput[] | LeaderboardPrizeTierUncheckedCreateWithoutLeaderboardInput[]
     connectOrCreate?: LeaderboardPrizeTierCreateOrConnectWithoutLeaderboardInput | LeaderboardPrizeTierCreateOrConnectWithoutLeaderboardInput[]
@@ -18385,14 +19845,6 @@ export namespace Prisma {
     connectOrCreate?: RaffleEntryCreateOrConnectWithoutRaffleInput | RaffleEntryCreateOrConnectWithoutRaffleInput[]
     createMany?: RaffleEntryCreateManyRaffleInputEnvelope
     connect?: RaffleEntryWhereUniqueInput | RaffleEntryWhereUniqueInput[]
-  }
-
-  export type NullableIntFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type RaffleEntryUpdateManyWithoutRaffleNestedInput = {
@@ -18774,29 +20226,6 @@ export namespace Prisma {
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
-  export type NestedJsonNullableFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
-        Required<NestedJsonNullableFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
-
-  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-  }
 
   export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
@@ -18823,6 +20252,29 @@ export namespace Prisma {
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+  export type NestedJsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
   export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
