@@ -306,6 +306,48 @@ type BackfillRequestBody = {
   dryRun?: boolean;
 };
 
+export async function GET() {
+  try {
+    await requireAdmin();
+
+    const users = await prisma.user.findMany({
+      where: {
+        OR: [
+          { kick_user_id: { not: null } },
+          { kick_username: { not: null } },
+        ],
+      },
+      orderBy: [
+        { kick_username: "asc" },
+        { createdAt: "asc" },
+      ],
+      select: {
+        id: true,
+        kick_user_id: true,
+        kick_username: true,
+        points: true,
+      },
+    });
+
+    return NextResponse.json({
+      ok: true,
+      users,
+    });
+  } catch (error) {
+    console.error("Failed to load backfill roster:", error);
+
+    const status = error instanceof HttpError ? error.status : 500;
+
+    return NextResponse.json(
+      {
+        error:
+          error instanceof Error ? error.message : "Failed to load backfill roster",
+      },
+      { status },
+    );
+  }
+}
+
 export async function POST(req: Request) {
   try {
     await requireAdmin();
