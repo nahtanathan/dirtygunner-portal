@@ -84,6 +84,39 @@ type ProcessKickWebhookResult =
       pointsAwarded?: number;
     };
 
+type KickPointSubscriptionHealth = {
+  name: (typeof KICK_POINT_EVENT_SUBSCRIPTIONS)[number]["name"];
+  version: (typeof KICK_POINT_EVENT_SUBSCRIPTIONS)[number]["version"];
+  active: boolean;
+};
+
+export type KickPointHealthSnapshot = {
+  broadcaster: {
+    id: string;
+    kickUserId: string | null;
+    kickUsername: string | null;
+    isKickBroadcaster: boolean;
+    tokenExpiresAt: string | null;
+    updatedAt: string;
+  } | null;
+  subscriptions: KickPointSubscriptionHealth[];
+  subscriptionsError: string | null;
+  receiptSummary: {
+    liveReceiptCount: number;
+    awardedPoints: number;
+    lastLiveReceiptAt: string | null;
+    creditedUsers: number;
+  };
+  recentReceipts: Array<{
+    id: string;
+    eventType: string;
+    kickUserId: string | null;
+    kickUsername: string | null;
+    pointsAwarded: number;
+    createdAt: string;
+  }>;
+};
+
 function asObject(value: unknown): Record<string, unknown> | null {
   return value && typeof value === "object" && !Array.isArray(value)
     ? (value as Record<string, unknown>)
@@ -144,6 +177,53 @@ function buildKickWebhookSignaturePayload(
   rawBody: string,
 ) {
   return `${messageId}.${timestamp}.${rawBody}`;
+}
+
+function toAuditPayload(params: {
+  deliveryStatus: "ignored" | "awarded";
+  reason?: string;
+  payload: unknown;
+}) {
+  return {
+    audit: {
+      deliveryStatus: params.deliveryStatus,
+      reason: params.reason ?? null,
+    },
+    payload: params.payload,
+  } as Prisma.InputJsonValue;
+}
+
+async function createIgnoredAuditReceipt(params: {
+  webhookHeaders: KickWebhookHeaders;
+  payload: unknown;
+  reason: string;
+  kickUserId?: string | null;
+  kickUsername?: string | null;
+  dedupeKey?: string | null;
+}) {
+  try {
+    await prisma.kickEventReceipt.create({
+      data: {
+        kick_message_id: params.webhookHeaders.messageId,
+        dedupe_key: params.dedupeKey ?? null,
+        kick_subscription_id: params.webhookHeaders.subscriptionId,
+        event_type: params.webhookHeaders.eventType,
+        event_version: params.webhookHeaders.eventVersion,
+        kick_user_id: params.kickUserId ?? null,
+        kick_username: params.kickUsername ?? null,
+        points_awarded: 0,
+        payload: toAuditPayload({
+          deliveryStatus: "ignored",
+          reason: params.reason,
+          payload: params.payload,
+        }),
+      },
+    });
+  } catch (error) {
+    if (!isUniqueConstraintError(error)) {
+      throw error;
+    }
+  }
 }
 
 export function getKickWebhookHeaders(headers: Headers): KickWebhookHeaders | null {
@@ -280,6 +360,12 @@ export async function processKickPointsWebhook(params: {
   const payloadObject = asObject(params.payload);
 
   if (!payloadObject) {
+    await createIgnoredAuditReceipt({
+      webhookHeaders: params.webhookHeaders,
+      payload: params.payload,
+      reason: "invalid_payload",
+    });
+
     return {
       status: "ignored",
       eventType: params.webhookHeaders.eventType,
@@ -293,6 +379,12 @@ export async function processKickPointsWebhook(params: {
   );
 
   if ("reason" in award) {
+    await createIgnoredAuditReceipt({
+      webhookHeaders: params.webhookHeaders,
+      payload: payloadObject,
+      reason: award.reason,
+    });
+
     return {
       status: "ignored",
       eventType: params.webhookHeaders.eventType,
@@ -301,6 +393,15 @@ export async function processKickPointsWebhook(params: {
   }
 
   if (award.pointsAwarded <= 0) {
+    await createIgnoredAuditReceipt({
+      webhookHeaders: params.webhookHeaders,
+      payload: payloadObject,
+      reason: "points_disabled",
+      kickUserId: award.kickUserId,
+      kickUsername: award.kickUsername,
+      dedupeKey: award.dedupeKey,
+    });
+
     return {
       status: "ignored",
       eventType: params.webhookHeaders.eventType,
@@ -405,5 +506,183 @@ export async function ensureKickPointSubscriptions(userId: string) {
 
   return {
     created: missing,
+  };
+}
+
+export async function ensureKickPointSubscriptionsForBroadcaster() {
+  const broadcaster = await prisma.user.findFirst({
+    where: {
+      isKickBroadcaster: true,
+      access_token: { not: null },
+      refresh_token: { not: null },
+    },
+    select: {
+      id: true,
+      kick_user_id: true,
+      kick_username: true,
+    },
+  });
+
+  if (!broadcaster) {
+    throw new Error("No connected Kick broadcaster found");
+  }
+
+  const result = await ensureKickPointSubscriptions(broadcaster.id);
+
+  return {
+    broadcaster,
+    ...result,
+  };
+}
+
+export async function getKickPointHealthSnapshot(): Promise<KickPointHealthSnapshot> {
+  const broadcaster = await prisma.user.findFirst({
+    where: {
+      isKickBroadcaster: true,
+    },
+    orderBy: {
+      updatedAt: "desc",
+    },
+    select: {
+      id: true,
+      kick_user_id: true,
+      kick_username: true,
+      isKickBroadcaster: true,
+      kick_token_expires_at: true,
+      updatedAt: true,
+    },
+  });
+
+  let subscriptions: Array<Record<string, unknown>> = [];
+  let subscriptionsError: string | null = null;
+
+  if (broadcaster) {
+    try {
+      const response = (await listEventSubscriptions(broadcaster.id)) as
+        | { data?: Array<Record<string, unknown>> }
+        | undefined;
+      subscriptions = Array.isArray(response?.data) ? response.data : [];
+    } catch (error) {
+      subscriptionsError =
+        error instanceof Error ? error.message : "Failed to load subscriptions";
+    }
+  } else {
+    subscriptionsError = "No broadcaster is currently connected.";
+  }
+
+  const liveEventTypes = KICK_POINT_EVENT_SUBSCRIPTIONS.map(
+    (subscription) => subscription.name,
+  );
+
+  const [liveReceiptCount, liveReceiptAggregate, lastLiveReceipt, creditedUsers, recentReceipts] =
+    await Promise.all([
+      prisma.kickEventReceipt.count({
+        where: {
+          event_type: {
+            in: liveEventTypes,
+          },
+        },
+      }),
+      prisma.kickEventReceipt.aggregate({
+        where: {
+          event_type: {
+            in: liveEventTypes,
+          },
+        },
+        _sum: {
+          points_awarded: true,
+        },
+      }),
+      prisma.kickEventReceipt.findFirst({
+        where: {
+          event_type: {
+            in: liveEventTypes,
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+        select: {
+          createdAt: true,
+        },
+      }),
+      prisma.user.count({
+        where: {
+          kick_user_id: { not: null },
+          points: { gt: 0 },
+        },
+      }),
+      prisma.kickEventReceipt.findMany({
+        where: {
+          event_type: {
+            in: [...liveEventTypes, "manual.backfill"],
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+        take: 12,
+        select: {
+          id: true,
+          event_type: true,
+          kick_user_id: true,
+          kick_username: true,
+          points_awarded: true,
+          createdAt: true,
+        },
+      }),
+    ]);
+
+  return {
+    broadcaster: broadcaster
+      ? {
+          id: broadcaster.id,
+          kickUserId: broadcaster.kick_user_id,
+          kickUsername: broadcaster.kick_username,
+          isKickBroadcaster: broadcaster.isKickBroadcaster,
+          tokenExpiresAt: broadcaster.kick_token_expires_at?.toISOString() ?? null,
+          updatedAt: broadcaster.updatedAt.toISOString(),
+        }
+      : null,
+    subscriptions: KICK_POINT_EVENT_SUBSCRIPTIONS.map((target) => {
+      const active = subscriptions.some((subscription) => {
+        const name =
+          typeof subscription.event === "string"
+            ? subscription.event
+            : typeof subscription.name === "string"
+              ? subscription.name
+              : null;
+        const versionRaw = subscription.version;
+        const version =
+          typeof versionRaw === "number"
+            ? versionRaw
+            : typeof versionRaw === "string"
+              ? Number(versionRaw)
+              : null;
+
+        return name === target.name && version === target.version;
+      });
+
+      return {
+        name: target.name,
+        version: target.version,
+        active,
+      };
+    }),
+    subscriptionsError,
+    receiptSummary: {
+      liveReceiptCount,
+      awardedPoints: liveReceiptAggregate._sum.points_awarded ?? 0,
+      lastLiveReceiptAt: lastLiveReceipt?.createdAt.toISOString() ?? null,
+      creditedUsers,
+    },
+    recentReceipts: recentReceipts.map((receipt) => ({
+      id: receipt.id,
+      eventType: receipt.event_type,
+      kickUserId: receipt.kick_user_id,
+      kickUsername: receipt.kick_username,
+      pointsAwarded: receipt.points_awarded,
+      createdAt: receipt.createdAt.toISOString(),
+    })),
   };
 }
